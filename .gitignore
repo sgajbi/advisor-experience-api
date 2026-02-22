@@ -8,3 +8,4 @@ venv/
 .env
 .coverage
 htmlcov/
+*.egg-info/
