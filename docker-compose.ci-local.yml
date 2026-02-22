@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     image: advisor-experience-api:ci-local
     working_dir: /app
+    volumes:
+      - ./:/app
     command:
       [
         "sh",
