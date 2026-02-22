@@ -5,7 +5,12 @@ services:
       dockerfile: Dockerfile
     image: advisor-experience-api:ci-local
     working_dir: /app
-    command: ["sh", "-lc", "pip install --no-cache-dir -e '.[dev]' && make ci-local"]
+    command:
+      [
+        "sh",
+        "-lc",
+        "pip install --no-cache-dir -e '.[dev]' && ruff check . && ruff format --check . && mypy src && python -m pytest tests/unit tests/contract && python -m pytest tests/integration"
+      ]
     environment:
       - DECISIONING_SERVICE_BASE_URL=http://host.docker.internal:8000
       - UPSTREAM_TIMEOUT_SECONDS=30
