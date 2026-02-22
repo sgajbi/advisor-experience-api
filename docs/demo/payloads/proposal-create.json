@@ -1,0 +1,40 @@
+{
+  "body": {
+    "created_by": "advisor_demo_1",
+    "metadata": {
+      "title": "Demo Proposal",
+      "jurisdiction": "SG",
+      "mandate_id": "mandate_demo_1"
+    },
+    "simulate_request": {
+      "portfolio_snapshot": {
+        "portfolio_id": "pf_demo_bff_1",
+        "base_currency": "USD",
+        "positions": [
+          {"instrument_id": "EQ_OLD", "quantity": "10"}
+        ],
+        "cash_balances": [
+          {"currency": "USD", "amount": "1000"}
+        ]
+      },
+      "market_data_snapshot": {
+        "prices": [
+          {"instrument_id": "EQ_OLD", "price": "100", "currency": "USD"},
+          {"instrument_id": "EQ_NEW", "price": "50", "currency": "USD"}
+        ],
+        "fx_rates": []
+      },
+      "shelf_entries": [
+        {"instrument_id": "EQ_OLD", "status": "APPROVED"},
+        {"instrument_id": "EQ_NEW", "status": "APPROVED"}
+      ],
+      "options": {
+        "enable_proposal_simulation": true
+      },
+      "proposed_cash_flows": [],
+      "proposed_trades": [
+        {"side": "BUY", "instrument_id": "EQ_NEW", "quantity": "2"}
+      ]
+    }
+  }
+}

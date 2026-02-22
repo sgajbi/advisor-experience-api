@@ -1,0 +1,12 @@
+services:
+  ci-local:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: advisor-experience-api:ci-local
+    working_dir: /app
+    command: ["sh", "-lc", "pip install --no-cache-dir -e '.[dev]' && make ci-local"]
+    environment:
+      - DECISIONING_SERVICE_BASE_URL=http://host.docker.internal:8000
+      - UPSTREAM_TIMEOUT_SECONDS=30
+      - CONTRACT_VERSION=v1

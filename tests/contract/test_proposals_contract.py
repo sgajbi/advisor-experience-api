@@ -1,4 +1,5 @@
 from app.contracts.proposals import (
+    ProposalApprovalActionRequest,
     ProposalEnvelopeResponse,
     ProposalSimulateResponse,
     ProposalSubmitRequest,
@@ -27,3 +28,9 @@ def test_proposal_submit_request_contract_shape() -> None:
     payload = ProposalSubmitRequest(actor_id="advisor_1")
     assert payload.review_type == "RISK"
     assert payload.expected_state == "DRAFT"
+
+
+def test_proposal_approval_action_request_contract_shape() -> None:
+    payload = ProposalApprovalActionRequest(actor_id="risk_1", expected_state="RISK_REVIEW")
+    assert payload.related_version_no is None
+    assert payload.details == {}

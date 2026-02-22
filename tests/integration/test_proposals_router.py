@@ -189,3 +189,96 @@ def test_submit_proposal_forwards_upstream_error(monkeypatch):
     )
 
     assert response.status_code == 409
+
+
+def test_approve_risk_success(monkeypatch):
+    async def _fake_record_approval(self, proposal_id, body, correlation_id):  # noqa: ANN001
+        _ = self, correlation_id
+        assert proposal_id == "pp_1"
+        assert body["approval_type"] == "RISK"
+        assert body["expected_state"] == "RISK_REVIEW"
+        return 200, {"proposal_id": proposal_id, "current_state": "AWAITING_CLIENT_CONSENT"}
+
+    monkeypatch.setattr(
+        "app.clients.dpm_client.DpmClient.record_approval",
+        _fake_record_approval,
+    )
+
+    client = TestClient(app)
+    response = client.post(
+        "/api/v1/proposals/pp_1/approve-risk",
+        json={"actor_id": "risk_1", "expected_state": "RISK_REVIEW", "details": {"comment": "ok"}},
+    )
+    assert response.status_code == 200
+    assert response.json()["data"]["current_state"] == "AWAITING_CLIENT_CONSENT"
+
+
+def test_approve_compliance_success(monkeypatch):
+    async def _fake_record_approval(self, proposal_id, body, correlation_id):  # noqa: ANN001
+        _ = self, correlation_id
+        assert proposal_id == "pp_1"
+        assert body["approval_type"] == "COMPLIANCE"
+        assert body["expected_state"] == "COMPLIANCE_REVIEW"
+        return 200, {"proposal_id": proposal_id, "current_state": "AWAITING_CLIENT_CONSENT"}
+
+    monkeypatch.setattr(
+        "app.clients.dpm_client.DpmClient.record_approval",
+        _fake_record_approval,
+    )
+
+    client = TestClient(app)
+    response = client.post(
+        "/api/v1/proposals/pp_1/approve-compliance",
+        json={"actor_id": "compliance_1", "expected_state": "COMPLIANCE_REVIEW"},
+    )
+    assert response.status_code == 200
+
+
+def test_record_client_consent_success(monkeypatch):
+    async def _fake_record_approval(self, proposal_id, body, correlation_id):  # noqa: ANN001
+        _ = self, proposal_id, correlation_id
+        assert body["approval_type"] == "CLIENT_CONSENT"
+        return 200, {"current_state": "EXECUTION_READY"}
+
+    monkeypatch.setattr(
+        "app.clients.dpm_client.DpmClient.record_approval",
+        _fake_record_approval,
+    )
+
+    client = TestClient(app)
+    response = client.post(
+        "/api/v1/proposals/pp_1/record-client-consent",
+        json={"actor_id": "advisor_1", "expected_state": "AWAITING_CLIENT_CONSENT"},
+    )
+    assert response.status_code == 200
+    assert response.json()["data"]["current_state"] == "EXECUTION_READY"
+
+
+def test_workflow_events_and_approvals_success(monkeypatch):
+    async def _fake_get_workflow_events(self, proposal_id, correlation_id):  # noqa: ANN001
+        _ = self, correlation_id
+        assert proposal_id == "pp_1"
+        return 200, {"events": [{"event_type": "CREATED"}]}
+
+    async def _fake_get_approvals(self, proposal_id, correlation_id):  # noqa: ANN001
+        _ = self, correlation_id
+        assert proposal_id == "pp_1"
+        return 200, {"approvals": [{"approval_type": "RISK", "approved": True}]}
+
+    monkeypatch.setattr(
+        "app.clients.dpm_client.DpmClient.get_workflow_events",
+        _fake_get_workflow_events,
+    )
+    monkeypatch.setattr(
+        "app.clients.dpm_client.DpmClient.get_approvals",
+        _fake_get_approvals,
+    )
+
+    client = TestClient(app)
+    events = client.get("/api/v1/proposals/pp_1/workflow-events")
+    approvals = client.get("/api/v1/proposals/pp_1/approvals")
+
+    assert events.status_code == 200
+    assert approvals.status_code == 200
+    assert events.json()["data"]["events"][0]["event_type"] == "CREATED"
+    assert approvals.json()["data"]["approvals"][0]["approval_type"] == "RISK"

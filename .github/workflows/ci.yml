@@ -55,3 +55,24 @@ jobs:
           pip install -e ".[dev]"
       - name: Integration Tests
         run: make test-integration
+
+  docker-build:
+    name: Validate Docker Build
+    needs: [integration]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t advisor-experience-api:ci-test .
+
+  ci-local-docker:
+    name: CI Local Docker Parity
+    needs: [integration]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dockerized local CI parity
+        run: make ci-local-docker
+      - name: Cleanup
+        if: always()
+        run: make ci-local-docker-down
