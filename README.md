@@ -1,6 +1,6 @@
 # advisor-experience-api
 
-FastAPI BFF for Advisor Workbench.
+FastAPI BFF for Advisor Workbench, scoped to DPM-first proposal workflows.
 
 ## Quickstart
 
@@ -13,6 +13,6 @@ make run
 
 API docs: `http://localhost:8100/docs`
 
-## First endpoint
+## Current endpoint
 
-- `GET /api/v1/workbench/{portfolio_id}/overview`
+- `POST /api/v1/proposals/simulate` (proxies to DPM `/rebalance/proposals/simulate`)
