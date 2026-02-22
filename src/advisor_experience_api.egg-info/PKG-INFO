@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: advisor-experience-api
+Version: 0.1.0
+Summary: BFF for Advisor Workbench
+Requires-Python: >=3.11
+Requires-Dist: fastapi>=0.129.0
+Requires-Dist: uvicorn>=0.35.0
+Requires-Dist: pydantic>=2.11.0
+Requires-Dist: pydantic-settings>=2.10.0
+Requires-Dist: httpx>=0.28.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.4.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.26.0; extra == "dev"
+Requires-Dist: ruff>=0.15.0; extra == "dev"
+Requires-Dist: mypy>=1.13.0; extra == "dev"
