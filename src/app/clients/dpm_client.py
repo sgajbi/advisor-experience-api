@@ -14,12 +14,93 @@ class DpmClient:
         idempotency_key: str,
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
-        url = f"{self._base_url}/rebalance/proposals/simulate"
-        headers = {
-            "Idempotency-Key": idempotency_key,
-            "X-Correlation-Id": correlation_id,
-        }
+        return await self._post(
+            "/rebalance/proposals/simulate",
+            body=body,
+            headers={
+                "Idempotency-Key": idempotency_key,
+                "X-Correlation-Id": correlation_id,
+            },
+        )
+
+    async def create_proposal(
+        self,
+        body: dict[str, Any],
+        idempotency_key: str,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._post(
+            "/rebalance/proposals",
+            body=body,
+            headers={
+                "Idempotency-Key": idempotency_key,
+                "X-Correlation-Id": correlation_id,
+            },
+        )
+
+    async def list_proposals(
+        self,
+        params: dict[str, Any],
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        cleaned_params = {key: value for key, value in params.items() if value is not None}
+        return await self._get(
+            "/rebalance/proposals",
+            params=cleaned_params,
+            headers={"X-Correlation-Id": correlation_id},
+        )
+
+    async def get_proposal(
+        self,
+        proposal_id: str,
+        include_evidence: bool,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._get(
+            f"/rebalance/proposals/{proposal_id}",
+            params={"include_evidence": str(include_evidence).lower()},
+            headers={"X-Correlation-Id": correlation_id},
+        )
+
+    async def transition_proposal(
+        self,
+        proposal_id: str,
+        body: dict[str, Any],
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._post(
+            f"/rebalance/proposals/{proposal_id}/transitions",
+            body=body,
+            headers={"X-Correlation-Id": correlation_id},
+        )
+
+    async def _post(
+        self,
+        path: str,
+        body: dict[str, Any],
+        headers: dict[str, str],
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}{path}"
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.post(url, json=body, headers=headers)
+            return response.status_code, self._response_payload(response)
+
+    async def _get(
+        self,
+        path: str,
+        params: dict[str, Any],
+        headers: dict[str, str],
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}{path}"
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.get(url, params=params, headers=headers)
+            return response.status_code, self._response_payload(response)
+
+    def _response_payload(self, response: httpx.Response) -> dict[str, Any]:
+        try:
             payload = response.json()
-            return response.status_code, payload
+        except ValueError:
+            payload = {"detail": response.text}
+        if isinstance(payload, dict):
+            return payload
+        return {"detail": payload}
