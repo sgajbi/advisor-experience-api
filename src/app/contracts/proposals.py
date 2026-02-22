@@ -41,6 +41,19 @@ class ProposalSubmitRequest(BaseModel):
     )
 
 
+class ProposalApprovalActionRequest(BaseModel):
+    actor_id: str = Field(description="Actor id recording approval action.")
+    expected_state: str = Field(description="Expected current workflow state.")
+    related_version_no: int | None = Field(
+        default=None,
+        description="Optional related version number for audit linkage.",
+    )
+    details: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Structured approval metadata/details.",
+    )
+
+
 class ProposalEnvelopeResponse(BaseModel):
     correlation_id: str
     contract_version: str = "v1"

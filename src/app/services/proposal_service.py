@@ -123,6 +123,127 @@ class ProposalService:
             data=upstream_payload,
         )
 
+    async def approve_risk(
+        self,
+        proposal_id: str,
+        actor_id: str,
+        expected_state: str,
+        details: dict[str, Any],
+        related_version_no: int | None,
+        correlation_id: str,
+    ) -> ProposalEnvelopeResponse:
+        return await self._record_approval(
+            proposal_id=proposal_id,
+            approval_type="RISK",
+            actor_id=actor_id,
+            expected_state=expected_state,
+            details=details,
+            related_version_no=related_version_no,
+            correlation_id=correlation_id,
+        )
+
+    async def approve_compliance(
+        self,
+        proposal_id: str,
+        actor_id: str,
+        expected_state: str,
+        details: dict[str, Any],
+        related_version_no: int | None,
+        correlation_id: str,
+    ) -> ProposalEnvelopeResponse:
+        return await self._record_approval(
+            proposal_id=proposal_id,
+            approval_type="COMPLIANCE",
+            actor_id=actor_id,
+            expected_state=expected_state,
+            details=details,
+            related_version_no=related_version_no,
+            correlation_id=correlation_id,
+        )
+
+    async def record_client_consent(
+        self,
+        proposal_id: str,
+        actor_id: str,
+        expected_state: str,
+        details: dict[str, Any],
+        related_version_no: int | None,
+        correlation_id: str,
+    ) -> ProposalEnvelopeResponse:
+        return await self._record_approval(
+            proposal_id=proposal_id,
+            approval_type="CLIENT_CONSENT",
+            actor_id=actor_id,
+            expected_state=expected_state,
+            details=details,
+            related_version_no=related_version_no,
+            correlation_id=correlation_id,
+        )
+
+    async def get_workflow_events(
+        self,
+        proposal_id: str,
+        correlation_id: str,
+    ) -> ProposalEnvelopeResponse:
+        upstream_status, upstream_payload = await self._dpm_client.get_workflow_events(
+            proposal_id=proposal_id,
+            correlation_id=correlation_id,
+        )
+        self._raise_for_upstream_error(upstream_status, upstream_payload)
+        return ProposalEnvelopeResponse(
+            correlation_id=correlation_id,
+            contract_version=settings.contract_version,
+            data=upstream_payload,
+        )
+
+    async def get_approvals(
+        self,
+        proposal_id: str,
+        correlation_id: str,
+    ) -> ProposalEnvelopeResponse:
+        upstream_status, upstream_payload = await self._dpm_client.get_approvals(
+            proposal_id=proposal_id,
+            correlation_id=correlation_id,
+        )
+        self._raise_for_upstream_error(upstream_status, upstream_payload)
+        return ProposalEnvelopeResponse(
+            correlation_id=correlation_id,
+            contract_version=settings.contract_version,
+            data=upstream_payload,
+        )
+
+    async def _record_approval(
+        self,
+        proposal_id: str,
+        approval_type: str,
+        actor_id: str,
+        expected_state: str,
+        details: dict[str, Any],
+        related_version_no: int | None,
+        correlation_id: str,
+    ) -> ProposalEnvelopeResponse:
+        payload: dict[str, Any] = {
+            "approval_type": approval_type,
+            "approved": True,
+            "actor_id": actor_id,
+            "expected_state": expected_state,
+            "details": details,
+        }
+        if related_version_no is not None:
+            payload["related_version_no"] = related_version_no
+
+        upstream_status, upstream_payload = await self._dpm_client.record_approval(
+            proposal_id=proposal_id,
+            body=payload,
+            correlation_id=correlation_id,
+        )
+        self._raise_for_upstream_error(upstream_status, upstream_payload)
+        return ProposalEnvelopeResponse(
+            correlation_id=correlation_id,
+            contract_version=settings.contract_version,
+            data=upstream_payload,
+        )
+
     def _raise_for_upstream_error(
         self,
         upstream_status: int,

@@ -5,6 +5,7 @@ from fastapi import APIRouter, Header, Query
 from app.clients.dpm_client import DpmClient
 from app.config import settings
 from app.contracts.proposals import (
+    ProposalApprovalActionRequest,
     ProposalCreateRequest,
     ProposalEnvelopeResponse,
     ProposalSimulateRequest,
@@ -108,5 +109,76 @@ async def submit_proposal(
         review_type=request.review_type,
         reason=request.reason,
         related_version_no=request.related_version_no,
+        correlation_id=correlation_id,
+    )
+
+
+@router.post("/{proposal_id}/approve-risk", response_model=ProposalEnvelopeResponse)
+async def approve_risk(
+    proposal_id: str,
+    request: ProposalApprovalActionRequest,
+) -> ProposalEnvelopeResponse:
+    service = _proposal_service()
+    correlation_id = correlation_id_var.get()
+    return await service.approve_risk(
+        proposal_id=proposal_id,
+        actor_id=request.actor_id,
+        expected_state=request.expected_state,
+        details=request.details,
+        related_version_no=request.related_version_no,
+        correlation_id=correlation_id,
+    )
+
+
+@router.post("/{proposal_id}/approve-compliance", response_model=ProposalEnvelopeResponse)
+async def approve_compliance(
+    proposal_id: str,
+    request: ProposalApprovalActionRequest,
+) -> ProposalEnvelopeResponse:
+    service = _proposal_service()
+    correlation_id = correlation_id_var.get()
+    return await service.approve_compliance(
+        proposal_id=proposal_id,
+        actor_id=request.actor_id,
+        expected_state=request.expected_state,
+        details=request.details,
+        related_version_no=request.related_version_no,
+        correlation_id=correlation_id,
+    )
+
+
+@router.post("/{proposal_id}/record-client-consent", response_model=ProposalEnvelopeResponse)
+async def record_client_consent(
+    proposal_id: str,
+    request: ProposalApprovalActionRequest,
+) -> ProposalEnvelopeResponse:
+    service = _proposal_service()
+    correlation_id = correlation_id_var.get()
+    return await service.record_client_consent(
+        proposal_id=proposal_id,
+        actor_id=request.actor_id,
+        expected_state=request.expected_state,
+        details=request.details,
+        related_version_no=request.related_version_no,
+        correlation_id=correlation_id,
+    )
+
+
+@router.get("/{proposal_id}/workflow-events", response_model=ProposalEnvelopeResponse)
+async def get_workflow_events(proposal_id: str) -> ProposalEnvelopeResponse:
+    service = _proposal_service()
+    correlation_id = correlation_id_var.get()
+    return await service.get_workflow_events(
+        proposal_id=proposal_id,
+        correlation_id=correlation_id,
+    )
+
+
+@router.get("/{proposal_id}/approvals", response_model=ProposalEnvelopeResponse)
+async def get_approvals(proposal_id: str) -> ProposalEnvelopeResponse:
+    service = _proposal_service()
+    correlation_id = correlation_id_var.get()
+    return await service.get_approvals(
+        proposal_id=proposal_id,
         correlation_id=correlation_id,
     )

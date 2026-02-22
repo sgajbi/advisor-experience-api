@@ -74,6 +74,40 @@ class DpmClient:
             headers={"X-Correlation-Id": correlation_id},
         )
 
+    async def record_approval(
+        self,
+        proposal_id: str,
+        body: dict[str, Any],
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._post(
+            f"/rebalance/proposals/{proposal_id}/approvals",
+            body=body,
+            headers={"X-Correlation-Id": correlation_id},
+        )
+
+    async def get_workflow_events(
+        self,
+        proposal_id: str,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._get(
+            f"/rebalance/proposals/{proposal_id}/workflow-events",
+            params={},
+            headers={"X-Correlation-Id": correlation_id},
+        )
+
+    async def get_approvals(
+        self,
+        proposal_id: str,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._get(
+            f"/rebalance/proposals/{proposal_id}/approvals",
+            params={},
+            headers={"X-Correlation-Id": correlation_id},
+        )
+
     async def _post(
         self,
         path: str,

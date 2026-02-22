@@ -26,3 +26,24 @@ API docs: `http://localhost:8100/docs`
 - `GET /api/v1/proposals` (list proposals)
 - `GET /api/v1/proposals/{proposal_id}` (proposal detail)
 - `POST /api/v1/proposals/{proposal_id}/submit` (submit draft for review via DPM transition)
+- `POST /api/v1/proposals/{proposal_id}/approve-risk` (risk approval action)
+- `POST /api/v1/proposals/{proposal_id}/approve-compliance` (compliance approval action)
+- `POST /api/v1/proposals/{proposal_id}/record-client-consent` (client consent action)
+- `GET /api/v1/proposals/{proposal_id}/workflow-events` (workflow timeline)
+- `GET /api/v1/proposals/{proposal_id}/approvals` (approval records)
+
+## Docker
+
+```bash
+make docker-up
+make docker-down
+
+make ci-local-docker
+make ci-local-docker-down
+```
+
+## Demo Pack
+
+- `docs/demo/README.md`
+- `docs/demo/payloads/proposal-create.json`
+- `docs/demo/scripts/demo-approval-chain.sh`
