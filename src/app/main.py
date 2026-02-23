@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 
 from app.contracts.errors import ProblemDetails
 from app.middleware.correlation import correlation_id_var, correlation_middleware
+from app.routers.intake import router as intake_router
 from app.routers.platform import router as platform_router
 from app.routers.proposals import router as proposals_router
 
@@ -10,6 +11,7 @@ app = FastAPI(title="Advisor Experience API", version="0.1.0")
 app.middleware("http")(correlation_middleware)
 app.include_router(proposals_router)
 app.include_router(platform_router)
+app.include_router(intake_router)
 
 
 @app.get("/health")

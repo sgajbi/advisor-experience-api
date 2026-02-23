@@ -34,6 +34,12 @@ API docs: `http://localhost:8100/docs`
 - `GET /api/v1/proposals/{proposal_id}/workflow-events` (workflow timeline)
 - `GET /api/v1/proposals/{proposal_id}/approvals` (approval records)
 - `GET /api/v1/platform/capabilities` (aggregated PAS+PA+DPM capability contract for UI)
+- `POST /api/v1/intake/portfolio-bundle` (PAS ingestion bundle pass-through)
+- `POST /api/v1/intake/uploads/preview` (PAS upload preview pass-through)
+- `POST /api/v1/intake/uploads/commit` (PAS upload commit pass-through)
+- `GET /api/v1/lookups/portfolios` (PAS-backed portfolio selector values)
+- `GET /api/v1/lookups/instruments` (PAS-backed instrument selector values)
+- `GET /api/v1/lookups/currencies` (PAS-backed currency selector values)
 
 ## Docker
 
