@@ -142,6 +142,54 @@ def test_get_proposal_success(monkeypatch):
     assert payload["data"]["proposal"]["current_state"] == "DRAFT"
 
 
+def test_get_proposal_version_success(monkeypatch):
+    async def _fake_get_proposal_version(  # noqa: ANN001
+        self, proposal_id, version_no, include_evidence, correlation_id
+    ):
+        _ = self, include_evidence, correlation_id
+        assert proposal_id == "pp_1"
+        assert version_no == 2
+        return 200, {"proposal_id": "pp_1", "version_no": 2, "status_at_creation": "DRAFT"}
+
+    monkeypatch.setattr(
+        "app.clients.dpm_client.DpmClient.get_proposal_version",
+        _fake_get_proposal_version,
+    )
+
+    client = TestClient(app)
+    response = client.get("/api/v1/proposals/pp_1/versions/2?include_evidence=true")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["data"]["version_no"] == 2
+
+
+def test_create_proposal_version_success(monkeypatch):
+    async def _fake_create_proposal_version(  # noqa: ANN001
+        self, proposal_id, body, idempotency_key, correlation_id
+    ):
+        _ = self, idempotency_key, correlation_id
+        assert proposal_id == "pp_1"
+        assert body["created_by"] == "advisor_1"
+        return 200, {"proposal_id": "pp_1", "current_version_no": 2}
+
+    monkeypatch.setattr(
+        "app.clients.dpm_client.DpmClient.create_proposal_version",
+        _fake_create_proposal_version,
+    )
+
+    client = TestClient(app)
+    response = client.post(
+        "/api/v1/proposals/pp_1/versions",
+        json={"body": {"created_by": "advisor_1", "simulate_request": {"options": {}}}},
+        headers={"Idempotency-Key": "idem-v2"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["data"]["current_version_no"] == 2
+
+
 def test_submit_proposal_success(monkeypatch):
     seen = {}
 
