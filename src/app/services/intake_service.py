@@ -1,6 +1,7 @@
 from typing import Any
 
 from fastapi import HTTPException, status
+from pydantic import ValidationError
 
 from app.clients.pas_client import PasClient
 from app.clients.pas_ingestion_client import PasIngestionClient
@@ -106,11 +107,17 @@ class IntakeService:
     def _lookup_response(
         self, correlation_id: str, upstream_payload: dict[str, Any]
     ) -> LookupResponse:
-        return LookupResponse(
-            correlation_id=correlation_id,
-            contract_version=settings.contract_version,
-            items=upstream_payload.get("items", []),
-        )
+        try:
+            return LookupResponse(
+                correlation_id=correlation_id,
+                contract_version=settings.contract_version,
+                items=upstream_payload.get("items", []),
+            )
+        except ValidationError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Invalid PAS lookup contract payload: {exc}",
+            ) from exc
 
     def _raise_for_upstream_error(
         self,
