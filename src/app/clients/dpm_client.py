@@ -137,6 +137,18 @@ class DpmClient:
             headers={"X-Correlation-Id": correlation_id},
         )
 
+    async def get_capabilities(
+        self,
+        consumer_system: str,
+        tenant_id: str,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._get(
+            "/integration/capabilities",
+            params={"consumerSystem": consumer_system, "tenantId": tenant_id},
+            headers={"X-Correlation-Id": correlation_id},
+        )
+
     async def _post(
         self,
         path: str,

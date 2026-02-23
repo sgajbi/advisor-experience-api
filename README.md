@@ -33,6 +33,7 @@ API docs: `http://localhost:8100/docs`
 - `POST /api/v1/proposals/{proposal_id}/record-client-consent` (client consent action)
 - `GET /api/v1/proposals/{proposal_id}/workflow-events` (workflow timeline)
 - `GET /api/v1/proposals/{proposal_id}/approvals` (approval records)
+- `GET /api/v1/platform/capabilities` (aggregated PAS+PA+DPM capability contract for UI)
 
 ## Docker
 
