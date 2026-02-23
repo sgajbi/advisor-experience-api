@@ -19,13 +19,17 @@ class _PasIngestionStub:
 
 
 class _PasQueryStub:
-    async def list_portfolios(self, correlation_id):  # noqa: ANN001
+    async def get_portfolio_lookups(self, correlation_id):  # noqa: ANN001
         _ = correlation_id
-        return 200, {"portfolios": [{"portfolio_id": "PF_1", "base_currency": "USD"}]}
+        return 200, {"items": [{"id": "PF_1", "label": "PF_1"}]}
 
-    async def list_instruments(self, limit, correlation_id):  # noqa: ANN001
+    async def get_instrument_lookups(self, limit, correlation_id):  # noqa: ANN001
         _ = limit, correlation_id
-        return 200, {"instruments": [{"security_id": "SEC_1", "currency": "EUR"}]}
+        return 200, {"items": [{"id": "SEC_1", "label": "SEC_1 | Apple Inc."}]}
+
+    async def get_currency_lookups(self, correlation_id):  # noqa: ANN001
+        _ = correlation_id
+        return 200, {"items": [{"id": "EUR", "label": "EUR"}, {"id": "USD", "label": "USD"}]}
 
 
 @pytest.mark.asyncio

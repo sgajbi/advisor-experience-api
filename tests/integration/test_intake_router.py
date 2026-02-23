@@ -64,13 +64,19 @@ def test_commit_upload_success(monkeypatch):
 
 def test_lookups_success(monkeypatch):
     async def _fake_portfolios(*args, **kwargs):
-        return 200, {"portfolios": [{"portfolio_id": "PF_1"}]}
+        return 200, {"items": [{"id": "PF_1", "label": "PF_1"}]}
 
     async def _fake_instruments(*args, **kwargs):
-        return 200, {"instruments": [{"security_id": "SEC_1", "currency": "USD"}]}
+        return 200, {"items": [{"id": "SEC_1", "label": "SEC_1 | Apple Inc."}]}
 
-    monkeypatch.setattr("app.clients.pas_client.PasClient.list_portfolios", _fake_portfolios)
-    monkeypatch.setattr("app.clients.pas_client.PasClient.list_instruments", _fake_instruments)
+    async def _fake_currencies(*args, **kwargs):
+        return 200, {"items": [{"id": "USD", "label": "USD"}]}
+
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_portfolio_lookups", _fake_portfolios)
+    monkeypatch.setattr(
+        "app.clients.pas_client.PasClient.get_instrument_lookups", _fake_instruments
+    )
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_currency_lookups", _fake_currencies)
 
     client = TestClient(app)
 
