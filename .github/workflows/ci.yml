@@ -81,6 +81,10 @@ jobs:
     name: E2E Platform Capabilities (Live Upstreams)
     needs: [integration]
     runs-on: ubuntu-latest
+    env:
+      DPM_REPO_PATH: ../dpm-rebalance-engine
+      PAS_REPO_PATH: ../portfolio-analytics-system
+      PA_REPO_PATH: ../performanceAnalytics
     steps:
       - uses: actions/checkout@v4
 
@@ -91,10 +95,6 @@ jobs:
           git clone https://github.com/sgajbi/performanceAnalytics.git ../performanceAnalytics
 
       - name: Start live E2E stack
-        env:
-          DPM_REPO_PATH: ../dpm-rebalance-engine
-          PAS_REPO_PATH: ../portfolio-analytics-system
-          PA_REPO_PATH: ../performanceAnalytics
         run: make e2e-up
 
       - name: Validate BFF aggregation against live upstreams
