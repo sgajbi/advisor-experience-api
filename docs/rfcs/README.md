@@ -9,3 +9,4 @@
 | RFC-0005 | Live Multi-Service E2E for Platform Capabilities | IMPLEMENTED | `docs/rfcs/RFC-0005-live-multi-service-e2e-platform-capabilities.md` |
 | RFC-0006 | PAS Intake and Lookup Pass-Through in BFF | IMPLEMENTED | `docs/rfcs/RFC-0006-pas-intake-and-lookup-pass-through.md` |
 | RFC-0007 | BFF Lookup Delegation to PAS Canonical Lookup APIs | IMPLEMENTED | `docs/rfcs/RFC-0007-bff-lookup-delegation-to-pas-canonical-apis.md` |
+| RFC-0008 | BFF PAS Lookup Compatibility Contract Gate | IMPLEMENTED | `docs/rfcs/RFC-0008-bff-pas-lookup-compatibility-contract-gate.md` |
