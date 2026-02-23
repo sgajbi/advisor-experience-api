@@ -31,6 +31,25 @@ class PasClient:
             response = await client.get(url, headers=headers)
             return response.status_code, self._response_payload(response)
 
+    async def get_core_snapshot(
+        self,
+        portfolio_id: str,
+        as_of_date: str,
+        include_sections: list[str],
+        consumer_system: str,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}/integration/portfolios/{portfolio_id}/core-snapshot"
+        headers = {"X-Correlation-Id": correlation_id}
+        payload = {
+            "asOfDate": as_of_date,
+            "includeSections": include_sections,
+            "consumerSystem": consumer_system,
+        }
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.post(url, json=payload, headers=headers)
+            return response.status_code, self._response_payload(response)
+
     async def list_instruments(
         self,
         limit: int,

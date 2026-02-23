@@ -50,6 +50,18 @@ class DpmClient:
             headers={"X-Correlation-Id": correlation_id},
         )
 
+    async def list_runs(
+        self,
+        params: dict[str, Any],
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        cleaned_params = {key: value for key, value in params.items() if value is not None}
+        return await self._get(
+            "/rebalance/runs",
+            params=cleaned_params,
+            headers={"X-Correlation-Id": correlation_id},
+        )
+
     async def get_proposal(
         self,
         proposal_id: str,
