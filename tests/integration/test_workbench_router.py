@@ -15,9 +15,7 @@ def test_workbench_router_success(monkeypatch):
             "snapshot": {
                 "as_of_date": "2026-02-23",
                 "overview": {"total_market_value": 1000.0, "total_cash": 250.0},
-                "holdings": {
-                    "holdingsByAssetClass": {"Equity": [{"id": "EQ_1"}]}
-                },
+                "holdings": {"holdingsByAssetClass": {"Equity": [{"id": "EQ_1"}]}},
             },
         }
 
