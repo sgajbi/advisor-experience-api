@@ -76,3 +76,34 @@ jobs:
       - name: Cleanup
         if: always()
         run: make ci-local-docker-down
+
+  e2e-platform-capabilities-live:
+    name: E2E Platform Capabilities (Live Upstreams)
+    needs: [integration]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone upstream repos
+        run: |
+          git clone https://github.com/sgajbi/dpm-rebalance-engine.git ../dpm-rebalance-engine
+          git clone https://github.com/sgajbi/portfolio-analytics-system.git ../portfolio-analytics-system
+          git clone https://github.com/sgajbi/performanceAnalytics.git ../performanceAnalytics
+
+      - name: Start live E2E stack
+        env:
+          DPM_REPO_PATH: ../dpm-rebalance-engine
+          PAS_REPO_PATH: ../portfolio-analytics-system
+          PA_REPO_PATH: ../performanceAnalytics
+        run: make e2e-up
+
+      - name: Validate BFF aggregation against live upstreams
+        run: make test-e2e-live
+
+      - name: Stack logs on failure
+        if: failure()
+        run: docker compose -f docker-compose.e2e.yml logs --no-color
+
+      - name: Cleanup live E2E stack
+        if: always()
+        run: make e2e-down
