@@ -5,7 +5,7 @@ from fastapi import HTTPException, status
 from app.clients.pas_client import PasClient
 from app.clients.pas_ingestion_client import PasIngestionClient
 from app.config import settings
-from app.contracts.intake import EnvelopeResponse, LookupItem, LookupResponse
+from app.contracts.intake import EnvelopeResponse, LookupResponse
 
 
 class IntakeService:
@@ -69,66 +69,31 @@ class IntakeService:
         return self._envelope(correlation_id=correlation_id, data=upstream_payload)
 
     async def get_portfolio_lookups(self, correlation_id: str) -> LookupResponse:
-        upstream_status, upstream_payload = await self._pas_query_client.list_portfolios(
+        upstream_status, upstream_payload = await self._pas_query_client.get_portfolio_lookups(
             correlation_id=correlation_id,
         )
         self._raise_for_upstream_error(upstream_status, upstream_payload)
-
-        portfolio_rows = upstream_payload.get("portfolios", [])
-        items = [
-            LookupItem(id=row["portfolio_id"], label=row["portfolio_id"]) for row in portfolio_rows
-        ]
-        return LookupResponse(
-            correlation_id=correlation_id,
-            contract_version=settings.contract_version,
-            items=items,
+        return self._lookup_response(
+            correlation_id=correlation_id, upstream_payload=upstream_payload
         )
 
     async def get_instrument_lookups(self, limit: int, correlation_id: str) -> LookupResponse:
-        upstream_status, upstream_payload = await self._pas_query_client.list_instruments(
+        upstream_status, upstream_payload = await self._pas_query_client.get_instrument_lookups(
             limit=limit,
             correlation_id=correlation_id,
         )
         self._raise_for_upstream_error(upstream_status, upstream_payload)
-
-        instrument_rows = upstream_payload.get("instruments", [])
-        items = [
-            LookupItem(id=row["security_id"], label=row["security_id"]) for row in instrument_rows
-        ]
-        return LookupResponse(
-            correlation_id=correlation_id,
-            contract_version=settings.contract_version,
-            items=items,
+        return self._lookup_response(
+            correlation_id=correlation_id, upstream_payload=upstream_payload
         )
 
     async def get_currency_lookups(self, correlation_id: str) -> LookupResponse:
-        portfolios_status, portfolios_payload = await self._pas_query_client.list_portfolios(
+        upstream_status, upstream_payload = await self._pas_query_client.get_currency_lookups(
             correlation_id=correlation_id,
         )
-        self._raise_for_upstream_error(portfolios_status, portfolios_payload)
-
-        instruments_status, instruments_payload = await self._pas_query_client.list_instruments(
-            limit=500,
-            correlation_id=correlation_id,
-        )
-        self._raise_for_upstream_error(instruments_status, instruments_payload)
-
-        currency_values: set[str] = set()
-        for row in portfolios_payload.get("portfolios", []):
-            base_currency = row.get("base_currency")
-            if isinstance(base_currency, str) and base_currency:
-                currency_values.add(base_currency)
-
-        for row in instruments_payload.get("instruments", []):
-            currency = row.get("currency")
-            if isinstance(currency, str) and currency:
-                currency_values.add(currency)
-
-        items = [LookupItem(id=code, label=code) for code in sorted(currency_values)]
-        return LookupResponse(
-            correlation_id=correlation_id,
-            contract_version=settings.contract_version,
-            items=items,
+        self._raise_for_upstream_error(upstream_status, upstream_payload)
+        return self._lookup_response(
+            correlation_id=correlation_id, upstream_payload=upstream_payload
         )
 
     def _envelope(self, correlation_id: str, data: dict[str, Any]) -> EnvelopeResponse:
@@ -136,6 +101,15 @@ class IntakeService:
             correlation_id=correlation_id,
             contract_version=settings.contract_version,
             data=data,
+        )
+
+    def _lookup_response(
+        self, correlation_id: str, upstream_payload: dict[str, Any]
+    ) -> LookupResponse:
+        return LookupResponse(
+            correlation_id=correlation_id,
+            contract_version=settings.contract_version,
+            items=upstream_payload.get("items", []),
         )
 
     def _raise_for_upstream_error(

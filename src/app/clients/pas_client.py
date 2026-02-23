@@ -43,6 +43,45 @@ class PasClient:
             response = await client.get(url, params=params, headers=headers)
             return response.status_code, self._response_payload(response)
 
+    async def get_portfolio_lookups(
+        self,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._get_lookup(
+            path="/lookups/portfolios", params={}, correlation_id=correlation_id
+        )
+
+    async def get_instrument_lookups(
+        self,
+        limit: int,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._get_lookup(
+            path="/lookups/instruments",
+            params={"limit": limit},
+            correlation_id=correlation_id,
+        )
+
+    async def get_currency_lookups(
+        self,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._get_lookup(
+            path="/lookups/currencies", params={}, correlation_id=correlation_id
+        )
+
+    async def _get_lookup(
+        self,
+        path: str,
+        params: dict[str, Any],
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}{path}"
+        headers = {"X-Correlation-Id": correlation_id}
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.get(url, params=params, headers=headers)
+            return response.status_code, self._response_payload(response)
+
     def _response_payload(self, response: httpx.Response) -> dict[str, Any]:
         try:
             payload = response.json()
