@@ -21,6 +21,28 @@ class PasClient:
             response = await client.get(url, params=params, headers=headers)
             return response.status_code, self._response_payload(response)
 
+    async def list_portfolios(
+        self,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}/portfolios"
+        headers = {"X-Correlation-Id": correlation_id}
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.get(url, headers=headers)
+            return response.status_code, self._response_payload(response)
+
+    async def list_instruments(
+        self,
+        limit: int,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}/instruments"
+        headers = {"X-Correlation-Id": correlation_id}
+        params = {"skip": 0, "limit": limit}
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.get(url, params=params, headers=headers)
+            return response.status_code, self._response_payload(response)
+
     def _response_payload(self, response: httpx.Response) -> dict[str, Any]:
         try:
             payload = response.json()
