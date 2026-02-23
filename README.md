@@ -7,6 +7,7 @@ FastAPI BFF for Advisor Workbench, scoped to DPM-first proposal workflows.
 - Contribution process: `CONTRIBUTING.md`
 - Docs-with-code standard: `docs/documentation/implementation-documentation-standard.md`
 - PR checklist template: `.github/pull_request_template.md`
+- Platform-wide architecture governance source: `https://github.com/sgajbi/pbwm-platform-docs`
 
 ## Quickstart
 
@@ -34,6 +35,7 @@ API docs: `http://localhost:8100/docs`
 - `GET /api/v1/proposals/{proposal_id}/workflow-events` (workflow timeline)
 - `GET /api/v1/proposals/{proposal_id}/approvals` (approval records)
 - `GET /api/v1/platform/capabilities` (aggregated PAS+PA+DPM capability contract for UI)
+- `GET /api/v1/workbench/{portfolio_id}/overview` (aggregated PAS+PA+DPM decision-console overview)
 - `POST /api/v1/intake/portfolio-bundle` (PAS ingestion bundle pass-through)
 - `POST /api/v1/intake/uploads/preview` (PAS upload preview pass-through)
 - `POST /api/v1/intake/uploads/commit` (PAS upload commit pass-through)
