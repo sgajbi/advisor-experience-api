@@ -19,12 +19,14 @@ make run
 
 API docs: `http://localhost:8100/docs`
 
-## Current endpoint
+## Current endpoints
 
 - `POST /api/v1/proposals/simulate` (proxies to DPM `/rebalance/proposals/simulate`)
 - `POST /api/v1/proposals` (create draft proposal via DPM lifecycle create)
 - `GET /api/v1/proposals` (list proposals)
 - `GET /api/v1/proposals/{proposal_id}` (proposal detail)
+- `GET /api/v1/proposals/{proposal_id}/versions/{version_no}` (immutable proposal version detail)
+- `POST /api/v1/proposals/{proposal_id}/versions` (create proposal version `N+1`)
 - `POST /api/v1/proposals/{proposal_id}/submit` (submit draft for review via DPM transition)
 - `POST /api/v1/proposals/{proposal_id}/approve-risk` (risk approval action)
 - `POST /api/v1/proposals/{proposal_id}/approve-compliance` (compliance approval action)

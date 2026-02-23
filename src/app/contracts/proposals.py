@@ -21,6 +21,12 @@ class ProposalCreateRequest(BaseModel):
     )
 
 
+class ProposalVersionCreateRequest(BaseModel):
+    body: dict[str, Any] = Field(
+        description="Raw payload passed through to DPM /rebalance/proposals/{proposal_id}/versions."
+    )
+
+
 class ProposalSubmitRequest(BaseModel):
     actor_id: str = Field(description="Actor id requesting submit transition.")
     expected_state: str = Field(

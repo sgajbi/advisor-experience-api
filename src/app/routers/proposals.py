@@ -11,6 +11,7 @@ from app.contracts.proposals import (
     ProposalSimulateRequest,
     ProposalSimulateResponse,
     ProposalSubmitRequest,
+    ProposalVersionCreateRequest,
 )
 from app.middleware.correlation import correlation_id_var
 from app.services.proposal_service import ProposalService
@@ -91,6 +92,39 @@ async def get_proposal(
     return await service.get_proposal(
         proposal_id=proposal_id,
         include_evidence=include_evidence,
+        correlation_id=correlation_id,
+    )
+
+
+@router.get("/{proposal_id}/versions/{version_no}", response_model=ProposalEnvelopeResponse)
+async def get_proposal_version(
+    proposal_id: str,
+    version_no: int,
+    include_evidence: bool = Query(default=False),
+) -> ProposalEnvelopeResponse:
+    service = _proposal_service()
+    correlation_id = correlation_id_var.get()
+    return await service.get_proposal_version(
+        proposal_id=proposal_id,
+        version_no=version_no,
+        include_evidence=include_evidence,
+        correlation_id=correlation_id,
+    )
+
+
+@router.post("/{proposal_id}/versions", response_model=ProposalEnvelopeResponse)
+async def create_proposal_version(
+    proposal_id: str,
+    request: ProposalVersionCreateRequest,
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
+) -> ProposalEnvelopeResponse:
+    service = _proposal_service()
+    correlation_id = correlation_id_var.get()
+    resolved_idempotency_key = idempotency_key or f"bff-{uuid4()}"
+    return await service.create_proposal_version(
+        proposal_id=proposal_id,
+        body=request.body,
+        idempotency_key=resolved_idempotency_key,
         correlation_id=correlation_id,
     )
 

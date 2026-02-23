@@ -87,6 +87,46 @@ class ProposalService:
             data=upstream_payload,
         )
 
+    async def get_proposal_version(
+        self,
+        proposal_id: str,
+        version_no: int,
+        include_evidence: bool,
+        correlation_id: str,
+    ) -> ProposalEnvelopeResponse:
+        upstream_status, upstream_payload = await self._dpm_client.get_proposal_version(
+            proposal_id=proposal_id,
+            version_no=version_no,
+            include_evidence=include_evidence,
+            correlation_id=correlation_id,
+        )
+        self._raise_for_upstream_error(upstream_status, upstream_payload)
+        return ProposalEnvelopeResponse(
+            correlation_id=correlation_id,
+            contract_version=settings.contract_version,
+            data=upstream_payload,
+        )
+
+    async def create_proposal_version(
+        self,
+        proposal_id: str,
+        body: dict[str, Any],
+        idempotency_key: str,
+        correlation_id: str,
+    ) -> ProposalEnvelopeResponse:
+        upstream_status, upstream_payload = await self._dpm_client.create_proposal_version(
+            proposal_id=proposal_id,
+            body=body,
+            idempotency_key=idempotency_key,
+            correlation_id=correlation_id,
+        )
+        self._raise_for_upstream_error(upstream_status, upstream_payload)
+        return ProposalEnvelopeResponse(
+            correlation_id=correlation_id,
+            contract_version=settings.contract_version,
+            data=upstream_payload,
+        )
+
     async def submit_proposal(
         self,
         proposal_id: str,

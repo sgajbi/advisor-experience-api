@@ -62,6 +62,35 @@ class DpmClient:
             headers={"X-Correlation-Id": correlation_id},
         )
 
+    async def get_proposal_version(
+        self,
+        proposal_id: str,
+        version_no: int,
+        include_evidence: bool,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._get(
+            f"/rebalance/proposals/{proposal_id}/versions/{version_no}",
+            params={"include_evidence": str(include_evidence).lower()},
+            headers={"X-Correlation-Id": correlation_id},
+        )
+
+    async def create_proposal_version(
+        self,
+        proposal_id: str,
+        body: dict[str, Any],
+        idempotency_key: str,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        return await self._post(
+            f"/rebalance/proposals/{proposal_id}/versions",
+            body=body,
+            headers={
+                "Idempotency-Key": idempotency_key,
+                "X-Correlation-Id": correlation_id,
+            },
+        )
+
     async def transition_proposal(
         self,
         proposal_id: str,
