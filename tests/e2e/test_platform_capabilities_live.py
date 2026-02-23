@@ -1,4 +1,5 @@
 import json
+import socket
 import time
 import urllib.error
 import urllib.parse
@@ -43,7 +44,16 @@ def main() -> None:
             _assert_payload(payload)
             print("E2E platform capabilities assertion passed")
             return
-        except (AssertionError, urllib.error.URLError, TimeoutError, ValueError) as exc:
+        except (
+            AssertionError,
+            urllib.error.URLError,
+            TimeoutError,
+            ValueError,
+            ConnectionResetError,
+            ConnectionRefusedError,
+            socket.timeout,
+            socket.error,
+        ) as exc:
             last_error = exc
             time.sleep(2)
 
