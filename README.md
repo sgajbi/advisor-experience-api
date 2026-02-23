@@ -45,6 +45,17 @@ make ci-local-docker
 make ci-local-docker-down
 ```
 
+Live platform-capabilities E2E (BFF + PAS + PA + DPM):
+
+```bash
+export DPM_REPO_PATH=/c/Users/sande/dev/dpm-rebalance-engine
+export PAS_REPO_PATH=/c/Users/sande/dev/portfolio-analytics-system
+export PA_REPO_PATH=/c/Users/sande/dev/performanceAnalytics
+make e2e-up
+make test-e2e-live
+make e2e-down
+```
+
 ## Demo Pack
 
 - `docs/demo/README.md`

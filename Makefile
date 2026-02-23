@@ -1,4 +1,4 @@
-.PHONY: install lint typecheck test test-unit test-integration check ci-local ci-local-docker ci-local-docker-down run clean docker-up docker-down
+.PHONY: install lint typecheck test test-unit test-integration test-e2e-live check ci-local ci-local-docker ci-local-docker-down run clean docker-up docker-down e2e-up e2e-down
 
 install:
 	python -m pip install -e ".[dev]"
@@ -18,6 +18,15 @@ test-unit:
 
 test-integration:
 	python -m pytest tests/integration
+
+e2e-up:
+	docker compose -f docker-compose.e2e.yml up -d --build
+
+e2e-down:
+	docker compose -f docker-compose.e2e.yml down -v --remove-orphans
+
+test-e2e-live:
+	python tests/e2e/test_platform_capabilities_live.py
 
 check: lint typecheck test
 
