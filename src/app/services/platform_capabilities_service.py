@@ -138,7 +138,9 @@ class PlatformCapabilitiesService:
         module_health = self._module_health(sources=sources, errors=errors)
         navigation = {
             "command_center": True,
-            "portfolio_intake": feature_enabled["pas_intake"] or feature_enabled["pas_core_snapshot"],
+            "portfolio_intake": (
+                feature_enabled["pas_intake"] or feature_enabled["pas_core_snapshot"]
+            ),
             "analytics_studio": feature_enabled["pa_analytics"],
             "advisory_pipeline": feature_enabled["dpm_lifecycle"],
             "scenario_builder": feature_enabled["dpm_lifecycle"],
