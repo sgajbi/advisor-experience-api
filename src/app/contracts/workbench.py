@@ -72,6 +72,8 @@ class WorkbenchPortfolio360Response(BaseModel):
     as_of_date: str
     portfolio: WorkbenchPortfolioSummary
     overview: WorkbenchOverviewSummary
+    performance_snapshot: WorkbenchPerformanceSnapshot | None = None
+    rebalance_snapshot: WorkbenchRebalanceSnapshot | None = None
     current_positions: list[WorkbenchPositionView] = Field(default_factory=list)
     projected_positions: list[WorkbenchProjectedPositionView] = Field(default_factory=list)
     projected_summary: WorkbenchProjectedSummary | None = None

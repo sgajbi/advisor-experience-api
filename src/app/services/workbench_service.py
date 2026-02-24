@@ -133,6 +133,8 @@ class WorkbenchService:
             as_of_date=overview.as_of_date,
             portfolio=overview.portfolio,
             overview=overview.overview,
+            performance_snapshot=overview.performance_snapshot,
+            rebalance_snapshot=overview.rebalance_snapshot,
             current_positions=current_positions,
             projected_positions=projected_positions,
             projected_summary=projected_summary,
