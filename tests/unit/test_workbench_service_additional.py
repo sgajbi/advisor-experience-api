@@ -56,9 +56,7 @@ class _StubPasClient:
 class _StubPaClient:
     def __init__(self):
         self.snapshot_status = 200
-        self.snapshot_payload: dict = {
-            "resultsByPeriod": {"YTD": {"net_cumulative_return": 1.2}}
-        }
+        self.snapshot_payload: dict = {"resultsByPeriod": {"YTD": {"net_cumulative_return": 1.2}}}
         self.analytics_status = 200
         self.analytics_payload: dict = {
             "allocationBuckets": [],
@@ -481,14 +479,20 @@ def test_extract_current_positions_skips_invalid_item_shapes():
 
 def test_parse_position_market_value_skips_non_numeric_in_flat_keys():
     service, _, _, _ = _build_service()
-    assert service._parse_position_market_value({"market_value_base": "bad", "value_base": "bad"}) is None
+    assert (
+        service._parse_position_market_value({"market_value_base": "bad", "value_base": "bad"})
+        is None
+    )
 
 
 def test_parse_pas_core_snapshot_handles_non_dict_overview_and_holdings_shapes():
     service, _, _, _ = _build_service()
     portfolio, overview, _ = service._parse_pas_core_snapshot(
         fallback_portfolio_id="P1",
-        payload={"portfolio": {"portfolio_id": "P1"}, "snapshot": {"overview": [], "holdings": {"holdingsByAssetClass": []}}},
+        payload={
+            "portfolio": {"portfolio_id": "P1"},
+            "snapshot": {"overview": [], "holdings": {"holdingsByAssetClass": []}},
+        },
         fallback_as_of_date="2026-02-24",
     )
     assert portfolio.portfolio_id == "P1"
