@@ -49,12 +49,20 @@ async def get_reporting_snapshot(
             detail=f"Reporting snapshot unavailable: {payload}",
         )
 
+    generated_at_raw = payload.get("generatedAt")
+    generated_at = datetime.now(UTC)
+    if isinstance(generated_at_raw, str):
+        try:
+            generated_at = datetime.fromisoformat(generated_at_raw.replace("Z", "+00:00"))
+        except ValueError:
+            generated_at = datetime.now(UTC)
+
     return ReportingSnapshotResponse(
         correlationId=correlation_id,
         contractVersion=settings.contract_version,
         sourceService="reporting-aggregation-service",
         portfolioId=portfolio_id,
         asOfDate=as_of_date,
-        generatedAt=datetime.now(UTC),
+        generatedAt=generated_at,
         rows=payload.get("rows", []),
     )
