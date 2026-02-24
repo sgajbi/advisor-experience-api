@@ -34,7 +34,7 @@ def test_workbench_router_success(monkeypatch):
         }
 
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_core_snapshot", _pas)
-    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_snapshot_twr", _pa)
+    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_input_twr", _pa)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.list_runs", _dpm)
 
     client = TestClient(app)
@@ -64,7 +64,7 @@ def test_workbench_router_partial_failure(monkeypatch):
         return 503, {"detail": "paused"}
 
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_core_snapshot", _pas)
-    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_snapshot_twr", _pa)
+    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_input_twr", _pa)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.list_runs", _dpm)
 
     client = TestClient(app)
@@ -105,7 +105,7 @@ def test_workbench_portfolio_360_router(monkeypatch):
         return 200, {"items": []}
 
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_core_snapshot", _pas_core)
-    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_snapshot_twr", _pa)
+    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_input_twr", _pa)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.list_runs", _dpm_runs)
 
     client = TestClient(app)
@@ -164,7 +164,7 @@ def test_workbench_analytics_router(monkeypatch):
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_core_snapshot", _pas_core)
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_projected_positions", _pas_positions)
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_projected_summary", _pas_summary)
-    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_snapshot_twr", _pa)
+    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_input_twr", _pa)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.list_runs", _dpm_runs)
 
     client = TestClient(app)
@@ -230,7 +230,7 @@ def test_workbench_sandbox_changes_router(monkeypatch):
     monkeypatch.setattr("app.clients.pas_client.PasClient.add_simulation_changes", _pas_add)
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_projected_positions", _pas_positions)
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_projected_summary", _pas_summary)
-    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_snapshot_twr", _pa)
+    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_input_twr", _pa)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.list_runs", _dpm_runs)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.simulate_proposal", _dpm_simulate)
 

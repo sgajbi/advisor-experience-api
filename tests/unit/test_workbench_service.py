@@ -62,7 +62,7 @@ class _StubPaClient:
         self.status_code = status_code
         self.payload = payload
 
-    async def get_pas_snapshot_twr(
+    async def get_pas_input_twr(
         self,
         portfolio_id: str,
         as_of_date: str,
