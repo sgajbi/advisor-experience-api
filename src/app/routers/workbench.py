@@ -80,8 +80,9 @@ async def get_portfolio_360(
     response_model=WorkbenchAnalyticsResponse,
     summary="Get Workbench Analytics",
     description=(
-        "Returns backend analytics for current vs projected portfolio state, including grouped "
-        "allocation deltas, top changes, active return, and concentration risk proxy."
+        "Returns PA-owned analytics for current vs projected portfolio state, including grouped "
+        "allocation deltas, top changes, active return, and concentration risk proxy. "
+        "BFF orchestrates inputs and delegates analytics computation to PA."
     ),
 )
 async def get_workbench_analytics(
