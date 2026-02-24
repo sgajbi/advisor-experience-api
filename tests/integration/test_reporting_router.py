@@ -12,7 +12,7 @@ def test_reporting_snapshot_success(monkeypatch):
                 "rows": [
                     {"bucket": "TOTAL", "metric": "market_value_base", "value": 1250000.0},
                     {"bucket": "TOTAL", "metric": "return_ytd_pct", "value": 4.2},
-                ]
+                ],
             },
         )
 
