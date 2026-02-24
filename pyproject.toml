@@ -16,6 +16,7 @@ dependencies = [
 dev = [
   "pytest>=8.4.0",
   "pytest-asyncio>=0.26.0",
+  "pytest-cov>=6.2.1",
   "ruff>=0.15.0",
   "mypy>=1.13.0"
 ]
@@ -30,6 +31,14 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/app"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
 
 [tool.ruff]
 line-length = 100

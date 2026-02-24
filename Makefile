@@ -1,4 +1,4 @@
-.PHONY: install lint typecheck test test-unit test-integration test-e2e-live check ci-local ci-local-docker ci-local-docker-down run clean docker-up docker-down e2e-up e2e-down
+.PHONY: install lint typecheck test test-unit test-integration test-coverage test-e2e-live check ci-local ci-local-docker ci-local-docker-down run clean docker-up docker-down e2e-up e2e-down
 
 install:
 	python -m pip install -e ".[dev]"
@@ -18,6 +18,9 @@ test-unit:
 
 test-integration:
 	python -m pytest tests/integration
+
+test-coverage:
+	python -m pytest --cov=src/app --cov-report=term-missing
 
 e2e-up:
 	docker compose -f docker-compose.e2e.yml up -d --build

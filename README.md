@@ -36,6 +36,7 @@ API docs: `http://localhost:8100/docs`
 - `GET /api/v1/proposals/{proposal_id}/approvals` (approval records)
 - `GET /api/v1/platform/capabilities` (aggregated PAS+PA+DPM capability contract for UI)
 - `GET /api/v1/workbench/{portfolio_id}/overview` (aggregated PAS+PA+DPM decision-console overview)
+- `GET /api/v1/reports/{portfolio_id}/snapshot` (report-ready aggregation rows from reporting-aggregation-service)
 - `POST /api/v1/intake/portfolio-bundle` (PAS ingestion bundle pass-through)
 - `POST /api/v1/intake/uploads/preview` (PAS upload preview pass-through)
 - `POST /api/v1/intake/uploads/commit` (PAS upload commit pass-through)
@@ -62,6 +63,12 @@ export PA_REPO_PATH=/c/Users/sande/dev/performanceAnalytics
 make e2e-up
 make test-e2e-live
 make e2e-down
+```
+
+Coverage gate (local parity with CI threshold):
+
+```bash
+python -m pytest --cov=src/app --cov-report=term-missing
 ```
 
 ## Demo Pack
