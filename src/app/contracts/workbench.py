@@ -49,6 +49,8 @@ class WorkbenchPositionView(BaseModel):
     instrument_name: str
     asset_class: str | None = None
     quantity: float
+    market_value_base: float | None = None
+    weight_pct: float | None = None
 
 
 class WorkbenchProjectedPositionView(BaseModel):

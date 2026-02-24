@@ -86,7 +86,12 @@ def test_workbench_portfolio_360_router(monkeypatch):
                 "holdings": {
                     "holdingsByAssetClass": {
                         "Equity": [
-                            {"instrument_id": "EQ_1", "instrument_name": "Equity 1", "quantity": 10}
+                            {
+                                "instrument_id": "EQ_1",
+                                "instrument_name": "Equity 1",
+                                "quantity": 10,
+                                "market_value_base": 500.0,
+                            }
                         ]
                     }
                 },
@@ -109,6 +114,7 @@ def test_workbench_portfolio_360_router(monkeypatch):
     body = response.json()
     assert body["portfolio"]["portfolio_id"] == "PF_1001"
     assert len(body["current_positions"]) == 1
+    assert body["current_positions"][0]["market_value_base"] == 500.0
 
 
 def test_workbench_analytics_router(monkeypatch):
