@@ -1,4 +1,4 @@
-.PHONY: install lint typecheck test test-unit test-integration test-coverage test-e2e test-e2e-live check ci-local ci-local-docker ci-local-docker-down run clean docker-up docker-down e2e-up e2e-down
+.PHONY: install lint typecheck test test-unit test-integration test-coverage test-e2e test-e2e-live security-audit check ci ci-local ci-local-docker ci-local-docker-down run clean docker-up docker-down e2e-up e2e-down
 
 install:
 	python -m pip install -e ".[dev]"
@@ -9,6 +9,9 @@ lint:
 
 typecheck:
 	mypy src
+
+security-audit:
+	python -m pip_audit
 
 test:
 	$(MAKE) test-unit
@@ -35,6 +38,8 @@ test-e2e-live:
 	python -m pytest tests/e2e/test_platform_capabilities_live.py -q
 
 check: lint typecheck test
+
+ci: lint typecheck test-integration test-coverage security-audit
 
 ci-local: check test-integration
 
