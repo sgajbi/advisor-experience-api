@@ -2,6 +2,8 @@ from typing import Any
 
 import httpx
 
+from app.middleware.correlation import propagation_headers
+
 
 class PasIngestionClient:
     def __init__(self, base_url: str, timeout_seconds: float):
@@ -14,7 +16,7 @@ class PasIngestionClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/ingest/portfolio-bundle"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.post(url, json=body, headers=headers)
             return response.status_code, self._response_payload(response)
@@ -63,7 +65,7 @@ class PasIngestionClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}{path}"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         form_data = {"entityType": entity_type, **extra_data}
         files = {"file": (filename, content)}
         async with httpx.AsyncClient(timeout=self._timeout) as client:

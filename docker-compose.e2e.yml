@@ -1,4 +1,54 @@
 services:
+  zookeeper:
+    profiles: ["full-stack"]
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_4LW_COMMANDS_WHITELIST: "ruok,stat,mntr,conf"
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=ruok,stat,mntr,conf"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181 | grep imok"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 15s
+
+  kafka:
+    profiles: ["full-stack"]
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9093,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: "false"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server kafka:9093 --list || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  kafka-topic-creator:
+    profiles: ["full-stack"]
+    build:
+      context: ${PAS_REPO_PATH}
+      dockerfile: ./src/services/persistence_service/Dockerfile
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command: ["python", "-m", "tools.kafka_setup"]
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9093
+    restart: "no"
+
   dpm-postgres:
     image: postgres:17.6
     environment:
@@ -16,6 +66,8 @@ services:
     build:
       context: ${DPM_REPO_PATH}
       dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
     environment:
       ENVIRONMENT: production
       APP_PERSISTENCE_PROFILE: PRODUCTION
@@ -70,6 +122,8 @@ services:
     build:
       context: ${PAS_REPO_PATH}
       dockerfile: ./src/services/query_service/Dockerfile
+    ports:
+      - "8201:8001"
     environment:
       DATABASE_URL: postgresql://user:password@pas-postgres:5432/portfolio_db
     depends_on:
@@ -89,9 +143,39 @@ services:
       retries: 15
       start_period: 20s
 
+  pas-ingestion:
+    profiles: ["full-stack"]
+    build:
+      context: ${PAS_REPO_PATH}
+      dockerfile: ./src/services/ingestion_service/Dockerfile
+    ports:
+      - "8200:8000"
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9093
+    depends_on:
+      kafka:
+        condition: service_healthy
+      kafka-topic-creator:
+        condition: service_completed_successfully
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=5)"
+        ]
+      interval: 20s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+
   pa:
     image: python:3.12-slim
     working_dir: /app
+    ports:
+      - "8002:8000"
     volumes:
       - ${PA_REPO_PATH}:/app
     command:
@@ -117,6 +201,8 @@ services:
     build:
       context: ${RAS_REPO_PATH}
       dockerfile: Dockerfile
+    ports:
+      - "8300:8300"
     environment:
       PAS_BASE_URL: http://pas-query:8001
       PA_BASE_URL: http://pa:8000
@@ -147,6 +233,7 @@ services:
     environment:
       DECISIONING_SERVICE_BASE_URL: http://dpm:8000
       PORTFOLIO_DATA_PLATFORM_BASE_URL: http://pas-query:8001
+      PORTFOLIO_DATA_INGESTION_BASE_URL: ${PORTFOLIO_DATA_INGESTION_BASE_URL:-http://pas-ingestion:8000}
       PERFORMANCE_ANALYTICS_BASE_URL: http://pa:8000
       REPORTING_AGGREGATION_BASE_URL: http://ras:8300
       UPSTREAM_TIMEOUT_SECONDS: 10
@@ -162,6 +249,9 @@ services:
         condition: service_healthy
       ras:
         condition: service_healthy
+      pas-ingestion:
+        condition: service_healthy
+        required: false
     healthcheck:
       test:
         [
@@ -174,3 +264,30 @@ services:
       timeout: 5s
       retries: 15
       start_period: 15s
+
+  ui:
+    profiles: ["full-stack"]
+    build:
+      context: ${UI_REPO_PATH}
+      dockerfile: Dockerfile
+    environment:
+      BFF_BASE_URL: http://bff:8100
+    ports:
+      - "3000:3000"
+    depends_on:
+      bff:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "-O",
+          "-",
+          "http://127.0.0.1:3000"
+        ]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
