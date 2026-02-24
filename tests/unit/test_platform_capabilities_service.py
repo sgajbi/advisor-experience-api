@@ -30,9 +30,39 @@ class _ErrorClient:
 @pytest.mark.asyncio
 async def test_platform_capabilities_all_sources_success():
     service = PlatformCapabilitiesService(
-        dpm_client=_StubClient(200, {"sourceService": "dpm"}),
-        pas_client=_StubClient(200, {"sourceService": "pas"}),
-        pa_client=_StubClient(200, {"sourceService": "pa"}),
+        dpm_client=_StubClient(
+            200,
+            {
+                "sourceService": "dpm",
+                "supportedInputModes": ["pas_ref", "inline_bundle"],
+                "features": [
+                    {"key": "dpm.proposals.lifecycle", "enabled": True},
+                    {"key": "dpm.support.run_apis", "enabled": True},
+                ],
+                "workflows": [{"workflow_key": "proposal_lifecycle", "enabled": True}],
+            },
+        ),
+        pas_client=_StubClient(
+            200,
+            {
+                "sourceService": "pas",
+                "supportedInputModes": ["pas_ref"],
+                "features": [
+                    {"key": "pas.integration.core_snapshot", "enabled": True},
+                    {"key": "pas.ingestion.bulk_upload", "enabled": True},
+                ],
+                "workflows": [{"workflow_key": "portfolio_bulk_onboarding", "enabled": True}],
+            },
+        ),
+        pa_client=_StubClient(
+            200,
+            {
+                "sourceService": "pa",
+                "supportedInputModes": ["pas_ref", "inline_bundle"],
+                "features": [{"key": "pa.analytics.twr", "enabled": True}],
+                "workflows": [{"workflow_key": "performance_snapshot", "enabled": True}],
+            },
+        ),
         contract_version="v1",
     )
 
@@ -45,13 +75,26 @@ async def test_platform_capabilities_all_sources_success():
     assert response.data.partial_failure is False
     assert set(response.data.sources.keys()) == {"pas", "pa", "dpm"}
     assert response.data.errors == []
+    assert response.data.normalized.navigation["portfolio_intake"] is True
+    assert response.data.normalized.navigation["analytics_studio"] is True
+    assert response.data.normalized.navigation["advisory_pipeline"] is True
+    assert response.data.normalized.workflow_flags["proposal_lifecycle"] is True
+    assert "inline_bundle" in response.data.normalized.input_modes_union
+    assert response.data.normalized.module_health["pas"] == "available"
 
 
 @pytest.mark.asyncio
 async def test_platform_capabilities_partial_failure_on_error():
     service = PlatformCapabilitiesService(
         dpm_client=_ErrorClient(),
-        pas_client=_StubClient(200, {"sourceService": "pas"}),
+        pas_client=_StubClient(
+            200,
+            {
+                "sourceService": "pas",
+                "features": [{"key": "pas.integration.core_snapshot", "enabled": True}],
+                "workflows": [],
+            },
+        ),
         pa_client=_StubClient(502, {"detail": "bad gateway"}),
         contract_version="v1",
     )
@@ -65,3 +108,7 @@ async def test_platform_capabilities_partial_failure_on_error():
     assert response.data.partial_failure is True
     assert set(response.data.sources.keys()) == {"pas"}
     assert len(response.data.errors) == 2
+    assert response.data.normalized.navigation["analytics_studio"] is False
+    assert response.data.normalized.navigation["advisory_pipeline"] is False
+    assert response.data.normalized.module_health["pa"] == "unavailable"
+    assert response.data.normalized.module_health["dpm"] == "unavailable"
