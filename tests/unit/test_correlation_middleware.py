@@ -53,3 +53,20 @@ def test_resolve_trace_id_uses_generated_value_for_invalid_traceparent_without_f
 
     resolved = resolve_trace_id(_FakeRequest())
     assert len(resolved) == 32
+
+
+def test_resolve_trace_id_prefers_valid_traceparent():
+    class _FakeHeaders:
+        def __init__(self, values: dict[str, str]):
+            self._values = values
+
+        def get(self, key: str):
+            return self._values.get(key)
+
+    class _FakeRequest:
+        headers = _FakeHeaders(
+            {"traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"}
+        )
+
+    resolved = resolve_trace_id(_FakeRequest())
+    assert resolved == "0123456789abcdef0123456789abcdef"

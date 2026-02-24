@@ -269,3 +269,75 @@ async def test_platform_capabilities_normalization_handles_malformed_feature_sha
     assert normalized.pas_policy_diagnostics["allowedSections"] == []
     assert normalized.pas_policy_diagnostics["warnings"] == []
     assert normalized.pas_policy_diagnostics["policyProvenance"]["policyVersion"] == "unknown"
+
+
+@pytest.mark.asyncio
+async def test_platform_capabilities_records_pas_policy_exception():
+    class _PasPolicyErrorClient(_StubClient):
+        async def get_effective_policy(  # type: ignore[override]
+            self,
+            consumer_system: str,
+            tenant_id: str,
+            correlation_id: str,
+        ):
+            raise RuntimeError("policy endpoint timeout")
+
+    service = PlatformCapabilitiesService(
+        dpm_client=_StubClient(200, {"sourceService": "dpm", "features": [], "workflows": []}),
+        pas_client=_PasPolicyErrorClient(
+            200, {"sourceService": "pas", "features": [], "workflows": []}
+        ),
+        pa_client=_StubClient(200, {"sourceService": "pa", "features": [], "workflows": []}),
+        reporting_client=_StubClient(
+            200,
+            {"sourceService": "reporting-aggregation-service", "features": [], "workflows": []},
+        ),
+        contract_version="v1",
+    )
+
+    response = await service.get_platform_capabilities(
+        consumer_system="BFF",
+        tenant_id="default",
+        correlation_id="corr-policy-ex",
+    )
+    error_services = {item.service for item in response.data.errors}
+    assert "pas_policy" in error_services
+
+
+def test_platform_capabilities_feature_and_workflow_skip_non_dict_entries():
+    service = PlatformCapabilitiesService(
+        dpm_client=_StubClient(200, {}),
+        pas_client=_StubClient(200, {}),
+        pa_client=_StubClient(200, {}),
+        reporting_client=_StubClient(200, {}),
+        contract_version="v1",
+    )
+    sources = {
+        "pa": {"features": ["bad", {"key": "pa.analytics.twr", "enabled": True}]},
+        "dpm": {"workflows": ["bad", {"workflow_key": "proposal_lifecycle", "enabled": True}]},
+    }
+    assert (
+        service._feature_enabled(sources=sources, source_name="pa", feature_key="pa.analytics.twr")
+        is True
+    )
+    assert (
+        service._workflow_enabled(
+            sources=sources, source_name="dpm", workflow_key="proposal_lifecycle"
+        )
+        is True
+    )
+
+
+def test_platform_capabilities_module_health_marks_unknown_sources():
+    service = PlatformCapabilitiesService(
+        dpm_client=_StubClient(200, {}),
+        pas_client=_StubClient(200, {}),
+        pa_client=_StubClient(200, {}),
+        reporting_client=_StubClient(200, {}),
+        contract_version="v1",
+    )
+    health = service._module_health(sources={"pas": {}}, errors=[])
+    assert health["pas"] == "available"
+    assert health["pa"] == "unknown"
+    assert health["dpm"] == "unknown"
+    assert health["ras"] == "unknown"

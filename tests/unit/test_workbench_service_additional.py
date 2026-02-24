@@ -477,6 +477,16 @@ def test_extract_current_positions_skips_invalid_item_shapes():
     assert rows[0].security_id == "EQ_1"
 
 
+def test_extract_current_positions_skips_asset_class_with_non_list_items():
+    service, _, _, _ = _build_service()
+    payload = {
+        "overview": {"total_market_value": 100.0},
+        "holdings": {"holdingsByAssetClass": {"Equity": {"instrument_id": "EQ_1"}}},
+    }
+    rows = service._extract_current_positions(payload)
+    assert rows == []
+
+
 def test_parse_position_market_value_skips_non_numeric_in_flat_keys():
     service, _, _, _ = _build_service()
     assert (
