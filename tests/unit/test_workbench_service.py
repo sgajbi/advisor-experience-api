@@ -198,7 +198,11 @@ async def test_workbench_portfolio_360_with_projected_state():
                     "holdings": {
                         "holdingsByAssetClass": {
                             "Equity": [
-                                {"instrument_id": "EQ_1", "instrument_name": "Equity 1", "quantity": 10}
+                                {
+                                    "instrument_id": "EQ_1",
+                                    "instrument_name": "Equity 1",
+                                    "quantity": 10,
+                                }
                             ]
                         }
                     },
@@ -227,7 +231,10 @@ async def test_workbench_apply_sandbox_changes_with_policy_eval():
             200,
             {
                 "portfolio": {"portfolio_id": "PF_1001", "base_currency": "USD"},
-                "snapshot": {"as_of_date": "2026-02-23", "overview": {"total_market_value": 1000, "total_cash": 200}},
+                "snapshot": {
+                    "as_of_date": "2026-02-23",
+                    "overview": {"total_market_value": 1000, "total_cash": 200},
+                },
             },
         ),
         pa_client=_StubPaClient(200, {"resultsByPeriod": {"YTD": {"net_cumulative_return": 1.0}}}),

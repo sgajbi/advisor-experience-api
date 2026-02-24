@@ -85,7 +85,9 @@ def test_workbench_portfolio_360_router(monkeypatch):
                 "overview": {"total_market_value": 1000.0, "total_cash": 100.0},
                 "holdings": {
                     "holdingsByAssetClass": {
-                        "Equity": [{"instrument_id": "EQ_1", "instrument_name": "Equity 1", "quantity": 10}]
+                        "Equity": [
+                            {"instrument_id": "EQ_1", "instrument_name": "Equity 1", "quantity": 10}
+                        ]
                     }
                 },
             },
@@ -113,7 +115,10 @@ def test_workbench_sandbox_changes_router(monkeypatch):
     async def _pas_core(*args, **kwargs):
         return 200, {
             "portfolio": {"portfolio_id": "PF_1001", "base_currency": "USD"},
-            "snapshot": {"as_of_date": "2026-02-23", "overview": {"total_market_value": 1000.0, "total_cash": 100.0}},
+            "snapshot": {
+                "as_of_date": "2026-02-23",
+                "overview": {"total_market_value": 1000.0, "total_cash": 100.0},
+            },
         }
 
     async def _pas_create(*args, **kwargs):
@@ -162,7 +167,9 @@ def test_workbench_sandbox_changes_router(monkeypatch):
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.simulate_proposal", _dpm_simulate)
 
     client = TestClient(app)
-    created = client.post("/api/v1/workbench/PF_1001/sandbox/sessions", json={"created_by": "advisor_1"})
+    created = client.post(
+        "/api/v1/workbench/PF_1001/sandbox/sessions", json={"created_by": "advisor_1"}
+    )
     assert created.status_code == 200
     assert created.json()["session_id"] == "sess_1"
 

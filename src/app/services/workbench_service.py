@@ -9,16 +9,16 @@ from app.clients.pa_client import PaClient
 from app.clients.pas_client import PasClient
 from app.config import settings
 from app.contracts.workbench import (
-    WorkbenchPolicyFeedback,
-    WorkbenchPortfolio360Response,
     WorkbenchOverviewResponse,
     WorkbenchOverviewSummary,
     WorkbenchPartialFailure,
     WorkbenchPerformanceSnapshot,
+    WorkbenchPolicyFeedback,
+    WorkbenchPortfolio360Response,
+    WorkbenchPortfolioSummary,
     WorkbenchPositionView,
     WorkbenchProjectedPositionView,
     WorkbenchProjectedSummary,
-    WorkbenchPortfolioSummary,
     WorkbenchRebalanceSnapshot,
     WorkbenchSandboxStateResponse,
 )
@@ -296,7 +296,9 @@ class WorkbenchService:
         )
         return rows, summary
 
-    def _extract_current_positions(self, snapshot_payload: dict[str, Any]) -> list[WorkbenchPositionView]:
+    def _extract_current_positions(
+        self, snapshot_payload: dict[str, Any]
+    ) -> list[WorkbenchPositionView]:
         holdings_payload = snapshot_payload.get("holdings", {})
         if not isinstance(holdings_payload, dict):
             return []
@@ -313,7 +315,9 @@ class WorkbenchService:
                     continue
                 rows.append(
                     WorkbenchPositionView(
-                        security_id=str(item.get("instrument_id", item.get("security_id", "UNKNOWN"))),
+                        security_id=str(
+                            item.get("instrument_id", item.get("security_id", "UNKNOWN"))
+                        ),
                         instrument_name=str(
                             item.get("instrument_name", item.get("instrument_id", "UNKNOWN"))
                         ),
