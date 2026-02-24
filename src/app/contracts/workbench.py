@@ -120,3 +120,44 @@ class WorkbenchSandboxStateResponse(BaseModel):
     policy_feedback: WorkbenchPolicyFeedback | None = None
     warnings: list[str] = Field(default_factory=list)
     partial_failures: list[WorkbenchPartialFailure] = Field(default_factory=list)
+
+
+class WorkbenchAnalyticsBucket(BaseModel):
+    bucket_key: str
+    bucket_label: str
+    current_quantity: float
+    proposed_quantity: float
+    delta_quantity: float
+    current_weight_pct: float
+    proposed_weight_pct: float
+
+
+class WorkbenchTopChange(BaseModel):
+    security_id: str
+    instrument_name: str
+    delta_quantity: float
+    direction: str
+
+
+class WorkbenchRiskProxy(BaseModel):
+    hhi_current: float
+    hhi_proposed: float
+    hhi_delta: float
+
+
+class WorkbenchAnalyticsResponse(BaseModel):
+    correlation_id: str
+    contract_version: str = Field(default="v1")
+    portfolio_id: str
+    session_id: str | None = None
+    period: str
+    group_by: str
+    benchmark_code: str
+    portfolio_return_pct: float | None = None
+    benchmark_return_pct: float | None = None
+    active_return_pct: float | None = None
+    allocation_buckets: list[WorkbenchAnalyticsBucket] = Field(default_factory=list)
+    top_changes: list[WorkbenchTopChange] = Field(default_factory=list)
+    risk_proxy: WorkbenchRiskProxy
+    warnings: list[str] = Field(default_factory=list)
+    partial_failures: list[WorkbenchPartialFailure] = Field(default_factory=list)

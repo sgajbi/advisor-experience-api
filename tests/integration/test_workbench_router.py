@@ -111,6 +111,68 @@ def test_workbench_portfolio_360_router(monkeypatch):
     assert len(body["current_positions"]) == 1
 
 
+def test_workbench_analytics_router(monkeypatch):
+    async def _pas_core(*args, **kwargs):
+        return 200, {
+            "portfolio": {"portfolio_id": "PF_1001", "base_currency": "USD"},
+            "snapshot": {
+                "as_of_date": "2026-02-23",
+                "overview": {"total_market_value": 1000.0, "total_cash": 100.0},
+                "holdings": {
+                    "holdingsByAssetClass": {
+                        "Equity": [
+                            {"instrument_id": "EQ_1", "instrument_name": "Equity 1", "quantity": 10}
+                        ]
+                    }
+                },
+            },
+        }
+
+    async def _pas_positions(*args, **kwargs):
+        return 200, {
+            "positions": [
+                {
+                    "security_id": "EQ_1",
+                    "instrument_name": "Equity 1",
+                    "asset_class": "Equity",
+                    "baseline_quantity": 10,
+                    "proposed_quantity": 12,
+                    "delta_quantity": 2,
+                }
+            ]
+        }
+
+    async def _pas_summary(*args, **kwargs):
+        return 200, {
+            "total_baseline_positions": 1,
+            "total_proposed_positions": 1,
+            "net_delta_quantity": 2.0,
+        }
+
+    async def _pa(*args, **kwargs):
+        return 200, {"resultsByPeriod": {"YTD": {"net_cumulative_return": 1.5}}}
+
+    async def _dpm_runs(*args, **kwargs):
+        return 200, {"items": []}
+
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_core_snapshot", _pas_core)
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_projected_positions", _pas_positions)
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_projected_summary", _pas_summary)
+    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_snapshot_twr", _pa)
+    monkeypatch.setattr("app.clients.dpm_client.DpmClient.list_runs", _dpm_runs)
+
+    client = TestClient(app)
+    response = client.get(
+        "/api/v1/workbench/PF_1001/analytics?group_by=ASSET_CLASS&benchmark_code=MODEL_60_40&session_id=sess_1"
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["portfolio_id"] == "PF_1001"
+    assert body["group_by"] == "ASSET_CLASS"
+    assert len(body["allocation_buckets"]) >= 1
+    assert "risk_proxy" in body
+
+
 def test_workbench_sandbox_changes_router(monkeypatch):
     async def _pas_core(*args, **kwargs):
         return 200, {

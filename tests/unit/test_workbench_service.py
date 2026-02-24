@@ -251,3 +251,47 @@ async def test_workbench_apply_sandbox_changes_with_policy_eval():
     assert response.session_version == 2
     assert response.policy_feedback is not None
     assert response.policy_feedback.status == "PASS"
+
+
+@pytest.mark.asyncio
+async def test_workbench_analytics_response():
+    service = WorkbenchService(
+        pas_client=_StubPasClient(
+            200,
+            {
+                "portfolio": {
+                    "portfolio_id": "PF_1001",
+                    "base_currency": "USD",
+                },
+                "snapshot": {
+                    "as_of_date": "2026-02-23",
+                    "overview": {"total_market_value": 1000.0, "total_cash": 200.0},
+                    "holdings": {
+                        "holdingsByAssetClass": {
+                            "Equity": [
+                                {
+                                    "instrument_id": "EQ_1",
+                                    "instrument_name": "Equity 1",
+                                    "quantity": 10,
+                                }
+                            ]
+                        }
+                    },
+                },
+            },
+        ),
+        pa_client=_StubPaClient(200, {"resultsByPeriod": {"YTD": {"net_cumulative_return": 1.0}}}),
+        dpm_client=_StubDpmClient(200, {"items": []}),
+    )
+    response = await service.get_workbench_analytics(
+        portfolio_id="PF_1001",
+        correlation_id="corr-5",
+        period="YTD",
+        group_by="ASSET_CLASS",
+        benchmark_code="MODEL_60_40",
+        session_id="sess_1",
+    )
+    assert response.portfolio_id == "PF_1001"
+    assert response.group_by == "ASSET_CLASS"
+    assert len(response.allocation_buckets) >= 1
+    assert response.risk_proxy.hhi_current >= 0

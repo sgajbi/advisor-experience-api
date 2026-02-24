@@ -17,3 +17,4 @@ Governance boundary:
 | RFC-0009 | Workbench Overview Aggregation Contract | IMPLEMENTED | `docs/rfcs/RFC-0009-workbench-overview-aggregation-contract.md` |
 | RFC-0010 | Lifecycle-Oriented BFF Contract for Portfolio Foundation, Advisory Iteration, and DPM Iteration | PROPOSED | `docs/rfcs/RFC-0010-lifecycle-oriented-bff-contract-for-portfolio-advisory-and-dpm.md` |
 | RFC-0011 | Workbench Portfolio 360 and Live Sandbox Contract | IMPLEMENTED | `docs/rfcs/RFC-0011-workbench-portfolio-360-and-live-sandbox-contract.md` |
+| RFC-0012 | Workbench Analytics Delta API | IMPLEMENTED | `docs/rfcs/RFC-0012-workbench-analytics-delta-api.md` |

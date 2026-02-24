@@ -5,6 +5,7 @@ from app.clients.pa_client import PaClient
 from app.clients.pas_client import PasClient
 from app.config import settings
 from app.contracts.workbench import (
+    WorkbenchAnalyticsResponse,
     WorkbenchOverviewResponse,
     WorkbenchPortfolio360Response,
     WorkbenchSandboxApplyChangesRequest,
@@ -70,6 +71,34 @@ async def get_portfolio_360(
     return await service.get_portfolio_360(
         portfolio_id=portfolio_id,
         correlation_id=correlation_id,
+        session_id=session_id,
+    )
+
+
+@router.get(
+    "/{portfolio_id}/analytics",
+    response_model=WorkbenchAnalyticsResponse,
+    summary="Get Workbench Analytics",
+    description=(
+        "Returns backend analytics for current vs projected portfolio state, including grouped "
+        "allocation deltas, top changes, active return, and concentration risk proxy."
+    ),
+)
+async def get_workbench_analytics(
+    portfolio_id: str,
+    period: str = "YTD",
+    group_by: str = "ASSET_CLASS",
+    benchmark_code: str = "MODEL_60_40",
+    session_id: str | None = None,
+) -> WorkbenchAnalyticsResponse:
+    service = _workbench_service()
+    correlation_id = correlation_id_var.get()
+    return await service.get_workbench_analytics(
+        portfolio_id=portfolio_id,
+        correlation_id=correlation_id,
+        period=period,
+        group_by=group_by,
+        benchmark_code=benchmark_code,
         session_id=session_id,
     )
 
