@@ -41,6 +41,10 @@ def test_platform_capabilities_contract_shape(monkeypatch):
     assert payload["consumerSystem"] == "BFF"
     assert payload["tenantId"] == "default"
     assert payload["partialFailure"] is False
+    assert "normalized" in payload
+    assert "navigation" in payload["normalized"]
+    assert "workflowFlags" in payload["normalized"]
+    assert "moduleHealth" in payload["normalized"]
 
     for service_name in ("pas", "pa", "dpm"):
         source = payload["sources"][service_name]
