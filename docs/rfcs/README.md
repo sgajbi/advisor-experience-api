@@ -15,3 +15,4 @@ Governance boundary:
 | RFC-0007 | BFF Lookup Delegation to PAS Canonical Lookup APIs | IMPLEMENTED | `docs/rfcs/RFC-0007-bff-lookup-delegation-to-pas-canonical-apis.md` |
 | RFC-0008 | BFF PAS Lookup Compatibility Contract Gate | IMPLEMENTED | `docs/rfcs/RFC-0008-bff-pas-lookup-compatibility-contract-gate.md` |
 | RFC-0009 | Workbench Overview Aggregation Contract | IMPLEMENTED | `docs/rfcs/RFC-0009-workbench-overview-aggregation-contract.md` |
+| RFC-0010 | Lifecycle-Oriented BFF Contract for Portfolio Foundation, Advisory Iteration, and DPM Iteration | PROPOSED | `docs/rfcs/RFC-0010-lifecycle-oriented-bff-contract-for-portfolio-advisory-and-dpm.md` |
