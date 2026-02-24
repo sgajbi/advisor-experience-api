@@ -21,6 +21,30 @@ class ReportingClient:
             response = await client.get(url, params=params, headers=headers)
             return response.status_code, self._response_payload(response)
 
+    async def post_portfolio_summary(
+        self,
+        portfolio_id: str,
+        payload: dict[str, Any],
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}/reports/portfolios/{portfolio_id}/summary"
+        headers = {"X-Correlation-Id": correlation_id}
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.post(url, json=payload, headers=headers)
+            return response.status_code, self._response_payload(response)
+
+    async def post_portfolio_review(
+        self,
+        portfolio_id: str,
+        payload: dict[str, Any],
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}/reports/portfolios/{portfolio_id}/review"
+        headers = {"X-Correlation-Id": correlation_id}
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.post(url, json=payload, headers=headers)
+            return response.status_code, self._response_payload(response)
+
     def _response_payload(self, response: httpx.Response) -> dict[str, Any]:
         try:
             payload = response.json()

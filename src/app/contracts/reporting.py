@@ -13,3 +13,25 @@ class ReportingSnapshotResponse(BaseModel):
     rows: list[dict]
 
     model_config = {"populate_by_name": True}
+
+
+class ReportingSummaryResponse(BaseModel):
+    correlation_id: str = Field(..., alias="correlationId")
+    contract_version: str = Field(..., alias="contractVersion")
+    source_service: str = Field(..., alias="sourceService")
+    portfolio_id: str = Field(..., alias="portfolioId")
+    as_of_date: str = Field(..., alias="asOfDate")
+    data: dict = Field(default_factory=dict)
+
+    model_config = {"populate_by_name": True}
+
+
+class ReportingReviewResponse(BaseModel):
+    correlation_id: str = Field(..., alias="correlationId")
+    contract_version: str = Field(..., alias="contractVersion")
+    source_service: str = Field(..., alias="sourceService")
+    portfolio_id: str = Field(..., alias="portfolioId")
+    as_of_date: str = Field(..., alias="asOfDate")
+    data: dict = Field(default_factory=dict)
+
+    model_config = {"populate_by_name": True}
