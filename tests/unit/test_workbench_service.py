@@ -202,6 +202,7 @@ async def test_workbench_portfolio_360_with_projected_state():
                                     "instrument_id": "EQ_1",
                                     "instrument_name": "Equity 1",
                                     "quantity": 10,
+                                    "valuation": {"market_value": 420.5},
                                 }
                             ]
                         }
@@ -219,6 +220,8 @@ async def test_workbench_portfolio_360_with_projected_state():
     )
     assert response.active_session_id == "sess_1"
     assert len(response.current_positions) == 1
+    assert response.current_positions[0].market_value_base == 420.5
+    assert response.current_positions[0].weight_pct == pytest.approx(42.05)
     assert len(response.projected_positions) == 1
     assert response.projected_summary is not None
     assert response.projected_summary.net_delta_quantity == 5.0
@@ -273,6 +276,7 @@ async def test_workbench_analytics_response():
                                     "instrument_id": "EQ_1",
                                     "instrument_name": "Equity 1",
                                     "quantity": 10,
+                                    "market_value_base": 300.0,
                                 }
                             ]
                         }

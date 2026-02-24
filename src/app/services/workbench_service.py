@@ -483,6 +483,11 @@ class WorkbenchService:
     def _extract_current_positions(
         self, snapshot_payload: dict[str, Any]
     ) -> list[WorkbenchPositionView]:
+        overview_payload = snapshot_payload.get("overview", {})
+        total_market_value = 0.0
+        if isinstance(overview_payload, dict):
+            total_market_value = float(overview_payload.get("total_market_value", 0.0))
+
         holdings_payload = snapshot_payload.get("holdings", {})
         if not isinstance(holdings_payload, dict):
             return []
@@ -497,6 +502,11 @@ class WorkbenchService:
             for item in items:
                 if not isinstance(item, dict):
                     continue
+                market_value_base = self._parse_position_market_value(item)
+                weight_pct_raw = item.get("weight_pct")
+                weight_pct = float(weight_pct_raw) if weight_pct_raw is not None else None
+                if weight_pct is None and market_value_base is not None and total_market_value > 0:
+                    weight_pct = (market_value_base / total_market_value) * 100.0
                 rows.append(
                     WorkbenchPositionView(
                         security_id=str(
@@ -507,10 +517,40 @@ class WorkbenchService:
                         ),
                         asset_class=str(asset_class) if asset_class is not None else None,
                         quantity=float(item.get("quantity", 0.0)),
+                        market_value_base=market_value_base,
+                        weight_pct=weight_pct,
                     )
                 )
         rows.sort(key=lambda row: row.security_id)
         return rows
+
+    def _parse_position_market_value(self, item: dict[str, Any]) -> float | None:
+        valuation_payload = item.get("valuation")
+        if isinstance(valuation_payload, dict):
+            for key in ("market_value_base", "market_value", "current_value_base", "current_value"):
+                value = valuation_payload.get(key)
+                if value is None:
+                    continue
+                try:
+                    return float(value)
+                except (TypeError, ValueError):
+                    continue
+        for key in (
+            "market_value_base",
+            "market_value",
+            "current_value_base",
+            "current_value",
+            "valuation_base",
+            "value_base",
+        ):
+            value = item.get(key)
+            if value is None:
+                continue
+            try:
+                return float(value)
+            except (TypeError, ValueError):
+                continue
+        return None
 
     async def _evaluate_policy_feedback(
         self,
