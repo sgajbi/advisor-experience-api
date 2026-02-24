@@ -29,3 +29,6 @@ def test_workbench_openapi_contract_registered() -> None:
     client = TestClient(app)
     spec = client.get("/openapi.json").json()
     assert "/api/v1/workbench/{portfolio_id}/overview" in spec["paths"]
+    assert "/api/v1/workbench/{portfolio_id}/portfolio-360" in spec["paths"]
+    assert "/api/v1/workbench/{portfolio_id}/sandbox/sessions" in spec["paths"]
+    assert "/api/v1/workbench/{portfolio_id}/sandbox/sessions/{session_id}/changes" in spec["paths"]
