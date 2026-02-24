@@ -6,6 +6,7 @@ from app.middleware.correlation import correlation_id_var, correlation_middlewar
 from app.routers.intake import router as intake_router
 from app.routers.platform import router as platform_router
 from app.routers.proposals import router as proposals_router
+from app.routers.reporting import router as reporting_router
 from app.routers.workbench import router as workbench_router
 
 app = FastAPI(title="Advisor Experience API", version="0.1.0")
@@ -14,6 +15,7 @@ app.include_router(proposals_router)
 app.include_router(platform_router)
 app.include_router(intake_router)
 app.include_router(workbench_router)
+app.include_router(reporting_router)
 
 
 @app.get("/health")
