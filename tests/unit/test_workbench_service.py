@@ -61,6 +61,36 @@ class _StubPaClient:
     def __init__(self, status_code: int, payload: dict):
         self.status_code = status_code
         self.payload = payload
+        self.workbench_status_code = 200
+        self.workbench_payload = {
+            "portfolioId": "PF_1001",
+            "period": "YTD",
+            "groupBy": "ASSET_CLASS",
+            "benchmarkCode": "MODEL_60_40",
+            "portfolioReturnPct": 1.0,
+            "benchmarkReturnPct": 3.1,
+            "activeReturnPct": -2.1,
+            "allocationBuckets": [
+                {
+                    "bucketKey": "EQUITY",
+                    "bucketLabel": "EQUITY",
+                    "currentQuantity": 10.0,
+                    "proposedQuantity": 15.0,
+                    "deltaQuantity": 5.0,
+                    "currentWeightPct": 100.0,
+                    "proposedWeightPct": 100.0,
+                }
+            ],
+            "topChanges": [
+                {
+                    "securityId": "EQ_1",
+                    "instrumentName": "Equity 1",
+                    "deltaQuantity": 5.0,
+                    "direction": "INCREASE",
+                }
+            ],
+            "riskProxy": {"hhiCurrent": 10000.0, "hhiProposed": 10000.0, "hhiDelta": 0.0},
+        }
 
     async def get_pas_input_twr(
         self,
@@ -71,6 +101,9 @@ class _StubPaClient:
         correlation_id: str,
     ):
         return self.status_code, self.payload
+
+    async def get_workbench_analytics(self, payload: dict, correlation_id: str):  # noqa: ARG002
+        return self.workbench_status_code, self.workbench_payload
 
 
 class _StubDpmClient:
@@ -297,5 +330,6 @@ async def test_workbench_analytics_response():
     )
     assert response.portfolio_id == "PF_1001"
     assert response.group_by == "ASSET_CLASS"
-    assert len(response.allocation_buckets) >= 1
-    assert response.risk_proxy.hhi_current >= 0
+    assert len(response.allocation_buckets) == 1
+    assert response.top_changes[0].security_id == "EQ_1"
+    assert response.risk_proxy.hhi_current == 10000.0
