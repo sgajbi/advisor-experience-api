@@ -124,6 +124,28 @@ async def test_pa_client_calls_and_payload_handling():
 
 
 @pytest.mark.asyncio
+async def test_pa_client_non_json_and_non_dict_payload_handling():
+    client = PaClient(base_url="http://pa", timeout_seconds=2.0)
+    _FakeAsyncClient.queue_text(503, "pa unavailable")
+    _FakeAsyncClient.queue_json(200, ["analytics"])
+
+    status_one, payload_one = await client.get_capabilities(
+        consumer_system="BFF",
+        tenant_id="default",
+        correlation_id="corr-1",
+    )
+    status_two, payload_two = await client.get_workbench_analytics(
+        payload={"portfolioId": "P1"},
+        correlation_id="corr-1",
+    )
+
+    assert status_one == 503
+    assert payload_one["detail"] == "pa unavailable"
+    assert status_two == 200
+    assert payload_two["detail"] == ["analytics"]
+
+
+@pytest.mark.asyncio
 async def test_pas_client_endpoints_and_non_json_response_handling():
     client = PasClient(base_url="http://pas", timeout_seconds=2.0)
     _FakeAsyncClient.queue_json(200, {"items": [{"portfolio_id": "P1"}]})
@@ -194,6 +216,15 @@ async def test_pas_client_core_endpoints():
         )
     )[0] == 200
     assert (await client.list_instruments(limit=10, correlation_id="corr-3"))[0] == 200
+
+
+@pytest.mark.asyncio
+async def test_pas_client_non_dict_payload_branch():
+    client = PasClient(base_url="http://pas", timeout_seconds=2.0)
+    _FakeAsyncClient.queue_json(200, ["not-dict"])
+    status_code, payload = await client.list_portfolios(correlation_id="corr-3")
+    assert status_code == 200
+    assert payload["detail"] == ["not-dict"]
 
 
 @pytest.mark.asyncio
@@ -349,6 +380,27 @@ async def test_dpm_client_all_routes(method_name, kwargs, expected_url):
     assert status_code == 200
     assert payload["ok"] is True
     assert _FakeAsyncClient.calls[0]["url"] == expected_url
+
+
+@pytest.mark.asyncio
+async def test_dpm_client_non_json_and_non_dict_payload_handling():
+    client = DpmClient(base_url="http://dpm", timeout_seconds=2.0)
+    _FakeAsyncClient.queue_text(502, "dpm unavailable")
+    _FakeAsyncClient.queue_json(200, ["not-dict"])
+
+    status_one, payload_one = await client.get_capabilities(
+        consumer_system="BFF",
+        tenant_id="default",
+        correlation_id="corr-5",
+    )
+    status_two, payload_two = await client.list_runs(
+        params={"portfolio_id": "P1"},
+        correlation_id="corr-5",
+    )
+    assert status_one == 502
+    assert payload_one["detail"] == "dpm unavailable"
+    assert status_two == 200
+    assert payload_two["detail"] == ["not-dict"]
 
 
 @pytest.mark.asyncio
