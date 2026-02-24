@@ -63,7 +63,9 @@ def resolve_trace_id(request: Request) -> str:
 
 
 def propagation_headers(correlation_id: str | None = None) -> dict[str, str]:
-    resolved_correlation_id = correlation_id or correlation_id_var.get() or f"corr_{uuid4().hex[:12]}"
+    resolved_correlation_id = (
+        correlation_id or correlation_id_var.get() or f"corr_{uuid4().hex[:12]}"
+    )
     resolved_trace_id = trace_id_var.get() or uuid4().hex
     return {
         "X-Correlation-Id": resolved_correlation_id,
