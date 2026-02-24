@@ -320,3 +320,28 @@ async def test_reporting_client_handles_non_dict_payload():
     )
     assert status_code == 200
     assert payload["detail"] == [{"metric": "market_value_base"}]
+
+
+@pytest.mark.asyncio
+async def test_reporting_client_summary_and_review_routes():
+    client = ReportingClient(base_url="http://ras", timeout_seconds=2.0)
+    _FakeAsyncClient.queue_json(200, {"scope": {"portfolio_id": "P1"}})
+    _FakeAsyncClient.queue_json(200, {"portfolio_id": "P1", "overview": {}})
+
+    summary_status, summary_payload = await client.post_portfolio_summary(
+        portfolio_id="P1",
+        payload={"as_of_date": "2026-02-24", "sections": ["WEALTH"]},
+        correlation_id="corr-7",
+    )
+    review_status, review_payload = await client.post_portfolio_review(
+        portfolio_id="P1",
+        payload={"as_of_date": "2026-02-24", "sections": ["OVERVIEW"]},
+        correlation_id="corr-7",
+    )
+
+    assert summary_status == 200
+    assert summary_payload["scope"]["portfolio_id"] == "P1"
+    assert review_status == 200
+    assert review_payload["portfolio_id"] == "P1"
+    assert _FakeAsyncClient.calls[0]["url"] == "http://ras/reports/portfolios/P1/summary"
+    assert _FakeAsyncClient.calls[1]["url"] == "http://ras/reports/portfolios/P1/review"
