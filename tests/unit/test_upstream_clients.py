@@ -86,6 +86,14 @@ async def test_pa_client_calls_and_payload_handling():
     client = PaClient(base_url="http://pa", timeout_seconds=2.0)
     _FakeAsyncClient.queue_json(200, {"sourceService": "pa"})
     _FakeAsyncClient.queue_json(200, {"resultsByPeriod": {"YTD": {"net_cumulative_return": 2.1}}})
+    _FakeAsyncClient.queue_json(
+        200,
+        {
+            "allocationBuckets": [{"bucketKey": "EQUITY"}],
+            "topChanges": [],
+            "riskProxy": {},
+        },
+    )
 
     status_one, payload_one = await client.get_capabilities(
         consumer_system="BFF",
@@ -99,13 +107,20 @@ async def test_pa_client_calls_and_payload_handling():
         consumer_system="BFF",
         correlation_id="corr-1",
     )
+    status_three, payload_three = await client.get_workbench_analytics(
+        payload={"portfolioId": "P1", "groupBy": "ASSET_CLASS"},
+        correlation_id="corr-1",
+    )
 
     assert status_one == 200
     assert payload_one["sourceService"] == "pa"
     assert status_two == 200
     assert payload_two["resultsByPeriod"]["YTD"]["net_cumulative_return"] == 2.1
+    assert status_three == 200
+    assert payload_three["allocationBuckets"][0]["bucketKey"] == "EQUITY"
     assert _FakeAsyncClient.calls[0]["url"] == "http://pa/integration/capabilities"
     assert _FakeAsyncClient.calls[1]["url"] == "http://pa/performance/twr/pas-input"
+    assert _FakeAsyncClient.calls[2]["url"] == "http://pa/analytics/workbench"
 
 
 @pytest.mark.asyncio
@@ -212,6 +227,33 @@ async def test_pas_ingestion_client_upload_paths():
     assert status_commit == 201
     assert _FakeAsyncClient.calls[1]["url"] == "http://pas-ingest/ingest/uploads/preview"
     assert _FakeAsyncClient.calls[2]["url"] == "http://pas-ingest/ingest/uploads/commit"
+
+
+@pytest.mark.asyncio
+async def test_pas_ingestion_client_non_dict_and_text_payload_handling():
+    client = PasIngestionClient(base_url="http://pas-ingest", timeout_seconds=2.0)
+    _FakeAsyncClient.queue_json(200, [{"preview": "row"}])
+    _FakeAsyncClient.queue_text(503, "ingestion unavailable")
+
+    preview_status, preview_payload = await client.preview_upload(
+        entity_type="transactions",
+        filename="tx.csv",
+        content=b"id,qty\n1,10",
+        sample_size=1,
+        correlation_id="corr-4",
+    )
+    commit_status, commit_payload = await client.commit_upload(
+        entity_type="transactions",
+        filename="tx.csv",
+        content=b"id,qty\n1,10",
+        allow_partial=True,
+        correlation_id="corr-4",
+    )
+    assert preview_status == 200
+    assert preview_payload["detail"] == [{"preview": "row"}]
+    assert commit_status == 503
+    assert commit_payload["detail"] == "ingestion unavailable"
+    assert _FakeAsyncClient.calls[1]["data"]["allowPartial"] == "true"
 
 
 @pytest.mark.asyncio
@@ -354,3 +396,25 @@ async def test_reporting_client_summary_and_review_routes():
     assert _FakeAsyncClient.calls[0]["url"] == "http://ras/integration/capabilities"
     assert _FakeAsyncClient.calls[1]["url"] == "http://ras/reports/portfolios/P1/summary"
     assert _FakeAsyncClient.calls[2]["url"] == "http://ras/reports/portfolios/P1/review"
+
+
+@pytest.mark.asyncio
+async def test_reporting_client_summary_review_non_json_payloads():
+    client = ReportingClient(base_url="http://ras", timeout_seconds=2.0)
+    _FakeAsyncClient.queue_text(502, "summary failure")
+    _FakeAsyncClient.queue_json(200, ["review-item"])
+
+    summary_status, summary_payload = await client.post_portfolio_summary(
+        portfolio_id="P1",
+        payload={"as_of_date": "2026-02-24"},
+        correlation_id="corr-7",
+    )
+    review_status, review_payload = await client.post_portfolio_review(
+        portfolio_id="P1",
+        payload={"as_of_date": "2026-02-24"},
+        correlation_id="corr-7",
+    )
+    assert summary_status == 502
+    assert summary_payload["detail"] == "summary failure"
+    assert review_status == 200
+    assert review_payload["detail"] == ["review-item"]
