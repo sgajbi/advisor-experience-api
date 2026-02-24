@@ -34,6 +34,7 @@ async def test_platform_capabilities_all_sources_success():
             200,
             {
                 "sourceService": "dpm",
+                "policyVersion": "dpm-tenant-a-v2",
                 "supportedInputModes": ["pas_ref", "inline_bundle"],
                 "features": [
                     {"key": "dpm.proposals.lifecycle", "enabled": True},
@@ -46,6 +47,7 @@ async def test_platform_capabilities_all_sources_success():
             200,
             {
                 "sourceService": "pas",
+                "policyVersion": "pas-tenant-a-v3",
                 "supportedInputModes": ["pas_ref"],
                 "features": [
                     {"key": "pas.integration.core_snapshot", "enabled": True},
@@ -58,6 +60,7 @@ async def test_platform_capabilities_all_sources_success():
             200,
             {
                 "sourceService": "pa",
+                "policyVersion": "pa-tenant-a-v4",
                 "supportedInputModes": ["pas_ref", "inline_bundle"],
                 "features": [{"key": "pa.analytics.twr", "enabled": True}],
                 "workflows": [{"workflow_key": "performance_snapshot", "enabled": True}],
@@ -81,6 +84,11 @@ async def test_platform_capabilities_all_sources_success():
     assert response.data.normalized.workflow_flags["proposal_lifecycle"] is True
     assert "inline_bundle" in response.data.normalized.input_modes_union
     assert response.data.normalized.module_health["pas"] == "available"
+    assert response.data.normalized.policy_versions_by_source == {
+        "pas": "pas-tenant-a-v3",
+        "pa": "pa-tenant-a-v4",
+        "dpm": "dpm-tenant-a-v2",
+    }
 
 
 @pytest.mark.asyncio
@@ -91,6 +99,7 @@ async def test_platform_capabilities_partial_failure_on_error():
             200,
             {
                 "sourceService": "pas",
+                "policyVersion": "pas-tenant-default-v1",
                 "features": [{"key": "pas.integration.core_snapshot", "enabled": True}],
                 "workflows": [],
             },
@@ -112,3 +121,8 @@ async def test_platform_capabilities_partial_failure_on_error():
     assert response.data.normalized.navigation["advisory_pipeline"] is False
     assert response.data.normalized.module_health["pa"] == "unavailable"
     assert response.data.normalized.module_health["dpm"] == "unavailable"
+    assert response.data.normalized.policy_versions_by_source == {
+        "pas": "pas-tenant-default-v1",
+        "pa": "unknown",
+        "dpm": "unknown",
+    }

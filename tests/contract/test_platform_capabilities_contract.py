@@ -8,6 +8,7 @@ def test_platform_capabilities_contract_shape(monkeypatch):
         return 200, {
             "contractVersion": "v1",
             "sourceService": "portfolio-analytics-system",
+            "policyVersion": "pas-default-v1",
             "features": [],
             "workflows": [],
         }
@@ -16,6 +17,7 @@ def test_platform_capabilities_contract_shape(monkeypatch):
         return 200, {
             "contractVersion": "v1",
             "sourceService": "performance-analytics",
+            "policyVersion": "pa-default-v1",
             "features": [],
             "workflows": [],
         }
@@ -24,6 +26,7 @@ def test_platform_capabilities_contract_shape(monkeypatch):
         return 200, {
             "contractVersion": "v1",
             "sourceService": "dpm-rebalance-engine",
+            "policyVersion": "dpm-default-v1",
             "features": [],
             "workflows": [],
         }
@@ -45,6 +48,7 @@ def test_platform_capabilities_contract_shape(monkeypatch):
     assert "navigation" in payload["normalized"]
     assert "workflowFlags" in payload["normalized"]
     assert "moduleHealth" in payload["normalized"]
+    assert "policyVersionsBySource" in payload["normalized"]
 
     for service_name in ("pas", "pa", "dpm"):
         source = payload["sources"][service_name]

@@ -8,6 +8,7 @@ def test_platform_capabilities_router_success(monkeypatch):
         return 200, {
             "sourceService": "portfolio-analytics-system",
             "contractVersion": "v1",
+            "policyVersion": "pas-default-v1",
             "features": [
                 {"key": "pas.integration.core_snapshot", "enabled": True},
                 {"key": "pas.ingestion.bulk_upload", "enabled": True},
@@ -20,6 +21,7 @@ def test_platform_capabilities_router_success(monkeypatch):
         return 200, {
             "sourceService": "performance-analytics",
             "contractVersion": "v1",
+            "policyVersion": "pa-default-v1",
             "features": [{"key": "pa.analytics.twr", "enabled": True}],
             "workflows": [{"workflow_key": "performance_snapshot", "enabled": True}],
             "supportedInputModes": ["pas_ref", "inline_bundle"],
@@ -29,6 +31,7 @@ def test_platform_capabilities_router_success(monkeypatch):
         return 200, {
             "sourceService": "dpm-rebalance-engine",
             "contractVersion": "v1",
+            "policyVersion": "dpm-default-v1",
             "features": [
                 {"key": "dpm.proposals.lifecycle", "enabled": True},
                 {"key": "dpm.support.run_apis", "enabled": True},
@@ -50,6 +53,11 @@ def test_platform_capabilities_router_success(monkeypatch):
     assert set(body["sources"].keys()) == {"pas", "pa", "dpm"}
     assert body["normalized"]["navigation"]["decision_console"] is True
     assert body["normalized"]["workflowFlags"]["proposal_lifecycle"] is True
+    assert body["normalized"]["policyVersionsBySource"] == {
+        "pas": "pas-default-v1",
+        "pa": "pa-default-v1",
+        "dpm": "dpm-default-v1",
+    }
 
 
 def test_platform_capabilities_router_partial_failure(monkeypatch):
@@ -57,6 +65,7 @@ def test_platform_capabilities_router_partial_failure(monkeypatch):
         return 200, {
             "sourceService": "portfolio-analytics-system",
             "contractVersion": "v1",
+            "policyVersion": "pas-default-v1",
             "features": [{"key": "pas.integration.core_snapshot", "enabled": True}],
             "workflows": [],
             "supportedInputModes": ["pas_ref"],
@@ -82,3 +91,5 @@ def test_platform_capabilities_router_partial_failure(monkeypatch):
     assert len(body["errors"]) == 2
     assert body["normalized"]["navigation"]["analytics_studio"] is False
     assert body["normalized"]["moduleHealth"]["pa"] == "unavailable"
+    assert body["normalized"]["policyVersionsBySource"]["pas"] == "pas-default-v1"
+    assert body["normalized"]["policyVersionsBySource"]["pa"] == "unknown"

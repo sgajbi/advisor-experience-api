@@ -101,15 +101,21 @@ class PlatformCapabilitiesService:
     ) -> PlatformCapabilitiesNormalized:
         input_modes_by_source: dict[str, list[str]] = {}
         input_modes_union: list[str] = []
+        policy_versions_by_source: dict[str, str] = {}
         for source_name, source_payload in sources.items():
             source_modes = source_payload.get("supportedInputModes", [])
             if not isinstance(source_modes, list):
                 source_modes = []
             normalized_modes = [str(mode) for mode in source_modes]
             input_modes_by_source[source_name] = normalized_modes
+            policy_versions_by_source[source_name] = str(
+                source_payload.get("policyVersion", "unknown")
+            )
             for mode in normalized_modes:
                 if mode not in input_modes_union:
                     input_modes_union.append(mode)
+        for source_name in ("pas", "pa", "dpm"):
+            policy_versions_by_source.setdefault(source_name, "unknown")
 
         feature_enabled = {
             "pas_core_snapshot": self._feature_enabled(
@@ -169,6 +175,7 @@ class PlatformCapabilitiesService:
             inputModesBySource=input_modes_by_source,
             inputModesUnion=input_modes_union,
             moduleHealth=module_health,
+            policyVersionsBySource=policy_versions_by_source,
         )
 
     def _feature_enabled(
