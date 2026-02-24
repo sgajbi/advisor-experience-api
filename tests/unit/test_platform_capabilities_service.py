@@ -4,9 +4,26 @@ from app.services.platform_capabilities_service import PlatformCapabilitiesServi
 
 
 class _StubClient:
-    def __init__(self, status_code: int, payload: dict):
+    def __init__(
+        self,
+        status_code: int,
+        payload: dict,
+        policy_status_code: int = 200,
+        policy_payload: dict | None = None,
+    ):
         self.status_code = status_code
         self.payload = payload
+        self.policy_status_code = policy_status_code
+        self.policy_payload = policy_payload or {
+            "policyProvenance": {
+                "policyVersion": "pas-default-v1",
+                "policySource": "default",
+                "matchedRuleId": "default",
+                "strictMode": False,
+            },
+            "allowedSections": ["OVERVIEW"],
+            "warnings": [],
+        }
 
     async def get_capabilities(
         self,
@@ -16,9 +33,25 @@ class _StubClient:
     ):
         return self.status_code, self.payload
 
+    async def get_effective_policy(
+        self,
+        consumer_system: str,
+        tenant_id: str,
+        correlation_id: str,
+    ):
+        return self.policy_status_code, self.policy_payload
+
 
 class _ErrorClient:
     async def get_capabilities(
+        self,
+        consumer_system: str,
+        tenant_id: str,
+        correlation_id: str,
+    ):
+        raise RuntimeError("upstream unavailable")
+
+    async def get_effective_policy(
         self,
         consumer_system: str,
         tenant_id: str,
@@ -55,6 +88,16 @@ async def test_platform_capabilities_all_sources_success():
                 ],
                 "workflows": [{"workflow_key": "portfolio_bulk_onboarding", "enabled": True}],
             },
+            policy_payload={
+                "policyProvenance": {
+                    "policyVersion": "pas-policy-v7",
+                    "policySource": "tenant",
+                    "matchedRuleId": "tenant.default.consumers.BFF",
+                    "strictMode": True,
+                },
+                "allowedSections": ["OVERVIEW", "HOLDINGS"],
+                "warnings": ["SECTIONS_FILTERED_BY_POLICY"],
+            },
         ),
         pa_client=_StubClient(
             200,
@@ -89,6 +132,13 @@ async def test_platform_capabilities_all_sources_success():
         "pa": "pa-tenant-a-v4",
         "dpm": "dpm-tenant-a-v2",
     }
+    assert response.data.normalized.pas_policy_diagnostics["available"] is True
+    assert response.data.normalized.pas_policy_diagnostics["policyProvenance"] == {
+        "policyVersion": "pas-policy-v7",
+        "policySource": "tenant",
+        "matchedRuleId": "tenant.default.consumers.BFF",
+        "strictMode": True,
+    }
 
 
 @pytest.mark.asyncio
@@ -103,6 +153,8 @@ async def test_platform_capabilities_partial_failure_on_error():
                 "features": [{"key": "pas.integration.core_snapshot", "enabled": True}],
                 "workflows": [],
             },
+            policy_status_code=503,
+            policy_payload={"detail": "service unavailable"},
         ),
         pa_client=_StubClient(502, {"detail": "bad gateway"}),
         contract_version="v1",
@@ -116,7 +168,7 @@ async def test_platform_capabilities_partial_failure_on_error():
 
     assert response.data.partial_failure is True
     assert set(response.data.sources.keys()) == {"pas"}
-    assert len(response.data.errors) == 2
+    assert len(response.data.errors) == 3
     assert response.data.normalized.navigation["analytics_studio"] is False
     assert response.data.normalized.navigation["advisory_pipeline"] is False
     assert response.data.normalized.module_health["pa"] == "unavailable"
@@ -126,3 +178,8 @@ async def test_platform_capabilities_partial_failure_on_error():
         "pa": "unknown",
         "dpm": "unknown",
     }
+    assert response.data.normalized.pas_policy_diagnostics["available"] is False
+    assert (
+        "PAS_POLICY_ENDPOINT_UNAVAILABLE"
+        in (response.data.normalized.pas_policy_diagnostics["warnings"])
+    )
