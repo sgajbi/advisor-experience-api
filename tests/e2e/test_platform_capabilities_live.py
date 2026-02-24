@@ -19,7 +19,7 @@ def _assert_payload(payload: dict) -> None:
         raise AssertionError(f"Expected no partial failure, got: {payload}")
 
     sources = payload.get("data", {}).get("sources", {})
-    expected = {"pas", "pa", "dpm"}
+    expected = {"pas", "pa", "dpm", "ras"}
     if set(sources.keys()) != expected:
         raise AssertionError(f"Expected sources {expected}, got {set(sources.keys())}")
 
@@ -27,6 +27,7 @@ def _assert_payload(payload: dict) -> None:
         "pas": "portfolio-analytics-system",
         "pa": "performance-analytics",
         "dpm": "dpm-rebalance-engine",
+        "ras": "reporting-aggregation-service",
     }
     for key, source_name in passthrough.items():
         actual = sources[key].get("sourceService")

@@ -21,6 +21,19 @@ class ReportingClient:
             response = await client.get(url, params=params, headers=headers)
             return response.status_code, self._response_payload(response)
 
+    async def get_capabilities(
+        self,
+        consumer_system: str,
+        tenant_id: str,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}/integration/capabilities"
+        params = {"consumerSystem": consumer_system, "tenantId": tenant_id}
+        headers = {"X-Correlation-Id": correlation_id}
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.get(url, params=params, headers=headers)
+            return response.status_code, self._response_payload(response)
+
     async def post_portfolio_summary(
         self,
         portfolio_id: str,

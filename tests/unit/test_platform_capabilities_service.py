@@ -109,6 +109,19 @@ async def test_platform_capabilities_all_sources_success():
                 "workflows": [{"workflow_key": "performance_snapshot", "enabled": True}],
             },
         ),
+        reporting_client=_StubClient(
+            200,
+            {
+                "sourceService": "reporting-aggregation-service",
+                "policyVersion": "ras-tenant-a-v1",
+                "supportedInputModes": ["pas_ref"],
+                "features": [
+                    {"key": "ras.reporting.portfolio_summary", "enabled": True},
+                    {"key": "ras.reporting.portfolio_review", "enabled": True},
+                ],
+                "workflows": [{"workflow_key": "portfolio_reporting", "enabled": True}],
+            },
+        ),
         contract_version="v1",
     )
 
@@ -119,18 +132,21 @@ async def test_platform_capabilities_all_sources_success():
     )
 
     assert response.data.partial_failure is False
-    assert set(response.data.sources.keys()) == {"pas", "pa", "dpm"}
+    assert set(response.data.sources.keys()) == {"pas", "pa", "dpm", "ras"}
     assert response.data.errors == []
     assert response.data.normalized.navigation["portfolio_intake"] is True
     assert response.data.normalized.navigation["analytics_studio"] is True
     assert response.data.normalized.navigation["advisory_pipeline"] is True
+    assert response.data.normalized.navigation["reporting_hub"] is True
     assert response.data.normalized.workflow_flags["proposal_lifecycle"] is True
+    assert response.data.normalized.workflow_flags["portfolio_reporting"] is True
     assert "inline_bundle" in response.data.normalized.input_modes_union
     assert response.data.normalized.module_health["pas"] == "available"
     assert response.data.normalized.policy_versions_by_source == {
         "pas": "pas-tenant-a-v3",
         "pa": "pa-tenant-a-v4",
         "dpm": "dpm-tenant-a-v2",
+        "ras": "ras-tenant-a-v1",
     }
     assert response.data.normalized.pas_policy_diagnostics["available"] is True
     assert response.data.normalized.pas_policy_diagnostics["policyProvenance"] == {
@@ -157,6 +173,7 @@ async def test_platform_capabilities_partial_failure_on_error():
             policy_payload={"detail": "service unavailable"},
         ),
         pa_client=_StubClient(502, {"detail": "bad gateway"}),
+        reporting_client=_StubClient(503, {"detail": "upstream failed"}),
         contract_version="v1",
     )
 
@@ -168,15 +185,17 @@ async def test_platform_capabilities_partial_failure_on_error():
 
     assert response.data.partial_failure is True
     assert set(response.data.sources.keys()) == {"pas"}
-    assert len(response.data.errors) == 3
+    assert len(response.data.errors) == 4
     assert response.data.normalized.navigation["analytics_studio"] is False
     assert response.data.normalized.navigation["advisory_pipeline"] is False
     assert response.data.normalized.module_health["pa"] == "unavailable"
     assert response.data.normalized.module_health["dpm"] == "unavailable"
+    assert response.data.normalized.module_health["ras"] == "unavailable"
     assert response.data.normalized.policy_versions_by_source == {
         "pas": "pas-tenant-default-v1",
         "pa": "unknown",
         "dpm": "unknown",
+        "ras": "unknown",
     }
     assert response.data.normalized.pas_policy_diagnostics["available"] is False
     assert (

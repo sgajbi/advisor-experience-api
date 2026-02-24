@@ -40,6 +40,19 @@ def test_platform_capabilities_router_success(monkeypatch):
             "supportedInputModes": ["pas_ref", "inline_bundle"],
         }
 
+    async def _ras(*args, **kwargs):
+        return 200, {
+            "sourceService": "reporting-aggregation-service",
+            "contractVersion": "v1",
+            "policyVersion": "ras-default-v1",
+            "features": [
+                {"key": "ras.reporting.portfolio_summary", "enabled": True},
+                {"key": "ras.reporting.portfolio_review", "enabled": True},
+            ],
+            "workflows": [{"workflow_key": "portfolio_reporting", "enabled": True}],
+            "supportedInputModes": ["pas_ref"],
+        }
+
     async def _pas_policy(*args, **kwargs):
         return 200, {
             "policyProvenance": {
@@ -56,6 +69,7 @@ def test_platform_capabilities_router_success(monkeypatch):
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_effective_policy", _pas_policy)
     monkeypatch.setattr("app.clients.pa_client.PaClient.get_capabilities", _pa)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.get_capabilities", _dpm)
+    monkeypatch.setattr("app.clients.reporting_client.ReportingClient.get_capabilities", _ras)
 
     client = TestClient(app)
     response = client.get("/api/v1/platform/capabilities?consumerSystem=BFF&tenantId=default")
@@ -63,13 +77,16 @@ def test_platform_capabilities_router_success(monkeypatch):
     assert response.status_code == 200
     body = response.json()["data"]
     assert body["partialFailure"] is False
-    assert set(body["sources"].keys()) == {"pas", "pa", "dpm"}
+    assert set(body["sources"].keys()) == {"pas", "pa", "dpm", "ras"}
     assert body["normalized"]["navigation"]["decision_console"] is True
+    assert body["normalized"]["navigation"]["reporting_hub"] is True
     assert body["normalized"]["workflowFlags"]["proposal_lifecycle"] is True
+    assert body["normalized"]["workflowFlags"]["portfolio_reporting"] is True
     assert body["normalized"]["policyVersionsBySource"] == {
         "pas": "pas-default-v1",
         "pa": "pa-default-v1",
         "dpm": "dpm-default-v1",
+        "ras": "ras-default-v1",
     }
     assert body["normalized"]["pasPolicyDiagnostics"]["available"] is True
 
@@ -91,6 +108,9 @@ def test_platform_capabilities_router_partial_failure(monkeypatch):
     async def _dpm(*args, **kwargs):
         raise RuntimeError("upstream exception")
 
+    async def _ras(*args, **kwargs):
+        return 500, {"detail": "upstream failed"}
+
     async def _pas_policy(*args, **kwargs):
         return 503, {"detail": "policy unavailable"}
 
@@ -98,6 +118,7 @@ def test_platform_capabilities_router_partial_failure(monkeypatch):
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_effective_policy", _pas_policy)
     monkeypatch.setattr("app.clients.pa_client.PaClient.get_capabilities", _pa)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.get_capabilities", _dpm)
+    monkeypatch.setattr("app.clients.reporting_client.ReportingClient.get_capabilities", _ras)
 
     client = TestClient(app)
     response = client.get("/api/v1/platform/capabilities?consumerSystem=BFF&tenantId=default")
@@ -106,9 +127,11 @@ def test_platform_capabilities_router_partial_failure(monkeypatch):
     body = response.json()["data"]
     assert body["partialFailure"] is True
     assert set(body["sources"].keys()) == {"pas"}
-    assert len(body["errors"]) == 3
+    assert len(body["errors"]) == 4
     assert body["normalized"]["navigation"]["analytics_studio"] is False
     assert body["normalized"]["moduleHealth"]["pa"] == "unavailable"
+    assert body["normalized"]["moduleHealth"]["ras"] == "unavailable"
     assert body["normalized"]["policyVersionsBySource"]["pas"] == "pas-default-v1"
     assert body["normalized"]["policyVersionsBySource"]["pa"] == "unknown"
+    assert body["normalized"]["policyVersionsBySource"]["ras"] == "unknown"
     assert body["normalized"]["pasPolicyDiagnostics"]["available"] is False
