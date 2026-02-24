@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.contracts.errors import ProblemDetails
-from app.middleware.correlation import correlation_id_var, correlation_middleware
+from app.middleware.correlation import correlation_id_var, correlation_middleware, setup_logging
 from app.routers.intake import router as intake_router
 from app.routers.platform import router as platform_router
 from app.routers.proposals import router as proposals_router
@@ -10,7 +11,9 @@ from app.routers.reporting import router as reporting_router
 from app.routers.workbench import router as workbench_router
 
 app = FastAPI(title="Advisor Experience API", version="0.1.0")
+setup_logging()
 app.middleware("http")(correlation_middleware)
+Instrumentator().instrument(app).expose(app)
 app.include_router(proposals_router)
 app.include_router(platform_router)
 app.include_router(intake_router)
@@ -21,6 +24,16 @@ app.include_router(reporting_router)
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/health/live")
+async def health_live() -> dict[str, str]:
+    return {"status": "live"}
+
+
+@app.get("/health/ready")
+async def health_ready() -> dict[str, str]:
+    return {"status": "ready"}
 
 
 @app.exception_handler(Exception)

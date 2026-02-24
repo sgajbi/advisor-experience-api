@@ -2,6 +2,8 @@ from typing import Any
 
 import httpx
 
+from app.middleware.correlation import propagation_headers
+
 
 class DpmClient:
     def __init__(self, base_url: str, timeout_seconds: float):
@@ -17,10 +19,7 @@ class DpmClient:
         return await self._post(
             "/rebalance/proposals/simulate",
             body=body,
-            headers={
-                "Idempotency-Key": idempotency_key,
-                "X-Correlation-Id": correlation_id,
-            },
+            headers=self._headers(correlation_id, {"Idempotency-Key": idempotency_key}),
         )
 
     async def create_proposal(
@@ -32,10 +31,7 @@ class DpmClient:
         return await self._post(
             "/rebalance/proposals",
             body=body,
-            headers={
-                "Idempotency-Key": idempotency_key,
-                "X-Correlation-Id": correlation_id,
-            },
+            headers=self._headers(correlation_id, {"Idempotency-Key": idempotency_key}),
         )
 
     async def list_proposals(
@@ -47,7 +43,7 @@ class DpmClient:
         return await self._get(
             "/rebalance/proposals",
             params=cleaned_params,
-            headers={"X-Correlation-Id": correlation_id},
+            headers=self._headers(correlation_id),
         )
 
     async def list_runs(
@@ -59,7 +55,7 @@ class DpmClient:
         return await self._get(
             "/rebalance/runs",
             params=cleaned_params,
-            headers={"X-Correlation-Id": correlation_id},
+            headers=self._headers(correlation_id),
         )
 
     async def get_proposal(
@@ -71,7 +67,7 @@ class DpmClient:
         return await self._get(
             f"/rebalance/proposals/{proposal_id}",
             params={"include_evidence": str(include_evidence).lower()},
-            headers={"X-Correlation-Id": correlation_id},
+            headers=self._headers(correlation_id),
         )
 
     async def get_proposal_version(
@@ -84,7 +80,7 @@ class DpmClient:
         return await self._get(
             f"/rebalance/proposals/{proposal_id}/versions/{version_no}",
             params={"include_evidence": str(include_evidence).lower()},
-            headers={"X-Correlation-Id": correlation_id},
+            headers=self._headers(correlation_id),
         )
 
     async def create_proposal_version(
@@ -97,10 +93,7 @@ class DpmClient:
         return await self._post(
             f"/rebalance/proposals/{proposal_id}/versions",
             body=body,
-            headers={
-                "Idempotency-Key": idempotency_key,
-                "X-Correlation-Id": correlation_id,
-            },
+            headers=self._headers(correlation_id, {"Idempotency-Key": idempotency_key}),
         )
 
     async def transition_proposal(
@@ -112,7 +105,7 @@ class DpmClient:
         return await self._post(
             f"/rebalance/proposals/{proposal_id}/transitions",
             body=body,
-            headers={"X-Correlation-Id": correlation_id},
+            headers=self._headers(correlation_id),
         )
 
     async def record_approval(
@@ -124,7 +117,7 @@ class DpmClient:
         return await self._post(
             f"/rebalance/proposals/{proposal_id}/approvals",
             body=body,
-            headers={"X-Correlation-Id": correlation_id},
+            headers=self._headers(correlation_id),
         )
 
     async def get_workflow_events(
@@ -135,7 +128,7 @@ class DpmClient:
         return await self._get(
             f"/rebalance/proposals/{proposal_id}/workflow-events",
             params={},
-            headers={"X-Correlation-Id": correlation_id},
+            headers=self._headers(correlation_id),
         )
 
     async def get_approvals(
@@ -146,7 +139,7 @@ class DpmClient:
         return await self._get(
             f"/rebalance/proposals/{proposal_id}/approvals",
             params={},
-            headers={"X-Correlation-Id": correlation_id},
+            headers=self._headers(correlation_id),
         )
 
     async def get_capabilities(
@@ -158,8 +151,18 @@ class DpmClient:
         return await self._get(
             "/integration/capabilities",
             params={"consumerSystem": consumer_system, "tenantId": tenant_id},
-            headers={"X-Correlation-Id": correlation_id},
+            headers=self._headers(correlation_id),
         )
+
+    def _headers(
+        self,
+        correlation_id: str,
+        extras: dict[str, str] | None = None,
+    ) -> dict[str, str]:
+        headers = propagation_headers(correlation_id)
+        if extras:
+            headers.update(extras)
+        return headers
 
     async def _post(
         self,

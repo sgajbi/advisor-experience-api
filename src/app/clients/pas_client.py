@@ -2,6 +2,8 @@ from typing import Any
 
 import httpx
 
+from app.middleware.correlation import propagation_headers
+
 
 class PasClient:
     def __init__(self, base_url: str, timeout_seconds: float):
@@ -16,7 +18,7 @@ class PasClient:
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/integration/capabilities"
         params = {"consumerSystem": consumer_system, "tenantId": tenant_id}
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.get(url, params=params, headers=headers)
             return response.status_code, self._response_payload(response)
@@ -29,7 +31,7 @@ class PasClient:
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/integration/policy/effective"
         params = {"consumerSystem": consumer_system, "tenantId": tenant_id}
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.get(url, params=params, headers=headers)
             return response.status_code, self._response_payload(response)
@@ -39,7 +41,7 @@ class PasClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/portfolios"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.get(url, headers=headers)
             return response.status_code, self._response_payload(response)
@@ -53,7 +55,7 @@ class PasClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/integration/portfolios/{portfolio_id}/core-snapshot"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         payload = {
             "asOfDate": as_of_date,
             "includeSections": include_sections,
@@ -69,7 +71,7 @@ class PasClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/instruments"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         params = {"skip": 0, "limit": limit}
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.get(url, params=params, headers=headers)
@@ -109,7 +111,7 @@ class PasClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}{path}"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.get(url, params=params, headers=headers)
             return response.status_code, self._response_payload(response)
@@ -122,7 +124,7 @@ class PasClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/simulation-sessions"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         payload = {
             "portfolio_id": portfolio_id,
             "created_by": created_by,
@@ -139,7 +141,7 @@ class PasClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/simulation-sessions/{session_id}/changes"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         payload = {"changes": changes}
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.post(url, json=payload, headers=headers)
@@ -151,7 +153,7 @@ class PasClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/simulation-sessions/{session_id}/projected-positions"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.get(url, headers=headers)
             return response.status_code, self._response_payload(response)
@@ -162,7 +164,7 @@ class PasClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/simulation-sessions/{session_id}/projected-summary"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.get(url, headers=headers)
             return response.status_code, self._response_payload(response)

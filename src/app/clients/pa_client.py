@@ -2,6 +2,8 @@ from typing import Any
 
 import httpx
 
+from app.middleware.correlation import propagation_headers
+
 
 class PaClient:
     def __init__(self, base_url: str, timeout_seconds: float):
@@ -16,7 +18,7 @@ class PaClient:
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/integration/capabilities"
         params = {"consumerSystem": consumer_system, "tenantId": tenant_id}
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.get(url, params=params, headers=headers)
             return response.status_code, self._response_payload(response)
@@ -30,7 +32,7 @@ class PaClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/performance/twr/pas-input"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         payload = {
             "portfolioId": portfolio_id,
             "asOfDate": as_of_date,
@@ -47,7 +49,7 @@ class PaClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/analytics/workbench"
-        headers = {"X-Correlation-Id": correlation_id}
+        headers = propagation_headers(correlation_id)
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.post(url, json=payload, headers=headers)
             return response.status_code, self._response_payload(response)
