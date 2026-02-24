@@ -43,7 +43,7 @@ def setup_logging() -> None:
 
 
 def resolve_correlation_id(request: Request) -> str:
-    incoming = request.headers.get("X-Correlation-Id") or request.headers.get("X-Correlation-ID")
+    incoming = request.headers.get("X-Correlation-Id")
     return incoming if incoming else f"corr_{uuid4().hex[:12]}"
 
 

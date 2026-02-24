@@ -13,7 +13,7 @@ def test_correlation_header_is_returned():
     assert response.headers.get("X-Trace-Id")
 
 
-def test_legacy_correlation_header_alias_is_supported():
+def test_correlation_header_casing_variants_are_equivalent():
     client = TestClient(app)
     response = client.get("/health", headers={"X-Correlation-ID": "corr_test_legacy"})
     assert response.status_code == 200
