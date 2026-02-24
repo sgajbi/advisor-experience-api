@@ -1,0 +1,31 @@
+from typing import Any
+
+import httpx
+
+
+class ReportingClient:
+    def __init__(self, base_url: str, timeout_seconds: float):
+        self._base_url = base_url.rstrip("/")
+        self._timeout = timeout_seconds
+
+    async def get_portfolio_snapshot(
+        self,
+        portfolio_id: str,
+        as_of_date: str,
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}/aggregations/portfolios/{portfolio_id}"
+        params = {"asOfDate": as_of_date, "live": "true"}
+        headers = {"X-Correlation-Id": correlation_id}
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.get(url, params=params, headers=headers)
+            return response.status_code, self._response_payload(response)
+
+    def _response_payload(self, response: httpx.Response) -> dict[str, Any]:
+        try:
+            payload = response.json()
+        except ValueError:
+            payload = {"detail": response.text}
+        if isinstance(payload, dict):
+            return payload
+        return {"detail": payload}
