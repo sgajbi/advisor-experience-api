@@ -109,3 +109,37 @@ def test_reporting_review_success(monkeypatch):
     assert body["portfolioId"] == "DEMO_DPM_EUR_001"
     assert body["asOfDate"] == "2026-02-24"
     assert body["data"]["overview"]["total_market_value"] == 1000.0
+
+
+def test_reporting_summary_upstream_error(monkeypatch):
+    async def _mock_post_summary(self, portfolio_id, payload, correlation_id):  # noqa: ARG001
+        return 503, {"detail": "summary unavailable"}
+
+    monkeypatch.setattr(
+        "app.clients.reporting_client.ReportingClient.post_portfolio_summary",
+        _mock_post_summary,
+    )
+
+    client = TestClient(app)
+    response = client.post(
+        "/api/v1/reports/DEMO_DPM_EUR_001/summary",
+        json={"as_of_date": "2026-02-24"},
+    )
+    assert response.status_code == 502
+
+
+def test_reporting_review_upstream_error(monkeypatch):
+    async def _mock_post_review(self, portfolio_id, payload, correlation_id):  # noqa: ARG001
+        return 503, {"detail": "review unavailable"}
+
+    monkeypatch.setattr(
+        "app.clients.reporting_client.ReportingClient.post_portfolio_review",
+        _mock_post_review,
+    )
+
+    client = TestClient(app)
+    response = client.post(
+        "/api/v1/reports/DEMO_DPM_EUR_001/review",
+        json={"as_of_date": "2026-02-24"},
+    )
+    assert response.status_code == 502
