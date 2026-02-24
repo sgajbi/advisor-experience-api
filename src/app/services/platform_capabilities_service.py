@@ -4,6 +4,7 @@ from typing import Any, cast
 from app.clients.dpm_client import DpmClient
 from app.clients.pa_client import PaClient
 from app.clients.pas_client import PasClient
+from app.clients.reporting_client import ReportingClient
 from app.contracts.platform_capabilities import (
     CapabilitySourceError,
     PlatformCapabilitiesData,
@@ -18,11 +19,13 @@ class PlatformCapabilitiesService:
         dpm_client: DpmClient,
         pas_client: PasClient,
         pa_client: PaClient,
+        reporting_client: ReportingClient,
         contract_version: str,
     ):
         self._dpm_client = dpm_client
         self._pas_client = pas_client
         self._pa_client = pa_client
+        self._reporting_client = reporting_client
         self._contract_version = contract_version
 
     async def get_platform_capabilities(
@@ -47,6 +50,11 @@ class PlatformCapabilitiesService:
                 tenant_id=tenant_id,
                 correlation_id=correlation_id,
             ),
+            self._reporting_client.get_capabilities(
+                consumer_system=consumer_system,
+                tenant_id=tenant_id,
+                correlation_id=correlation_id,
+            ),
             self._pas_client.get_effective_policy(
                 consumer_system=consumer_system,
                 tenant_id=tenant_id,
@@ -57,9 +65,9 @@ class PlatformCapabilitiesService:
 
         sources: dict[str, dict[str, Any]] = {}
         errors: list[CapabilitySourceError] = []
-        service_names = ["pas", "pa", "dpm"]
+        service_names = ["pas", "pa", "dpm", "ras"]
 
-        for service_name, result in zip(service_names, results[:3], strict=True):
+        for service_name, result in zip(service_names, results[:4], strict=True):
             if isinstance(result, BaseException):
                 errors.append(
                     CapabilitySourceError(
@@ -84,7 +92,7 @@ class PlatformCapabilitiesService:
             sources[service_name] = payload
 
         pas_policy_payload: dict[str, Any] | None = None
-        pas_policy_result = results[3]
+        pas_policy_result = results[4]
         if isinstance(pas_policy_result, BaseException):
             errors.append(
                 CapabilitySourceError(
@@ -144,7 +152,7 @@ class PlatformCapabilitiesService:
             for mode in normalized_modes:
                 if mode not in input_modes_union:
                     input_modes_union.append(mode)
-        for source_name in ("pas", "pa", "dpm"):
+        for source_name in ("pas", "pa", "dpm", "ras"):
             policy_versions_by_source.setdefault(source_name, "unknown")
 
         feature_enabled = {
@@ -169,6 +177,14 @@ class PlatformCapabilitiesService:
             "dpm_support": self._feature_enabled(
                 sources=sources, source_name="dpm", feature_key="dpm.support.run_apis"
             ),
+            "ras_reporting": any(
+                self._feature_enabled(sources=sources, source_name="ras", feature_key=key)
+                for key in (
+                    "ras.reporting.portfolio_summary",
+                    "ras.reporting.portfolio_review",
+                    "ras.aggregation.portfolio_snapshot",
+                )
+            ),
         }
 
         module_health = self._module_health(sources=sources, errors=errors)
@@ -184,6 +200,7 @@ class PlatformCapabilitiesService:
                 feature_enabled["pas_core_snapshot"]
                 and (feature_enabled["dpm_lifecycle"] or feature_enabled["dpm_support"])
             ),
+            "reporting_hub": feature_enabled["ras_reporting"],
         }
         workflow_flags = {
             "proposal_lifecycle": self._workflow_enabled(
@@ -197,6 +214,9 @@ class PlatformCapabilitiesService:
             ),
             "performance_snapshot": self._workflow_enabled(
                 sources=sources, source_name="pa", workflow_key="performance_snapshot"
+            ),
+            "portfolio_reporting": self._workflow_enabled(
+                sources=sources, source_name="ras", workflow_key="portfolio_reporting"
             ),
         }
         pas_policy_diagnostics = self._pas_policy_diagnostics(
@@ -257,7 +277,7 @@ class PlatformCapabilitiesService:
     ) -> dict[str, str]:
         errored_sources = {error.service for error in errors}
         health: dict[str, str] = {}
-        for source_name in ("pas", "pa", "dpm"):
+        for source_name in ("pas", "pa", "dpm", "ras"):
             if source_name in sources:
                 health[source_name] = "available"
             elif source_name in errored_sources:

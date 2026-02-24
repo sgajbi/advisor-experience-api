@@ -113,6 +113,33 @@ services:
       retries: 20
       start_period: 30s
 
+  ras:
+    build:
+      context: ${RAS_REPO_PATH}
+      dockerfile: Dockerfile
+    environment:
+      PAS_BASE_URL: http://pas-query:8001
+      PA_BASE_URL: http://pa:8000
+      UPSTREAM_TIMEOUT_SECONDS: 10
+      CONTRACT_VERSION: v1
+    depends_on:
+      pas-query:
+        condition: service_healthy
+      pa:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8300/integration/capabilities?consumerSystem=BFF&tenantId=default', timeout=5)"
+        ]
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
   bff:
     build:
       context: .
@@ -121,6 +148,7 @@ services:
       DECISIONING_SERVICE_BASE_URL: http://dpm:8000
       PORTFOLIO_DATA_PLATFORM_BASE_URL: http://pas-query:8001
       PERFORMANCE_ANALYTICS_BASE_URL: http://pa:8000
+      REPORTING_AGGREGATION_BASE_URL: http://ras:8300
       UPSTREAM_TIMEOUT_SECONDS: 10
       CONTRACT_VERSION: v1
     ports:
@@ -131,6 +159,8 @@ services:
       pas-query:
         condition: service_healthy
       pa:
+        condition: service_healthy
+      ras:
         condition: service_healthy
     healthcheck:
       test:

@@ -325,9 +325,15 @@ async def test_reporting_client_handles_non_dict_payload():
 @pytest.mark.asyncio
 async def test_reporting_client_summary_and_review_routes():
     client = ReportingClient(base_url="http://ras", timeout_seconds=2.0)
+    _FakeAsyncClient.queue_json(200, {"sourceService": "reporting-aggregation-service"})
     _FakeAsyncClient.queue_json(200, {"scope": {"portfolio_id": "P1"}})
     _FakeAsyncClient.queue_json(200, {"portfolio_id": "P1", "overview": {}})
 
+    capabilities_status, capabilities_payload = await client.get_capabilities(
+        consumer_system="BFF",
+        tenant_id="default",
+        correlation_id="corr-7",
+    )
     summary_status, summary_payload = await client.post_portfolio_summary(
         portfolio_id="P1",
         payload={"as_of_date": "2026-02-24", "sections": ["WEALTH"]},
@@ -339,9 +345,12 @@ async def test_reporting_client_summary_and_review_routes():
         correlation_id="corr-7",
     )
 
+    assert capabilities_status == 200
+    assert capabilities_payload["sourceService"] == "reporting-aggregation-service"
     assert summary_status == 200
     assert summary_payload["scope"]["portfolio_id"] == "P1"
     assert review_status == 200
     assert review_payload["portfolio_id"] == "P1"
-    assert _FakeAsyncClient.calls[0]["url"] == "http://ras/reports/portfolios/P1/summary"
-    assert _FakeAsyncClient.calls[1]["url"] == "http://ras/reports/portfolios/P1/review"
+    assert _FakeAsyncClient.calls[0]["url"] == "http://ras/integration/capabilities"
+    assert _FakeAsyncClient.calls[1]["url"] == "http://ras/reports/portfolios/P1/summary"
+    assert _FakeAsyncClient.calls[2]["url"] == "http://ras/reports/portfolios/P1/review"

@@ -101,6 +101,7 @@ jobs:
       DPM_REPO_PATH: ../dpm-rebalance-engine
       PAS_REPO_PATH: ../portfolio-analytics-system
       PA_REPO_PATH: ../performanceAnalytics
+      RAS_REPO_PATH: ../reporting-aggregation-service
     steps:
       - uses: actions/checkout@v4
 
@@ -109,6 +110,7 @@ jobs:
           git clone https://github.com/sgajbi/dpm-rebalance-engine.git ../dpm-rebalance-engine
           git clone https://github.com/sgajbi/portfolio-analytics-system.git ../portfolio-analytics-system
           git clone https://github.com/sgajbi/performanceAnalytics.git ../performanceAnalytics
+          git clone https://github.com/sgajbi/reporting-aggregation-service.git ../reporting-aggregation-service
 
       - name: Start live E2E stack
         run: make e2e-up

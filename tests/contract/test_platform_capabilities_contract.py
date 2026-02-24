@@ -31,6 +31,15 @@ def test_platform_capabilities_contract_shape(monkeypatch):
             "workflows": [],
         }
 
+    async def _ras(*args, **kwargs):
+        return 200, {
+            "contractVersion": "v1",
+            "sourceService": "reporting-aggregation-service",
+            "policyVersion": "ras-default-v1",
+            "features": [],
+            "workflows": [],
+        }
+
     async def _pas_policy(*args, **kwargs):
         return 200, {
             "policyProvenance": {
@@ -47,6 +56,7 @@ def test_platform_capabilities_contract_shape(monkeypatch):
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_effective_policy", _pas_policy)
     monkeypatch.setattr("app.clients.pa_client.PaClient.get_capabilities", _pa)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.get_capabilities", _dpm)
+    monkeypatch.setattr("app.clients.reporting_client.ReportingClient.get_capabilities", _ras)
 
     client = TestClient(app)
     response = client.get("/api/v1/platform/capabilities?consumerSystem=BFF&tenantId=default")
@@ -64,7 +74,7 @@ def test_platform_capabilities_contract_shape(monkeypatch):
     assert "policyVersionsBySource" in payload["normalized"]
     assert "pasPolicyDiagnostics" in payload["normalized"]
 
-    for service_name in ("pas", "pa", "dpm"):
+    for service_name in ("pas", "pa", "dpm", "ras"):
         source = payload["sources"][service_name]
         assert source["contractVersion"] == "v1"
         assert "sourceService" in source
