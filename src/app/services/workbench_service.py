@@ -27,12 +27,6 @@ from app.contracts.workbench import (
     WorkbenchTopChange,
 )
 
-_BENCHMARK_FALLBACK_RETURNS: dict[str, float] = {
-    "MODEL_60_40": 3.1,
-    "MSCI_ACWI": 4.2,
-    "CUSTOM": 2.8,
-}
-
 
 class WorkbenchService:
     def __init__(
@@ -258,41 +252,93 @@ class WorkbenchService:
             correlation_id=correlation_id,
             session_id=session_id,
         )
+        pa_payload = {
+            "portfolioId": portfolio_id,
+            "asOfDate": portfolio_360.as_of_date,
+            "period": period,
+            "groupBy": group_by,
+            "benchmarkCode": benchmark_code,
+            "portfolioReturnPct": (
+                portfolio_360.performance_snapshot.return_pct
+                if portfolio_360.performance_snapshot is not None
+                else None
+            ),
+            "benchmarkReturnPct": (
+                portfolio_360.performance_snapshot.benchmark_return_pct
+                if portfolio_360.performance_snapshot is not None
+                else None
+            ),
+            "currentPositions": [
+                {
+                    "securityId": row.security_id,
+                    "instrumentName": row.instrument_name,
+                    "assetClass": row.asset_class,
+                    "quantity": row.quantity,
+                }
+                for row in portfolio_360.current_positions
+            ],
+            "projectedPositions": [
+                {
+                    "securityId": row.security_id,
+                    "instrumentName": row.instrument_name,
+                    "assetClass": row.asset_class,
+                    "baselineQuantity": row.baseline_quantity,
+                    "proposedQuantity": row.proposed_quantity,
+                    "deltaQuantity": row.delta_quantity,
+                }
+                for row in portfolio_360.projected_positions
+            ],
+        }
+        pa_status, pa_response = await self._pa_client.get_workbench_analytics(
+            payload=pa_payload,
+            correlation_id=correlation_id,
+        )
+        if pa_status >= status.HTTP_400_BAD_REQUEST:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"PA workbench analytics unavailable: {pa_response}",
+            )
 
-        current_total = sum(item.quantity for item in portfolio_360.current_positions)
-        proposed_total = (
-            sum(item.proposed_quantity for item in portfolio_360.projected_positions)
-            if portfolio_360.projected_positions
-            else current_total
-        )
-
-        allocation_buckets = self._build_allocation_buckets(
-            current_positions=portfolio_360.current_positions,
-            projected_positions=portfolio_360.projected_positions,
-            group_by=group_by,
-            current_total=current_total,
-            proposed_total=proposed_total,
-        )
-        top_changes = self._top_changes(portfolio_360.projected_positions)
-        risk_proxy = self._risk_proxy(current_total, proposed_total, allocation_buckets)
-
-        portfolio_return = (
-            portfolio_360.performance_snapshot.return_pct
-            if portfolio_360.performance_snapshot is not None
-            else None
-        )
-        benchmark_return = (
-            portfolio_360.performance_snapshot.benchmark_return_pct
-            if portfolio_360.performance_snapshot is not None
-            else None
-        )
-        if benchmark_return is None:
-            benchmark_return = _BENCHMARK_FALLBACK_RETURNS.get(benchmark_code, 0.0)
-        active_return = (
-            portfolio_return - benchmark_return
-            if portfolio_return is not None and benchmark_return is not None
-            else None
-        )
+        try:
+            allocation_buckets = [
+                WorkbenchAnalyticsBucket(
+                    bucket_key=str(item.get("bucketKey", "")),
+                    bucket_label=str(item.get("bucketLabel", "")),
+                    current_quantity=float(item.get("currentQuantity", 0.0)),
+                    proposed_quantity=float(item.get("proposedQuantity", 0.0)),
+                    delta_quantity=float(item.get("deltaQuantity", 0.0)),
+                    current_weight_pct=float(item.get("currentWeightPct", 0.0)),
+                    proposed_weight_pct=float(item.get("proposedWeightPct", 0.0)),
+                )
+                for item in pa_response.get("allocationBuckets", [])
+                if isinstance(item, dict)
+            ]
+            top_changes = [
+                WorkbenchTopChange(
+                    security_id=str(item.get("securityId", "")),
+                    instrument_name=str(item.get("instrumentName", "")),
+                    delta_quantity=float(item.get("deltaQuantity", 0.0)),
+                    direction=str(item.get("direction", "UNKNOWN")),
+                )
+                for item in pa_response.get("topChanges", [])
+                if isinstance(item, dict)
+            ]
+            risk_data = pa_response.get("riskProxy", {})
+            if not isinstance(risk_data, dict):
+                risk_data = {}
+            risk_proxy = WorkbenchRiskProxy(
+                hhi_current=float(risk_data.get("hhiCurrent", 0.0)),
+                hhi_proposed=float(risk_data.get("hhiProposed", 0.0)),
+                hhi_delta=float(risk_data.get("hhiDelta", 0.0)),
+            )
+            portfolio_return = pa_response.get("portfolioReturnPct")
+            benchmark_return = pa_response.get("benchmarkReturnPct")
+            active_return = pa_response.get("activeReturnPct")
+        except (TypeError, ValueError) as exc:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Invalid PA workbench analytics payload: {exc}",
+            ) from exc
 
         return WorkbenchAnalyticsResponse(
             correlation_id=correlation_id,
@@ -319,112 +365,6 @@ class WorkbenchService:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=f"PAS core snapshot unavailable: {detail}",
-        )
-
-    def _build_allocation_buckets(
-        self,
-        current_positions: list[WorkbenchPositionView],
-        projected_positions: list[WorkbenchProjectedPositionView],
-        group_by: str,
-        current_total: float,
-        proposed_total: float,
-    ) -> list[WorkbenchAnalyticsBucket]:
-        from collections import defaultdict
-
-        aggregate: dict[str, dict[str, float | str]] = defaultdict(
-            lambda: {"bucket_label": "", "current_quantity": 0.0, "proposed_quantity": 0.0}
-        )
-
-        current_map = {item.security_id: item for item in current_positions}
-        projected_map = {item.security_id: item for item in projected_positions}
-        keys = set(current_map) | set(projected_map)
-
-        for security_id in keys:
-            current_item = current_map.get(security_id)
-            projected_item = projected_map.get(security_id)
-            if group_by.upper() == "SECURITY":
-                bucket_key = security_id
-                bucket_label = (
-                    projected_item.instrument_name
-                    if projected_item is not None
-                    else (current_item.instrument_name if current_item is not None else security_id)
-                )
-            else:
-                asset_class = (
-                    projected_item.asset_class
-                    if projected_item is not None
-                    else (current_item.asset_class if current_item is not None else None)
-                )
-                bucket_key = str(asset_class or "UNCLASSIFIED").upper()
-                bucket_label = bucket_key
-
-            aggregate[bucket_key]["bucket_label"] = bucket_label
-            aggregate[bucket_key]["current_quantity"] = float(
-                aggregate[bucket_key]["current_quantity"]
-            ) + (current_item.quantity if current_item is not None else 0.0)
-            aggregate[bucket_key]["proposed_quantity"] = float(
-                aggregate[bucket_key]["proposed_quantity"]
-            ) + (
-                projected_item.proposed_quantity
-                if projected_item is not None
-                else (current_item.quantity if current_item is not None else 0.0)
-            )
-
-        buckets: list[WorkbenchAnalyticsBucket] = []
-        for bucket_key, row in aggregate.items():
-            current_quantity = float(row["current_quantity"])
-            proposed_quantity = float(row["proposed_quantity"])
-            buckets.append(
-                WorkbenchAnalyticsBucket(
-                    bucket_key=bucket_key,
-                    bucket_label=str(row["bucket_label"]),
-                    current_quantity=current_quantity,
-                    proposed_quantity=proposed_quantity,
-                    delta_quantity=proposed_quantity - current_quantity,
-                    current_weight_pct=(
-                        (current_quantity / current_total) * 100 if current_total > 0 else 0.0
-                    ),
-                    proposed_weight_pct=(
-                        (proposed_quantity / proposed_total) * 100 if proposed_total > 0 else 0.0
-                    ),
-                )
-            )
-        buckets.sort(key=lambda item: abs(item.delta_quantity), reverse=True)
-        return buckets
-
-    def _top_changes(
-        self, projected_positions: list[WorkbenchProjectedPositionView]
-    ) -> list[WorkbenchTopChange]:
-        rows = sorted(projected_positions, key=lambda item: abs(item.delta_quantity), reverse=True)
-        return [
-            WorkbenchTopChange(
-                security_id=item.security_id,
-                instrument_name=item.instrument_name,
-                delta_quantity=item.delta_quantity,
-                direction="INCREASE" if item.delta_quantity >= 0 else "DECREASE",
-            )
-            for item in rows[:10]
-        ]
-
-    def _risk_proxy(
-        self,
-        current_total: float,
-        proposed_total: float,
-        allocation_buckets: list[WorkbenchAnalyticsBucket],
-    ) -> WorkbenchRiskProxy:
-        current_hhi = 0.0
-        proposed_hhi = 0.0
-        for bucket in allocation_buckets:
-            cw = bucket.current_quantity / current_total if current_total > 0 else 0.0
-            pw = bucket.proposed_quantity / proposed_total if proposed_total > 0 else 0.0
-            current_hhi += cw * cw
-            proposed_hhi += pw * pw
-        current_hhi_scaled = current_hhi * 10000
-        proposed_hhi_scaled = proposed_hhi * 10000
-        return WorkbenchRiskProxy(
-            hhi_current=current_hhi_scaled,
-            hhi_proposed=proposed_hhi_scaled,
-            hhi_delta=proposed_hhi_scaled - current_hhi_scaled,
         )
 
     async def _load_projected_state(

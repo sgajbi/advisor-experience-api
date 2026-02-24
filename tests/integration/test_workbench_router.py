@@ -158,6 +158,37 @@ def test_workbench_analytics_router(monkeypatch):
     async def _pa(*args, **kwargs):
         return 200, {"resultsByPeriod": {"YTD": {"net_cumulative_return": 1.5}}}
 
+    async def _pa_workbench(*args, **kwargs):
+        return 200, {
+            "portfolioId": "PF_1001",
+            "period": "YTD",
+            "groupBy": "ASSET_CLASS",
+            "benchmarkCode": "MODEL_60_40",
+            "portfolioReturnPct": 1.5,
+            "benchmarkReturnPct": 3.1,
+            "activeReturnPct": -1.6,
+            "allocationBuckets": [
+                {
+                    "bucketKey": "EQUITY",
+                    "bucketLabel": "EQUITY",
+                    "currentQuantity": 10.0,
+                    "proposedQuantity": 12.0,
+                    "deltaQuantity": 2.0,
+                    "currentWeightPct": 100.0,
+                    "proposedWeightPct": 100.0,
+                }
+            ],
+            "topChanges": [
+                {
+                    "securityId": "EQ_1",
+                    "instrumentName": "Equity 1",
+                    "deltaQuantity": 2.0,
+                    "direction": "INCREASE",
+                }
+            ],
+            "riskProxy": {"hhiCurrent": 10000.0, "hhiProposed": 10000.0, "hhiDelta": 0.0},
+        }
+
     async def _dpm_runs(*args, **kwargs):
         return 200, {"items": []}
 
@@ -165,6 +196,7 @@ def test_workbench_analytics_router(monkeypatch):
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_projected_positions", _pas_positions)
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_projected_summary", _pas_summary)
     monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_input_twr", _pa)
+    monkeypatch.setattr("app.clients.pa_client.PaClient.get_workbench_analytics", _pa_workbench)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.list_runs", _dpm_runs)
 
     client = TestClient(app)
