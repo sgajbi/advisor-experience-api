@@ -47,6 +47,11 @@ class PlatformCapabilitiesService:
                 tenant_id=tenant_id,
                 correlation_id=correlation_id,
             ),
+            self._pas_client.get_effective_policy(
+                consumer_system=consumer_system,
+                tenant_id=tenant_id,
+                correlation_id=correlation_id,
+            ),
             return_exceptions=True,
         )
 
@@ -54,7 +59,7 @@ class PlatformCapabilitiesService:
         errors: list[CapabilitySourceError] = []
         service_names = ["pas", "pa", "dpm"]
 
-        for service_name, result in zip(service_names, results, strict=True):
+        for service_name, result in zip(service_names, results[:3], strict=True):
             if isinstance(result, BaseException):
                 errors.append(
                     CapabilitySourceError(
@@ -78,9 +83,33 @@ class PlatformCapabilitiesService:
 
             sources[service_name] = payload
 
+        pas_policy_payload: dict[str, Any] | None = None
+        pas_policy_result = results[3]
+        if isinstance(pas_policy_result, BaseException):
+            errors.append(
+                CapabilitySourceError(
+                    service="pas_policy",
+                    status_code=500,
+                    detail=f"upstream_exception: {pas_policy_result}",
+                )
+            )
+        else:
+            policy_status_code, policy_payload = cast(tuple[int, dict[str, Any]], pas_policy_result)
+            if policy_status_code >= 400:
+                errors.append(
+                    CapabilitySourceError(
+                        service="pas_policy",
+                        status_code=policy_status_code,
+                        detail=str(policy_payload.get("detail", policy_payload)),
+                    )
+                )
+            else:
+                pas_policy_payload = policy_payload
+
         normalized = self._build_normalized_capabilities(
             sources=sources,
             errors=errors,
+            pas_policy=pas_policy_payload,
         )
         data = PlatformCapabilitiesData(
             consumerSystem=consumer_system,
@@ -98,6 +127,7 @@ class PlatformCapabilitiesService:
         *,
         sources: dict[str, dict[str, Any]],
         errors: list[CapabilitySourceError],
+        pas_policy: dict[str, Any] | None,
     ) -> PlatformCapabilitiesNormalized:
         input_modes_by_source: dict[str, list[str]] = {}
         input_modes_union: list[str] = []
@@ -169,6 +199,10 @@ class PlatformCapabilitiesService:
                 sources=sources, source_name="pa", workflow_key="performance_snapshot"
             ),
         }
+        pas_policy_diagnostics = self._pas_policy_diagnostics(
+            pas_policy=pas_policy,
+            errors=errors,
+        )
         return PlatformCapabilitiesNormalized(
             navigation=navigation,
             workflowFlags=workflow_flags,
@@ -176,6 +210,7 @@ class PlatformCapabilitiesService:
             inputModesUnion=input_modes_union,
             moduleHealth=module_health,
             policyVersionsBySource=policy_versions_by_source,
+            pasPolicyDiagnostics=pas_policy_diagnostics,
         )
 
     def _feature_enabled(
@@ -230,3 +265,48 @@ class PlatformCapabilitiesService:
             else:
                 health[source_name] = "unknown"
         return health
+
+    def _pas_policy_diagnostics(
+        self,
+        *,
+        pas_policy: dict[str, Any] | None,
+        errors: list[CapabilitySourceError],
+    ) -> dict[str, Any]:
+        diagnostics: dict[str, Any] = {
+            "available": False,
+            "allowedSections": [],
+            "warnings": [],
+            "policyProvenance": {
+                "policyVersion": "unknown",
+                "policySource": "unknown",
+                "matchedRuleId": "unknown",
+                "strictMode": False,
+            },
+        }
+
+        if pas_policy is not None:
+            diagnostics["available"] = True
+            allowed_sections = pas_policy.get("allowedSections", [])
+            warnings = pas_policy.get("warnings", [])
+            provenance = pas_policy.get("policyProvenance", {})
+            diagnostics["allowedSections"] = (
+                [str(section) for section in allowed_sections]
+                if isinstance(allowed_sections, list)
+                else []
+            )
+            diagnostics["warnings"] = (
+                [str(warning) for warning in warnings] if isinstance(warnings, list) else []
+            )
+            if isinstance(provenance, dict):
+                diagnostics["policyProvenance"] = {
+                    "policyVersion": str(provenance.get("policyVersion", "unknown")),
+                    "policySource": str(provenance.get("policySource", "unknown")),
+                    "matchedRuleId": str(provenance.get("matchedRuleId", "unknown")),
+                    "strictMode": bool(provenance.get("strictMode", False)),
+                }
+
+        if any(error.service == "pas_policy" for error in errors):
+            diagnostics["warnings"] = list(diagnostics["warnings"]) + [
+                "PAS_POLICY_ENDPOINT_UNAVAILABLE"
+            ]
+        return diagnostics

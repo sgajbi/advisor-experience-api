@@ -31,7 +31,20 @@ def test_platform_capabilities_contract_shape(monkeypatch):
             "workflows": [],
         }
 
+    async def _pas_policy(*args, **kwargs):
+        return 200, {
+            "policyProvenance": {
+                "policyVersion": "pas-default-v1",
+                "policySource": "default",
+                "matchedRuleId": "default",
+                "strictMode": False,
+            },
+            "allowedSections": ["OVERVIEW"],
+            "warnings": [],
+        }
+
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_capabilities", _pas)
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_effective_policy", _pas_policy)
     monkeypatch.setattr("app.clients.pa_client.PaClient.get_capabilities", _pa)
     monkeypatch.setattr("app.clients.dpm_client.DpmClient.get_capabilities", _dpm)
 
@@ -49,6 +62,7 @@ def test_platform_capabilities_contract_shape(monkeypatch):
     assert "workflowFlags" in payload["normalized"]
     assert "moduleHealth" in payload["normalized"]
     assert "policyVersionsBySource" in payload["normalized"]
+    assert "pasPolicyDiagnostics" in payload["normalized"]
 
     for service_name in ("pas", "pa", "dpm"):
         source = payload["sources"][service_name]

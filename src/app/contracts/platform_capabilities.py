@@ -16,6 +16,7 @@ class PlatformCapabilitiesNormalized(BaseModel):
     input_modes_union: list[str] = Field(alias="inputModesUnion")
     module_health: dict[str, str] = Field(alias="moduleHealth")
     policy_versions_by_source: dict[str, str] = Field(alias="policyVersionsBySource")
+    pas_policy_diagnostics: dict[str, Any] = Field(alias="pasPolicyDiagnostics")
 
     model_config = {"populate_by_name": True}
 
