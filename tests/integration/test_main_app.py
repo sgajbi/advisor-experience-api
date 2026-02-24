@@ -22,4 +22,3 @@ def test_unhandled_exception_handler_returns_problem_json():
     assert body["title"] == "Internal Server Error"
     assert body["status"] == 500
     assert body["error_code"] == "INTERNAL_ERROR"
-
