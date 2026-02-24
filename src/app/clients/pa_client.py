@@ -21,7 +21,7 @@ class PaClient:
             response = await client.get(url, params=params, headers=headers)
             return response.status_code, self._response_payload(response)
 
-    async def get_pas_snapshot_twr(
+    async def get_pas_input_twr(
         self,
         portfolio_id: str,
         as_of_date: str,
@@ -29,14 +29,13 @@ class PaClient:
         consumer_system: str,
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
-        url = f"{self._base_url}/performance/twr/pas-snapshot"
+        url = f"{self._base_url}/performance/twr/pas-input"
         headers = {"X-Correlation-Id": correlation_id}
         payload = {
             "portfolioId": portfolio_id,
             "asOfDate": as_of_date,
             "periods": periods,
             "consumerSystem": consumer_system,
-            "includeSections": ["PERFORMANCE"],
         }
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             response = await client.post(url, json=payload, headers=headers)

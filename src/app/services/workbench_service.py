@@ -54,7 +54,7 @@ class WorkbenchService:
         pas_status, pas_payload = await self._pas_client.get_core_snapshot(
             portfolio_id=portfolio_id,
             as_of_date=as_of_date,
-            include_sections=["OVERVIEW", "PERFORMANCE", "HOLDINGS"],
+            include_sections=["OVERVIEW", "HOLDINGS"],
             consumer_system="BFF",
             correlation_id=correlation_id,
         )
@@ -66,7 +66,7 @@ class WorkbenchService:
             fallback_as_of_date=as_of_date,
         )
 
-        pa_task = self._pa_client.get_pas_snapshot_twr(
+        pa_task = self._pa_client.get_pas_input_twr(
             portfolio_id=portfolio_id,
             as_of_date=as_of_date,
             periods=["YTD"],
