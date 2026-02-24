@@ -35,7 +35,7 @@ def _assert_payload(payload: dict) -> None:
             raise AssertionError(f"Expected {key}.sourceService={source_name}, got {actual}")
 
 
-def main() -> None:
+def test_platform_capabilities_live_upstreams() -> None:
     deadline = time.time() + 120
     last_error: Exception | None = None
 
@@ -43,7 +43,6 @@ def main() -> None:
         try:
             payload = _fetch()
             _assert_payload(payload)
-            print("E2E platform capabilities assertion passed")
             return
         except (
             AssertionError,
@@ -58,8 +57,8 @@ def main() -> None:
             last_error = exc
             time.sleep(2)
 
-    raise SystemExit(f"E2E validation failed: {last_error}")
+    raise AssertionError(f"E2E validation failed: {last_error}")
 
 
 if __name__ == "__main__":
-    main()
+    test_platform_capabilities_live_upstreams()
