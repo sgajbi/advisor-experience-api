@@ -25,16 +25,13 @@ Deliver an incremental hardening wave that raises meaningful coverage and expand
   - upstream clients (workbench analytics route, ingestion/reporting fallback payload handling)
   - workbench service edge paths (policy/offline paths, analytics payload guards, projected state guards, parsing edge cases)
 
-## Current Result (Wave 1)
+## Current Result (Wave 1 + Wave 2 on same PR)
 
-- Tests: 119 passing
-- Coverage: 97% (`src/app`)
-- `workbench_service` increased to 98%
+- Tests: 127 passing
+- Coverage: 99% (`src/app`)
+- `workbench_service` increased to 98% with broad branch hardening
+- All AEA client adapters reached 100% line coverage
 
 ## Follow-up
 
-Wave 2 will close remaining gaps in:
-- platform capabilities normalization edge cases
-- correlation helper branch edges
-- residual client fallback branches
-to move AEA toward 99%+ target.
+Wave 3 can focus on final branch-coverage gaps and deprecation warning cleanup.

@@ -512,6 +512,16 @@ def test_parse_pa_snapshot_non_dict_period_payload_returns_none():
     assert result is None
 
 
+def test_parse_pa_snapshot_none_period_key_returns_none():
+    service, _, _, _ = _build_service()
+    result = service._parse_pa_snapshot(
+        (200, {"resultsByPeriod": {None: {"net_cumulative_return": 1.0}}}),
+        [],
+        [],
+    )
+    assert result is None
+
+
 def test_parse_dpm_snapshot_non_dict_latest_returns_not_available():
     service, _, _, _ = _build_service()
     result = service._parse_dpm_snapshot((200, {"items": ["bad"]}), [], [])

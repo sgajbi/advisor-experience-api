@@ -202,3 +202,70 @@ async def test_platform_capabilities_partial_failure_on_error():
         "PAS_POLICY_ENDPOINT_UNAVAILABLE"
         in (response.data.normalized.pas_policy_diagnostics["warnings"])
     )
+
+
+@pytest.mark.asyncio
+async def test_platform_capabilities_normalization_handles_malformed_feature_shapes():
+    service = PlatformCapabilitiesService(
+        dpm_client=_StubClient(
+            200,
+            {
+                "sourceService": "dpm",
+                "policyVersion": "dpm-v1",
+                "features": "invalid",
+                "workflows": "invalid",
+            },
+        ),
+        pas_client=_StubClient(
+            200,
+            {
+                "sourceService": "pas",
+                "policyVersion": "pas-v1",
+                "features": [{"key": "pas.integration.core_snapshot", "enabled": True}],
+                "workflows": [{"workflow_key": "portfolio_bulk_onboarding", "enabled": True}],
+                "supportedInputModes": "pas_ref",
+            },
+            policy_payload={
+                "policyProvenance": "invalid",
+                "allowedSections": "invalid",
+                "warnings": "invalid",
+            },
+        ),
+        pa_client=_StubClient(
+            200,
+            {
+                "sourceService": "pa",
+                "policyVersion": "pa-v1",
+                "features": [{"key": "pa.analytics.twr", "enabled": False}],
+                "workflows": [{"workflow_key": "performance_snapshot", "enabled": True}],
+            },
+        ),
+        reporting_client=_StubClient(
+            200,
+            {
+                "sourceService": "reporting-aggregation-service",
+                "policyVersion": "ras-v1",
+                "features": [{"key": "ras.reporting.portfolio_summary", "enabled": True}],
+                "workflows": [{"workflow_key": "portfolio_reporting", "enabled": False}],
+            },
+        ),
+        contract_version="v1",
+    )
+
+    response = await service.get_platform_capabilities(
+        consumer_system="BFF",
+        tenant_id="default",
+        correlation_id="corr-3",
+    )
+
+    normalized = response.data.normalized
+    assert normalized.navigation["portfolio_intake"] is True
+    assert normalized.navigation["advisory_pipeline"] is False
+    assert normalized.navigation["analytics_studio"] is False
+    assert normalized.workflow_flags["proposal_lifecycle"] is False
+    assert normalized.workflow_flags["performance_snapshot"] is True
+    assert normalized.input_modes_by_source["pas"] == []
+    assert normalized.pas_policy_diagnostics["available"] is True
+    assert normalized.pas_policy_diagnostics["allowedSections"] == []
+    assert normalized.pas_policy_diagnostics["warnings"] == []
+    assert normalized.pas_policy_diagnostics["policyProvenance"]["policyVersion"] == "unknown"
