@@ -230,3 +230,158 @@ def test_e2e_reporting_snapshot_summary_review(monkeypatch) -> None:
     assert snapshot.json()["portfolioId"] == "DEMO_DPM_EUR_001"
     assert summary.json()["data"]["wealth"]["total_market_value"] == 123.0
     assert review.json()["data"]["overview"]["total_market_value"] == 1000.0
+
+
+def test_e2e_platform_capabilities_partial_failure_when_one_upstream_fails(
+    monkeypatch,
+) -> None:
+    async def _pas(*args, **kwargs):
+        return 200, {
+            "sourceService": "portfolio-analytics-system",
+            "contractVersion": "v1",
+            "policyVersion": "pas-default-v1",
+            "features": [{"key": "pas.integration.core_snapshot", "enabled": True}],
+            "workflows": [],
+            "supportedInputModes": ["pas_ref"],
+        }
+
+    async def _pa(*args, **kwargs):
+        return 503, {"detail": "PA unavailable"}
+
+    async def _dpm(*args, **kwargs):
+        return 200, {
+            "sourceService": "dpm-rebalance-engine",
+            "contractVersion": "v1",
+            "policyVersion": "dpm-default-v1",
+            "features": [{"key": "dpm.proposals.lifecycle", "enabled": True}],
+            "workflows": [],
+            "supportedInputModes": ["pas_ref", "inline_bundle"],
+        }
+
+    async def _ras(*args, **kwargs):
+        return 200, {
+            "sourceService": "reporting-aggregation-service",
+            "contractVersion": "v1",
+            "policyVersion": "ras-default-v1",
+            "features": [{"key": "ras.reporting.portfolio_summary", "enabled": True}],
+            "workflows": [],
+            "supportedInputModes": ["pas_ref"],
+        }
+
+    async def _pas_policy(*args, **kwargs):
+        return 200, {
+            "policyProvenance": {
+                "policyVersion": "pas-default-v1",
+                "policySource": "tenant",
+                "matchedRuleId": "tenant.default.consumers.BFF",
+                "strictMode": False,
+            },
+            "allowedSections": ["OVERVIEW"],
+            "warnings": [],
+        }
+
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_capabilities", _pas)
+    monkeypatch.setattr("app.clients.pa_client.PaClient.get_capabilities", _pa)
+    monkeypatch.setattr("app.clients.dpm_client.DpmClient.get_capabilities", _dpm)
+    monkeypatch.setattr("app.clients.reporting_client.ReportingClient.get_capabilities", _ras)
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_effective_policy", _pas_policy)
+
+    client = TestClient(app)
+    response = client.get("/api/v1/platform/capabilities?consumerSystem=BFF&tenantId=default")
+
+    assert response.status_code == 200
+    body = response.json()["data"]
+    assert body["partialFailure"] is True
+    assert any(item["service"] == "pa" for item in body["errors"])
+    assert body["normalized"]["moduleHealth"]["pa"] == "unavailable"
+
+
+def test_e2e_reporting_snapshot_maps_upstream_failure_to_gateway_error(monkeypatch) -> None:
+    async def _snapshot_failure(self, portfolio_id, as_of_date, correlation_id):  # noqa: ANN001
+        _ = self, portfolio_id, as_of_date, correlation_id
+        return 503, {"detail": "RAS unavailable"}
+
+    monkeypatch.setattr(
+        "app.clients.reporting_client.ReportingClient.get_portfolio_snapshot",
+        _snapshot_failure,
+    )
+    client = TestClient(app)
+    response = client.get("/api/v1/reports/DEMO_DPM_EUR_001/snapshot?asOfDate=2026-02-24")
+
+    assert response.status_code == 502
+    assert "Reporting snapshot unavailable" in response.json()["detail"]
+
+
+def test_e2e_sandbox_policy_feedback_unavailable_when_dpm_simulation_fails(monkeypatch) -> None:
+    async def _pas_core(*args, **kwargs):
+        return 200, {
+            "portfolio": {"portfolio_id": "PF_1001", "base_currency": "USD"},
+            "snapshot": {
+                "as_of_date": "2026-02-23",
+                "overview": {"total_market_value": 1000.0, "total_cash": 100.0},
+            },
+        }
+
+    async def _pas_create(*args, **kwargs):
+        return 201, {"session": {"session_id": "sess_2", "version": 1}}
+
+    async def _pas_add(*args, **kwargs):
+        return 200, {"session_id": "sess_2", "version": 2}
+
+    async def _pas_positions(*args, **kwargs):
+        return 200, {
+            "positions": [
+                {
+                    "security_id": "EQ_1",
+                    "instrument_name": "Equity 1",
+                    "asset_class": "Equity",
+                    "baseline_quantity": 10,
+                    "proposed_quantity": 11,
+                    "delta_quantity": 1,
+                }
+            ]
+        }
+
+    async def _pas_summary(*args, **kwargs):
+        return 200, {
+            "total_baseline_positions": 1,
+            "total_proposed_positions": 1,
+            "net_delta_quantity": 1.0,
+        }
+
+    async def _pa(*args, **kwargs):
+        return 200, {"resultsByPeriod": {"YTD": {"net_cumulative_return": 1.2}}}
+
+    async def _dpm_runs(*args, **kwargs):
+        return 200, {"items": []}
+
+    async def _dpm_simulate_failure(*args, **kwargs):
+        return 503, {"detail": "DPM policy service unavailable"}
+
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_core_snapshot", _pas_core)
+    monkeypatch.setattr("app.clients.pas_client.PasClient.create_simulation_session", _pas_create)
+    monkeypatch.setattr("app.clients.pas_client.PasClient.add_simulation_changes", _pas_add)
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_projected_positions", _pas_positions)
+    monkeypatch.setattr("app.clients.pas_client.PasClient.get_projected_summary", _pas_summary)
+    monkeypatch.setattr("app.clients.pa_client.PaClient.get_pas_input_twr", _pa)
+    monkeypatch.setattr("app.clients.dpm_client.DpmClient.list_runs", _dpm_runs)
+    monkeypatch.setattr("app.clients.dpm_client.DpmClient.simulate_proposal", _dpm_simulate_failure)
+
+    client = TestClient(app)
+    created = client.post(
+        "/api/v1/workbench/PF_1001/sandbox/sessions",
+        json={"created_by": "advisor_2"},
+    )
+    updated = client.post(
+        "/api/v1/workbench/PF_1001/sandbox/sessions/sess_2/changes",
+        json={
+            "changes": [{"security_id": "EQ_1", "transaction_type": "BUY", "quantity": 1}],
+            "evaluate_policy": True,
+        },
+    )
+
+    assert created.status_code == 200
+    assert updated.status_code == 200
+    payload = updated.json()
+    assert payload["policy_feedback"]["status"] == "UNAVAILABLE"
+    assert "DPM_POLICY_SIMULATION_UNAVAILABLE" in payload["warnings"]
