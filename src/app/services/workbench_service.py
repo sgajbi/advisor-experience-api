@@ -27,6 +27,7 @@ from app.contracts.workbench import (
     WorkbenchTopChange,
 )
 
+
 class WorkbenchService:
     def __init__(
         self,
