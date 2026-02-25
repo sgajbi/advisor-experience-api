@@ -76,3 +76,14 @@ python -m pytest --cov=src/app --cov-report=term-missing
 - `docs/demo/README.md`
 - `docs/demo/payloads/proposal-create.json`
 - `docs/demo/scripts/demo-approval-chain.sh`
+
+## Platform Foundation Commands
+
+- `make migration-smoke`
+- `make migration-apply`
+- `make security-audit`
+
+Standards documentation:
+
+- `docs/standards/migration-contract.md`
+- `docs/standards/data-model-ownership.md`
