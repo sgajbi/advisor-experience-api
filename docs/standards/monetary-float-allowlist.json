@@ -1,34 +1,187 @@
 {
   "description": "Approved baseline monetary-float findings. New findings fail CI.",
+  "policy_version": "1.1.0",
+  "generated_at": "2026-02-25T14:51:35Z",
   "allowlist": [
-    "src/app/contracts/workbench.py:12:market_value_base: float",
-    "src/app/contracts/workbench.py:133:current_weight_pct: float",
-    "src/app/contracts/workbench.py:134:proposed_weight_pct: float",
-    "src/app/contracts/workbench.py:13:cash_weight_pct: float",
-    "src/app/contracts/workbench.py:158:portfolio_return_pct: float | None = None",
-    "src/app/contracts/workbench.py:159:benchmark_return_pct: float | None = None",
-    "src/app/contracts/workbench.py:160:active_return_pct: float | None = None",
-    "src/app/contracts/workbench.py:19:return_pct: float | None = None",
-    "src/app/contracts/workbench.py:20:benchmark_return_pct: float | None = None",
-    "src/app/contracts/workbench.py:52:market_value_base: float | None = None",
-    "src/app/contracts/workbench.py:53:weight_pct: float | None = None",
-    "src/app/contracts/workbench.py:96:price: float | None = None",
-    "src/app/contracts/workbench.py:97:amount: float | None = None",
-    "src/app/services/workbench_service.py:316:current_weight_pct=float(",
-    "src/app/services/workbench_service.py:319:proposed_weight_pct=float(",
-    "src/app/services/workbench_service.py:340:hhi_current=float(quantize_risk(risk_data.get(\"hhiCurrent\", 0.0))),",
-    "src/app/services/workbench_service.py:341:hhi_proposed=float(quantize_risk(risk_data.get(\"hhiProposed\", 0.0))),",
-    "src/app/services/workbench_service.py:342:hhi_delta=float(quantize_risk(risk_data.get(\"hhiDelta\", 0.0))),",
-    "src/app/services/workbench_service.py:362:float(quantize_performance(portfolio_return))",
-    "src/app/services/workbench_service.py:367:float(quantize_performance(benchmark_return))",
-    "src/app/services/workbench_service.py:372:float(quantize_performance(active_return)) if active_return is not None else None",
-    "src/app/services/workbench_service.py:455:total_market_value = float(",
-    "src/app/services/workbench_service.py:476:float(quantize_performance(weight_pct_raw))",
-    "src/app/services/workbench_service.py:481:weight_pct = float(",
-    "src/app/services/workbench_service.py:501:def _parse_position_market_value(self, item: dict[str, Any]) -> float | None:",
-    "src/app/services/workbench_service.py:509:return float(quantize_money(value))",
-    "src/app/services/workbench_service.py:524:return float(quantize_money(value))",
-    "src/app/services/workbench_service.py:627:total_market_value = float(quantize_money(overview_payload.get(\"total_market_value\", 0.0)))",
-    "src/app/services/workbench_service.py:631:cash_weight = float(quantize_performance(max(0.0, total_cash / total_market_value)))"
+    {
+      "finding": "scripts/check_monetary_float_usage.py:112:\"justification\": \"Temporary approved monetary float usage; migrate to Decimal.\",",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:12:market_value_base: float",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:133:current_weight_pct: float",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:134:proposed_weight_pct: float",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:13:cash_weight_pct: float",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:158:portfolio_return_pct: float | None = None",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:159:benchmark_return_pct: float | None = None",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:160:active_return_pct: float | None = None",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:19:return_pct: float | None = None",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:20:benchmark_return_pct: float | None = None",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:52:market_value_base: float | None = None",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:53:weight_pct: float | None = None",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:96:price: float | None = None",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/contracts/workbench.py:97:amount: float | None = None",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:316:current_weight_pct=float(",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:319:proposed_weight_pct=float(",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:340:hhi_current=float(quantize_risk(risk_data.get(\"hhiCurrent\", 0.0))),",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:341:hhi_proposed=float(quantize_risk(risk_data.get(\"hhiProposed\", 0.0))),",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:342:hhi_delta=float(quantize_risk(risk_data.get(\"hhiDelta\", 0.0))),",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:362:float(quantize_performance(portfolio_return))",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:367:float(quantize_performance(benchmark_return))",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:372:float(quantize_performance(active_return)) if active_return is not None else None",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:455:total_market_value = float(",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:476:float(quantize_performance(weight_pct_raw))",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:481:weight_pct = float(",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:501:def _parse_position_market_value(self, item: dict[str, Any]) -> float | None:",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:509:return float(quantize_money(value))",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:524:return float(quantize_money(value))",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:627:total_market_value = float(quantize_money(overview_payload.get(\"total_market_value\", 0.0)))",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    },
+    {
+      "finding": "src/app/services/workbench_service.py:631:cash_weight = float(quantize_performance(max(0.0, total_cash / total_market_value)))",
+      "justification": "Temporary approved monetary float usage; migrate to Decimal.",
+      "owner": "platform-governance",
+      "review_by": "2026-08-24"
+    }
   ]
 }
