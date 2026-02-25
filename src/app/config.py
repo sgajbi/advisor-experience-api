@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     performance_analytics_base_url: str = Field(default="http://localhost:8002")
     reporting_aggregation_base_url: str = Field(default="http://localhost:8300")
     upstream_timeout_seconds: float = Field(default=3.0)
+    upstream_max_retries: int = Field(default=2)
+    upstream_retry_backoff_seconds: float = Field(default=0.2)
 
 
 settings = Settings()

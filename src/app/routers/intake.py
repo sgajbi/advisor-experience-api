@@ -15,10 +15,14 @@ def _intake_service() -> IntakeService:
         pas_ingestion_client=PasIngestionClient(
             base_url=settings.portfolio_data_ingestion_base_url,
             timeout_seconds=settings.upstream_timeout_seconds,
+            max_retries=settings.upstream_max_retries,
+            retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
         ),
         pas_query_client=PasClient(
             base_url=settings.portfolio_data_platform_base_url,
             timeout_seconds=settings.upstream_timeout_seconds,
+            max_retries=settings.upstream_max_retries,
+            retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
         ),
     )
 

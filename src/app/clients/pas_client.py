@@ -1,14 +1,21 @@
 from typing import Any
 
-import httpx
-
+from app.clients.http_resilience import request_with_retry
 from app.middleware.correlation import propagation_headers
 
 
 class PasClient:
-    def __init__(self, base_url: str, timeout_seconds: float):
+    def __init__(
+        self,
+        base_url: str,
+        timeout_seconds: float,
+        max_retries: int = 2,
+        retry_backoff_seconds: float = 0.2,
+    ):
         self._base_url = base_url.rstrip("/")
         self._timeout = timeout_seconds
+        self._max_retries = max_retries
+        self._retry_backoff_seconds = retry_backoff_seconds
 
     async def get_capabilities(
         self,
@@ -19,9 +26,15 @@ class PasClient:
         url = f"{self._base_url}/integration/capabilities"
         params = {"consumerSystem": consumer_system, "tenantId": tenant_id}
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.get(url, params=params, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="GET",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            params=params,
+            headers=headers,
+        )
 
     async def get_effective_policy(
         self,
@@ -32,9 +45,15 @@ class PasClient:
         url = f"{self._base_url}/integration/policy/effective"
         params = {"consumerSystem": consumer_system, "tenantId": tenant_id}
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.get(url, params=params, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="GET",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            params=params,
+            headers=headers,
+        )
 
     async def list_portfolios(
         self,
@@ -42,9 +61,14 @@ class PasClient:
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/portfolios"
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.get(url, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="GET",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            headers=headers,
+        )
 
     async def get_core_snapshot(
         self,
@@ -61,9 +85,15 @@ class PasClient:
             "includeSections": include_sections,
             "consumerSystem": consumer_system,
         }
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.post(url, json=payload, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="POST",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            json_body=payload,
+            headers=headers,
+        )
 
     async def list_instruments(
         self,
@@ -73,9 +103,15 @@ class PasClient:
         url = f"{self._base_url}/instruments"
         headers = propagation_headers(correlation_id)
         params = {"skip": 0, "limit": limit}
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.get(url, params=params, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="GET",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            params=params,
+            headers=headers,
+        )
 
     async def get_portfolio_lookups(
         self,
@@ -112,9 +148,15 @@ class PasClient:
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}{path}"
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.get(url, params=params, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="GET",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            params=params,
+            headers=headers,
+        )
 
     async def create_simulation_session(
         self,
@@ -130,9 +172,15 @@ class PasClient:
             "created_by": created_by,
             "ttl_hours": ttl_hours,
         }
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.post(url, json=payload, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="POST",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            json_body=payload,
+            headers=headers,
+        )
 
     async def add_simulation_changes(
         self,
@@ -143,9 +191,15 @@ class PasClient:
         url = f"{self._base_url}/simulation-sessions/{session_id}/changes"
         headers = propagation_headers(correlation_id)
         payload = {"changes": changes}
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.post(url, json=payload, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="POST",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            json_body=payload,
+            headers=headers,
+        )
 
     async def get_projected_positions(
         self,
@@ -154,9 +208,14 @@ class PasClient:
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/simulation-sessions/{session_id}/projected-positions"
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.get(url, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="GET",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            headers=headers,
+        )
 
     async def get_projected_summary(
         self,
@@ -165,15 +224,11 @@ class PasClient:
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/simulation-sessions/{session_id}/projected-summary"
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.get(url, headers=headers)
-            return response.status_code, self._response_payload(response)
-
-    def _response_payload(self, response: httpx.Response) -> dict[str, Any]:
-        try:
-            payload = response.json()
-        except ValueError:
-            payload = {"detail": response.text}
-        if isinstance(payload, dict):
-            return payload
-        return {"detail": payload}
+        return await request_with_retry(
+            method="GET",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            headers=headers,
+        )
