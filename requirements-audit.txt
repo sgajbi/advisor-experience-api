@@ -1,0 +1,13 @@
+fastapi>=0.129.0
+uvicorn>=0.35.0
+pydantic>=2.11.0
+pydantic-settings>=2.10.0
+httpx>=0.28.0
+python-multipart>=0.0.9
+prometheus-fastapi-instrumentator>=7.1.0
+pytest>=8.4.0
+pytest-asyncio>=0.26.0
+pytest-cov>=6.2.1
+ruff>=0.15.0
+mypy>=1.13.0
+pip-audit>=2.9.0
