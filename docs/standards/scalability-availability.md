@@ -29,6 +29,21 @@ This repository adopts the platform-wide standard defined in pbwm-platform-docs/
 - Growth assumptions for upstream payload sizes are reviewed quarterly and reflected in BFF timeout and pagination policies.
 - Retention and archival execution remains upstream, while AEA enforces request shaping to avoid unbounded historical fan-out.
 
+## Caching Policy Baseline
+
+- AEA does not own correctness-critical caches for financial calculations; upstream PAS/PA/RAS remain the source of truth.
+- Client-facing response shaping may use explicit TTL request controls where contract-approved (`ttl_hours`), with ownership in BFF read orchestration.
+- Invalidation owner is the upstream domain service that owns source data; stale-read tolerance is limited to UI convenience views only.
+- Any cache addition requires explicit TTL, invalidation owner, and stale-read behavior documented via ADR/RFC.
+
+## Scale Signal Metrics Coverage
+
+- AEA exports service HTTP metrics via `/metrics` and follows platform label conventions (`service`, `env`, `endpoint`, `status_code`).
+- Platform-shared infrastructure metrics for CPU/memory, database, and queue signals are sourced through:
+  - `pbwm-platform-docs/platform-stack/prometheus/prometheus.yml`
+  - `pbwm-platform-docs/platform-stack/docker-compose.yml`
+  - `pbwm-platform-docs/Platform Observability Standards.md`
+
 ## Deviation Rule
 
 Any deviation from this standard requires ADR/RFC with remediation timeline.

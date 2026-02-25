@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Request, status
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, Request, Response, status
 from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
@@ -10,7 +12,15 @@ from app.routers.proposals import router as proposals_router
 from app.routers.reporting import router as reporting_router
 from app.routers.workbench import router as workbench_router
 
-app = FastAPI(title="Advisor Experience API", version="0.1.0")
+
+@asynccontextmanager
+async def _app_lifespan(application: FastAPI):
+    application.state.is_draining = False
+    yield
+    application.state.is_draining = True
+
+
+app = FastAPI(title="Advisor Experience API", version="0.1.0", lifespan=_app_lifespan)
 setup_logging()
 app.middleware("http")(correlation_middleware)
 Instrumentator().instrument(app).expose(app)
@@ -32,7 +42,10 @@ async def health_live() -> dict[str, str]:
 
 
 @app.get("/health/ready")
-async def health_ready() -> dict[str, str]:
+async def health_ready(response: Response) -> dict[str, str]:
+    if bool(getattr(app.state, "is_draining", False)):
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        return {"status": "draining"}
     return {"status": "ready"}
 
 
