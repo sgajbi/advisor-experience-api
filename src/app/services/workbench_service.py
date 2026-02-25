@@ -8,7 +8,6 @@ from app.clients.dpm_client import DpmClient
 from app.clients.pa_client import PaClient
 from app.clients.pas_client import PasClient
 from app.config import settings
-from app.precision_policy import quantize_money, quantize_performance, quantize_quantity, quantize_risk
 from app.contracts.workbench import (
     WorkbenchAnalyticsBucket,
     WorkbenchAnalyticsResponse,
@@ -26,6 +25,12 @@ from app.contracts.workbench import (
     WorkbenchRiskProxy,
     WorkbenchSandboxStateResponse,
     WorkbenchTopChange,
+)
+from app.precision_policy import (
+    quantize_money,
+    quantize_performance,
+    quantize_quantity,
+    quantize_risk,
 )
 
 
@@ -424,8 +429,12 @@ class WorkbenchService:
                         asset_class=(
                             str(row["asset_class"]) if row.get("asset_class") is not None else None
                         ),
-                        baseline_quantity=float(quantize_quantity(row.get("baseline_quantity", 0.0))),
-                        proposed_quantity=float(quantize_quantity(row.get("proposed_quantity", 0.0))),
+                        baseline_quantity=float(
+                            quantize_quantity(row.get("baseline_quantity", 0.0))
+                        ),
+                        proposed_quantity=float(
+                            quantize_quantity(row.get("proposed_quantity", 0.0))
+                        ),
                         delta_quantity=float(quantize_quantity(row.get("delta_quantity", 0.0))),
                     )
                 )
@@ -433,7 +442,9 @@ class WorkbenchService:
         summary = WorkbenchProjectedSummary(
             total_baseline_positions=int(summary_payload.get("total_baseline_positions", 0)),
             total_proposed_positions=int(summary_payload.get("total_proposed_positions", 0)),
-            net_delta_quantity=float(quantize_quantity(summary_payload.get("net_delta_quantity", 0.0))),
+            net_delta_quantity=float(
+                quantize_quantity(summary_payload.get("net_delta_quantity", 0.0))
+            ),
         )
         return rows, summary
 
@@ -443,7 +454,9 @@ class WorkbenchService:
         overview_payload = snapshot_payload.get("overview", {})
         total_market_value = 0.0
         if isinstance(overview_payload, dict):
-            total_market_value = float(quantize_money(overview_payload.get("total_market_value", 0.0)))
+            total_market_value = float(
+                quantize_money(overview_payload.get("total_market_value", 0.0))
+            )
 
         holdings_payload = snapshot_payload.get("holdings", {})
         if not isinstance(holdings_payload, dict):
@@ -462,7 +475,9 @@ class WorkbenchService:
                 market_value_base = self._parse_position_market_value(item)
                 weight_pct_raw = item.get("weight_pct")
                 weight_pct = (
-                    float(quantize_performance(weight_pct_raw)) if weight_pct_raw is not None else None
+                    float(quantize_performance(weight_pct_raw))
+                    if weight_pct_raw is not None
+                    else None
                 )
                 if weight_pct is None and market_value_base is not None and total_market_value > 0:
                     weight_pct = float(
