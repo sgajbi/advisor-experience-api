@@ -20,7 +20,7 @@ migration-apply:
 	python scripts/migration_contract_check.py --mode no-schema
 
 security-audit:
-	python -m pip_audit
+	python -m pip_audit -r requirements-audit.txt
 
 test:
 	$(MAKE) test-unit
