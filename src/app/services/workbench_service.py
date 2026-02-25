@@ -369,9 +369,7 @@ class WorkbenchService:
                 else None
             ),
             active_return_pct=(
-                float(quantize_performance(active_return))
-                if active_return is not None
-                else None
+                float(quantize_performance(active_return)) if active_return is not None else None
             ),
             allocation_buckets=allocation_buckets,
             top_changes=top_changes,
