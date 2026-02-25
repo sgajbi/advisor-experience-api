@@ -23,6 +23,12 @@ This repository adopts the platform-wide standard defined in pbwm-platform-docs/
 - Backup and restore: persistence-owning upstream services are required to expose validated backup/restore runbooks;
   AEA validates readiness through `/health/ready` and dependency checks during platform startup.
 
+## Database Scalability Fundamentals
+
+- Query plan and index ownership remain with PAS/PA/DPM/RAS persistence domains; AEA does not own tables.
+- Growth assumptions for upstream payload sizes are reviewed quarterly and reflected in BFF timeout and pagination policies.
+- Retention and archival execution remains upstream, while AEA enforces request shaping to avoid unbounded historical fan-out.
+
 ## Deviation Rule
 
 Any deviation from this standard requires ADR/RFC with remediation timeline.
