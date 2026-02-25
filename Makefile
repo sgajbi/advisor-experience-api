@@ -1,4 +1,4 @@
-.PHONY: install lint typecheck openapi-gate test test-unit test-integration test-coverage test-e2e test-e2e-live security-audit check ci ci-local ci-local-docker ci-local-docker-down run clean docker-up docker-down e2e-up e2e-down
+.PHONY: install lint typecheck openapi-gate migration-smoke migration-apply test test-unit test-integration test-coverage test-e2e test-e2e-live security-audit check ci ci-local ci-local-docker ci-local-docker-down run clean docker-up docker-down e2e-up e2e-down
 
 install:
 	python -m pip install -e ".[dev]"
@@ -12,6 +12,12 @@ typecheck:
 
 openapi-gate:
 	python -m pytest tests/contract/test_workbench_contract.py -q
+
+migration-smoke:
+	python scripts/migration_contract_check.py --mode no-schema
+
+migration-apply:
+	python scripts/migration_contract_check.py --mode no-schema
 
 security-audit:
 	python -m pip_audit
@@ -42,7 +48,7 @@ test-e2e-live:
 
 check: lint typecheck openapi-gate test
 
-ci: lint typecheck openapi-gate test-integration test-coverage security-audit
+ci: lint typecheck openapi-gate migration-smoke test-integration test-coverage security-audit
 
 ci-local: check test-integration
 
