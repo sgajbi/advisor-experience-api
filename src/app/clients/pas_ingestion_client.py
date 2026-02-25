@@ -1,14 +1,21 @@
 from typing import Any
 
-import httpx
-
+from app.clients.http_resilience import request_with_retry
 from app.middleware.correlation import propagation_headers
 
 
 class PasIngestionClient:
-    def __init__(self, base_url: str, timeout_seconds: float):
+    def __init__(
+        self,
+        base_url: str,
+        timeout_seconds: float,
+        max_retries: int = 2,
+        retry_backoff_seconds: float = 0.2,
+    ):
         self._base_url = base_url.rstrip("/")
         self._timeout = timeout_seconds
+        self._max_retries = max_retries
+        self._retry_backoff_seconds = retry_backoff_seconds
 
     async def ingest_portfolio_bundle(
         self,
@@ -17,9 +24,15 @@ class PasIngestionClient:
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/ingest/portfolio-bundle"
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.post(url, json=body, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="POST",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            json_body=body,
+            headers=headers,
+        )
 
     async def preview_upload(
         self,
@@ -68,15 +81,13 @@ class PasIngestionClient:
         headers = propagation_headers(correlation_id)
         form_data = {"entityType": entity_type, **extra_data}
         files = {"file": (filename, content)}
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.post(url, data=form_data, files=files, headers=headers)
-            return response.status_code, self._response_payload(response)
-
-    def _response_payload(self, response: httpx.Response) -> dict[str, Any]:
-        try:
-            payload = response.json()
-        except ValueError:
-            payload = {"detail": response.text}
-        if isinstance(payload, dict):
-            return payload
-        return {"detail": payload}
+        return await request_with_retry(
+            method="POST",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            data=form_data,
+            files=files,
+            headers=headers,
+        )

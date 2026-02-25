@@ -24,6 +24,8 @@ def _proposal_service() -> ProposalService:
         dpm_client=DpmClient(
             base_url=settings.decisioning_service_base_url,
             timeout_seconds=settings.upstream_timeout_seconds,
+            max_retries=settings.upstream_max_retries,
+            retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
         )
     )
 

@@ -17,18 +17,26 @@ def _platform_capabilities_service() -> PlatformCapabilitiesService:
         dpm_client=DpmClient(
             base_url=settings.decisioning_service_base_url,
             timeout_seconds=settings.upstream_timeout_seconds,
+            max_retries=settings.upstream_max_retries,
+            retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
         ),
         pas_client=PasClient(
             base_url=settings.portfolio_data_platform_base_url,
             timeout_seconds=settings.upstream_timeout_seconds,
+            max_retries=settings.upstream_max_retries,
+            retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
         ),
         pa_client=PaClient(
             base_url=settings.performance_analytics_base_url,
             timeout_seconds=settings.upstream_timeout_seconds,
+            max_retries=settings.upstream_max_retries,
+            retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
         ),
         reporting_client=ReportingClient(
             base_url=settings.reporting_aggregation_base_url,
             timeout_seconds=settings.upstream_timeout_seconds,
+            max_retries=settings.upstream_max_retries,
+            retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
         ),
         contract_version=settings.contract_version,
     )

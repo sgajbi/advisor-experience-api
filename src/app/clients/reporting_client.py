@@ -1,14 +1,21 @@
 from typing import Any
 
-import httpx
-
+from app.clients.http_resilience import request_with_retry
 from app.middleware.correlation import propagation_headers
 
 
 class ReportingClient:
-    def __init__(self, base_url: str, timeout_seconds: float):
+    def __init__(
+        self,
+        base_url: str,
+        timeout_seconds: float,
+        max_retries: int = 2,
+        retry_backoff_seconds: float = 0.2,
+    ):
         self._base_url = base_url.rstrip("/")
         self._timeout = timeout_seconds
+        self._max_retries = max_retries
+        self._retry_backoff_seconds = retry_backoff_seconds
 
     async def get_portfolio_snapshot(
         self,
@@ -19,9 +26,15 @@ class ReportingClient:
         url = f"{self._base_url}/aggregations/portfolios/{portfolio_id}"
         params = {"asOfDate": as_of_date, "live": "true"}
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.get(url, params=params, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="GET",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            params=params,
+            headers=headers,
+        )
 
     async def get_capabilities(
         self,
@@ -32,9 +45,15 @@ class ReportingClient:
         url = f"{self._base_url}/integration/capabilities"
         params = {"consumerSystem": consumer_system, "tenantId": tenant_id}
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.get(url, params=params, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="GET",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            params=params,
+            headers=headers,
+        )
 
     async def post_portfolio_summary(
         self,
@@ -44,9 +63,15 @@ class ReportingClient:
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/reports/portfolios/{portfolio_id}/summary"
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.post(url, json=payload, headers=headers)
-            return response.status_code, self._response_payload(response)
+        return await request_with_retry(
+            method="POST",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            json_body=payload,
+            headers=headers,
+        )
 
     async def post_portfolio_review(
         self,
@@ -56,15 +81,12 @@ class ReportingClient:
     ) -> tuple[int, dict[str, Any]]:
         url = f"{self._base_url}/reports/portfolios/{portfolio_id}/review"
         headers = propagation_headers(correlation_id)
-        async with httpx.AsyncClient(timeout=self._timeout) as client:
-            response = await client.post(url, json=payload, headers=headers)
-            return response.status_code, self._response_payload(response)
-
-    def _response_payload(self, response: httpx.Response) -> dict[str, Any]:
-        try:
-            payload = response.json()
-        except ValueError:
-            payload = {"detail": response.text}
-        if isinstance(payload, dict):
-            return payload
-        return {"detail": payload}
+        return await request_with_retry(
+            method="POST",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            json_body=payload,
+            headers=headers,
+        )

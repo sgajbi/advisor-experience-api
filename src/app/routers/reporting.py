@@ -40,6 +40,8 @@ async def get_reporting_snapshot(
     client = ReportingClient(
         base_url=settings.reporting_aggregation_base_url,
         timeout_seconds=settings.upstream_timeout_seconds,
+        max_retries=settings.upstream_max_retries,
+        retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
     )
     correlation_id = correlation_id_var.get()
     status_code, payload = await client.get_portfolio_snapshot(
@@ -94,6 +96,8 @@ async def get_reporting_summary(
     client = ReportingClient(
         base_url=settings.reporting_aggregation_base_url,
         timeout_seconds=settings.upstream_timeout_seconds,
+        max_retries=settings.upstream_max_retries,
+        retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
     )
     correlation_id = correlation_id_var.get()
     status_code, payload = await client.post_portfolio_summary(
@@ -139,6 +143,8 @@ async def get_reporting_review(
     client = ReportingClient(
         base_url=settings.reporting_aggregation_base_url,
         timeout_seconds=settings.upstream_timeout_seconds,
+        max_retries=settings.upstream_max_retries,
+        retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
     )
     correlation_id = correlation_id_var.get()
     status_code, payload = await client.post_portfolio_review(
