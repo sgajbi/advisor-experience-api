@@ -1,3 +1,5 @@
+from concurrent.futures import ThreadPoolExecutor
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -22,3 +24,25 @@ def test_unhandled_exception_handler_returns_problem_json():
     assert body["title"] == "Internal Server Error"
     assert body["status"] == 500
     assert body["error_code"] == "INTERNAL_ERROR"
+
+
+def test_health_live_concurrency():
+    client = TestClient(app)
+
+    def _call_live() -> int:
+        return client.get("/health/live").status_code
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        statuses = list(pool.map(lambda _: _call_live(), range(32)))
+
+    assert all(status == 200 for status in statuses)
+
+
+def test_health_ready_returns_503_when_draining():
+    app.state.is_draining = True
+    client = TestClient(app)
+    response = client.get("/health/ready")
+    app.state.is_draining = False
+
+    assert response.status_code == 503
+    assert response.json() == {"status": "draining"}
