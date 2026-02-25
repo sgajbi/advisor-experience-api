@@ -47,7 +47,9 @@ class _RetryStatusAsyncClient:
         _ = url, params, headers
         _RetryStatusAsyncClient.calls += 1
         if _RetryStatusAsyncClient.calls == 1:
-            return httpx.Response(503, json={"detail": "try-again"}, request=httpx.Request("GET", "http://test"))
+            return httpx.Response(
+                503, json={"detail": "try-again"}, request=httpx.Request("GET", "http://test")
+            )
         return httpx.Response(200, json={"ok": True}, request=httpx.Request("GET", "http://test"))
 
 
