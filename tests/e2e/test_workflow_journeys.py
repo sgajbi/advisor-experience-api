@@ -390,4 +390,3 @@ def test_e2e_sandbox_policy_feedback_unavailable_when_dpm_simulation_fails(monke
     payload = updated.json()
     assert payload["policy_feedback"]["status"] == "UNAVAILABLE"
     assert "DPM_POLICY_SIMULATION_UNAVAILABLE" in payload["warnings"]
-
