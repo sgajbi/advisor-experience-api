@@ -5,6 +5,10 @@ from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.contracts.errors import ProblemDetails
+from app.enterprise_readiness import (
+    build_enterprise_audit_middleware,
+    validate_enterprise_runtime_config,
+)
 from app.middleware.correlation import correlation_id_var, correlation_middleware, setup_logging
 from app.routers.intake import router as intake_router
 from app.routers.platform import router as platform_router
@@ -22,7 +26,9 @@ async def _app_lifespan(application: FastAPI):
 
 app = FastAPI(title="Advisor Experience API", version="0.1.0", lifespan=_app_lifespan)
 setup_logging()
+validate_enterprise_runtime_config()
 app.middleware("http")(correlation_middleware)
+app.middleware("http")(build_enterprise_audit_middleware("advisor-experience-api"))
 Instrumentator().instrument(app).expose(app)
 app.include_router(proposals_router)
 app.include_router(platform_router)
