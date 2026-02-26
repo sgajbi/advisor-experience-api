@@ -90,4 +90,3 @@ def test_platform_health_ready_live() -> None:
 
 if __name__ == "__main__":
     test_platform_capabilities_live_upstreams()
-

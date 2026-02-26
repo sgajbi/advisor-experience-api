@@ -341,4 +341,3 @@ def test_platform_capabilities_module_health_marks_unknown_sources():
     assert health["pa"] == "unknown"
     assert health["dpm"] == "unknown"
     assert health["ras"] == "unknown"
-

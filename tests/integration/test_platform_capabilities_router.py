@@ -135,4 +135,3 @@ def test_platform_capabilities_router_partial_failure(monkeypatch):
     assert body["normalized"]["policyVersionsBySource"]["pa"] == "unknown"
     assert body["normalized"]["policyVersionsBySource"]["ras"] == "unknown"
     assert body["normalized"]["pasPolicyDiagnostics"]["available"] is False
-
