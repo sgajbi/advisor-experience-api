@@ -1,19 +1,19 @@
-# RFC-0014 Workbench PAS Core Snapshot Minimal Sections
+# RFC-0014 Workbench lotus-core Core Snapshot Minimal Sections
 
 ## Problem
-Workbench overview currently requests `PERFORMANCE` from PAS core snapshot even though performance is owned by PA.
+Workbench overview currently requests `PERFORMANCE` from lotus-core core snapshot even though performance is owned by lotus-performance.
 
 ## Decision
-- BFF workbench should request only PAS core data sections needed for overview composition:
+- lotus-gateway workbench should request only lotus-core core data sections needed for overview composition:
   - `OVERVIEW`
   - `HOLDINGS`
-- Performance snapshot remains sourced from PA.
+- Performance snapshot remains sourced from lotus-performance.
 
 ## Architectural Impact
-- Cleaner PAS/PA boundaries in the BFF orchestration layer.
-- Reduced coupling to deprecated PAS analytics sections in `core-snapshot`.
+- Cleaner lotus-core/lotus-performance boundaries in the lotus-gateway orchestration layer.
+- Reduced coupling to deprecated lotus-core analytics sections in `core-snapshot`.
 
 ## Implementation
-1. Update workbench overview PAS request to remove `PERFORMANCE`.
-2. Keep PA performance call as the single performance source for the response contract.
+1. Update workbench overview lotus-core request to remove `PERFORMANCE`.
+2. Keep lotus-performance performance call as the single performance source for the response contract.
 

@@ -30,8 +30,8 @@ def _intake_service() -> IntakeService:
 @router.post(
     "/api/v1/intake/portfolio-bundle",
     response_model=EnvelopeResponse,
-    summary="Ingest Portfolio Bundle via PAS",
-    description="Pass-through endpoint for PAS ingestion /ingest/portfolio-bundle.",
+    summary="Ingest Portfolio Bundle via lotus-core",
+    description="Pass-through endpoint for lotus-core ingestion /ingest/portfolio-bundle.",
 )
 async def ingest_portfolio_bundle(request: IntakeBundleRequest) -> EnvelopeResponse:
     service = _intake_service()
@@ -42,8 +42,8 @@ async def ingest_portfolio_bundle(request: IntakeBundleRequest) -> EnvelopeRespo
 @router.post(
     "/api/v1/intake/uploads/preview",
     response_model=EnvelopeResponse,
-    summary="Preview PAS Upload",
-    description="Pass-through endpoint for PAS upload preview /ingest/uploads/preview.",
+    summary="Preview lotus-core Upload",
+    description="Pass-through endpoint for lotus-core upload preview /ingest/uploads/preview.",
 )
 async def preview_upload(
     entity_type: str = Form(..., alias="entityType"),
@@ -64,8 +64,8 @@ async def preview_upload(
 @router.post(
     "/api/v1/intake/uploads/commit",
     response_model=EnvelopeResponse,
-    summary="Commit PAS Upload",
-    description="Pass-through endpoint for PAS upload commit /ingest/uploads/commit.",
+    summary="Commit lotus-core Upload",
+    description="Pass-through endpoint for lotus-core upload commit /ingest/uploads/commit.",
 )
 async def commit_upload(
     entity_type: str = Form(..., alias="entityType"),
@@ -87,7 +87,7 @@ async def commit_upload(
     "/api/v1/lookups/portfolios",
     response_model=LookupResponse,
     summary="Portfolio Lookup Catalog",
-    description="Returns PAS-backed portfolio lookup options for UI selectors.",
+    description="Returns lotus-core-backed portfolio lookup options for UI selectors.",
 )
 async def get_portfolio_lookups() -> LookupResponse:
     service = _intake_service()
@@ -99,7 +99,7 @@ async def get_portfolio_lookups() -> LookupResponse:
     "/api/v1/lookups/instruments",
     response_model=LookupResponse,
     summary="Instrument Lookup Catalog",
-    description="Returns PAS-backed instrument lookup options for UI selectors.",
+    description="Returns lotus-core-backed instrument lookup options for UI selectors.",
 )
 async def get_instrument_lookups(limit: int = Query(default=200, ge=1, le=1000)) -> LookupResponse:
     service = _intake_service()
@@ -111,9 +111,13 @@ async def get_instrument_lookups(limit: int = Query(default=200, ge=1, le=1000))
     "/api/v1/lookups/currencies",
     response_model=LookupResponse,
     summary="Currency Lookup Catalog",
-    description="Returns PAS-backed currency codes from portfolio and instrument reference data.",
+    description=(
+        "Returns lotus-core-backed currency codes from portfolio and "
+        "instrument reference data."
+    ),
 )
 async def get_currency_lookups() -> LookupResponse:
     service = _intake_service()
     correlation_id = correlation_id_var.get()
     return await service.get_currency_lookups(correlation_id=correlation_id)
+

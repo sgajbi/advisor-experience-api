@@ -1,7 +1,7 @@
 # RFC-0015 E2E Pyramid Wave 2 - Resilience and Failure Paths
 
 ## Problem Statement
-AEA E2E test count is below target pyramid distribution and does not sufficiently validate failure-path orchestration behavior for key BFF contracts.
+lotus-gateway E2E test count is below target pyramid distribution and does not sufficiently validate failure-path orchestration behavior for key lotus-gateway contracts.
 
 ## Root Cause
 Existing E2E journeys primarily cover happy-path workflows, with limited checks for:
@@ -12,8 +12,8 @@ Existing E2E journeys primarily cover happy-path workflows, with limited checks 
 ## Proposed Solution
 Add E2E journey tests for:
 1. Platform capabilities aggregation with one upstream error (`partialFailure` behavior).
-2. Reporting snapshot upstream failure mapped to BFF gateway error.
-3. Workbench sandbox apply-changes flow where DPM policy simulation is unavailable but PAS changes succeed.
+2. Reporting snapshot upstream failure mapped to lotus-gateway gateway error.
+3. Workbench sandbox apply-changes flow where lotus-manage policy simulation is unavailable but lotus-core changes succeed.
 
 ## Architectural Impact
 No runtime or API contract changes. This is verification-depth improvement for existing orchestrated contracts.

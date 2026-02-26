@@ -1,4 +1,4 @@
-# RFC-0001: AEA Coverage Hardening Wave 1
+# RFC-0001: lotus-gateway Coverage Hardening Wave 1
 
 ## Status
 
@@ -30,7 +30,7 @@ Deliver an incremental hardening wave that raises meaningful coverage and expand
 - Tests: 127 passing
 - Coverage: 99% (`src/app`)
 - `workbench_service` increased to 98% with broad branch hardening
-- All AEA client adapters reached 100% line coverage
+- All lotus-gateway client adapters reached 100% line coverage
 
 ## Follow-up
 

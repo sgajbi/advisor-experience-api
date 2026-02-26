@@ -1,4 +1,4 @@
-# RFC-0006: PAS Intake and Lookup Pass-Through in BFF
+# RFC-0006: lotus-core Intake and Lookup Pass-Through in lotus-gateway
 
 - Status: IMPLEMENTED
 - Date: 2026-02-23
@@ -6,18 +6,18 @@
 
 ## Context
 
-Advisor Workbench intake screens call BFF routes for PAS ingestion and selector lookups, but BFF only exposed proposal and capability aggregation endpoints. This left intake UX dependent on non-existent BFF APIs and prevented PAS-backed onboarding from becoming a real integrated flow.
+Advisor Workbench intake screens call lotus-gateway routes for lotus-core ingestion and selector lookups, but lotus-gateway only exposed proposal and capability aggregation endpoints. This left intake UX dependent on non-existent lotus-gateway APIs and prevented lotus-core-backed onboarding from becoming a real integrated flow.
 
 ## Decision
 
-Add first-class BFF passthrough APIs for PAS ingestion and lookup catalogs:
+Add first-class lotus-gateway passthrough APIs for lotus-core ingestion and lookup catalogs:
 
-- `POST /api/v1/intake/portfolio-bundle` -> PAS ingestion `/ingest/portfolio-bundle`
-- `POST /api/v1/intake/uploads/preview` -> PAS ingestion `/ingest/uploads/preview`
-- `POST /api/v1/intake/uploads/commit` -> PAS ingestion `/ingest/uploads/commit`
-- `GET /api/v1/lookups/portfolios` -> PAS query `/portfolios`
-- `GET /api/v1/lookups/instruments` -> PAS query `/instruments`
-- `GET /api/v1/lookups/currencies` -> derived from PAS portfolio base currencies + instrument currencies
+- `POST /api/v1/intake/portfolio-bundle` -> lotus-core ingestion `/ingest/portfolio-bundle`
+- `POST /api/v1/intake/uploads/preview` -> lotus-core ingestion `/ingest/uploads/preview`
+- `POST /api/v1/intake/uploads/commit` -> lotus-core ingestion `/ingest/uploads/commit`
+- `GET /api/v1/lookups/portfolios` -> lotus-core query `/portfolios`
+- `GET /api/v1/lookups/instruments` -> lotus-core query `/instruments`
+- `GET /api/v1/lookups/currencies` -> derived from lotus-core portfolio base currencies + instrument currencies
 
 Implementation details:
 - Introduce `PasIngestionClient` and extend `PasClient` for lookup sources.
@@ -26,22 +26,22 @@ Implementation details:
 
 ## Rationale
 
-- Keeps domain logic in PAS while BFF orchestrates and shapes contracts for UI.
+- Keeps domain logic in lotus-core while lotus-gateway orchestrates and shapes contracts for UI.
 - Removes dead/missing endpoints and makes intake calls production-realistic.
-- Establishes a single BFF contract layer for UI selector catalogs.
+- Establishes a single lotus-gateway contract layer for UI selector catalogs.
 
 ## Consequences
 
 Positive:
 - UI intake APIs now map to live backend services.
-- Upload preview/commit workflows can be consumed by UI without direct PAS coupling.
+- Upload preview/commit workflows can be consumed by UI without direct lotus-core coupling.
 
 Trade-offs:
-- BFF now depends on both PAS query and PAS ingestion service base URLs.
-- Currency lookups are currently derived heuristically from existing PAS reference data.
+- lotus-gateway now depends on both lotus-core query and lotus-core ingestion service base URLs.
+- Currency lookups are currently derived heuristically from existing lotus-core reference data.
 
 ## Follow-ups
 
-- Add PAS-native lookup endpoint(s) for canonical currency catalogs to replace derivation.
-- Add a live multi-service E2E for intake->lookup visibility once PAS persistence/event timing is stabilized in CI.
+- Add lotus-core-native lookup endpoint(s) for canonical currency catalogs to replace derivation.
+- Add a live multi-service E2E for intake->lookup visibility once lotus-core persistence/event timing is stabilized in CI.
 

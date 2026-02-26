@@ -5,7 +5,7 @@
 
 ## Summary
 
-Add BFF endpoint `GET /api/v1/platform/capabilities` to aggregate PAS, PA, and DPM integration capability contracts for UI consumption.
+Add lotus-gateway endpoint `GET /api/v1/platform/capabilities` to aggregate lotus-core, lotus-performance, and lotus-manage integration capability contracts for UI consumption.
 
 ## Contract
 
@@ -23,12 +23,12 @@ Output envelope:
 
 ## Behavior
 
-1. Calls PAS, PA, and DPM `/integration/capabilities`.
+1. Calls lotus-core, lotus-performance, and lotus-manage `/integration/capabilities`.
 2. Returns partial results when one or more upstream services fail.
 3. Preserves failure metadata in `errors[]` for UI diagnostics.
 
 ## Rationale
 
-1. Keeps integration complexity in backend/BFF.
+1. Keeps integration complexity in backend/lotus-gateway.
 2. Prevents UI hardcoding of service capability assumptions.
 3. Provides one stable contract for platform-level feature/workflow control.

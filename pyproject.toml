@@ -1,7 +1,7 @@
 [project]
 name = "lotus-gateway"
 version = "0.1.0"
-description = "BFF for Advisor Workbench"
+description = "lotus-gateway for Advisor Workbench"
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.129.0",

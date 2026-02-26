@@ -22,12 +22,12 @@ Output fields:
 
 ## Integration Behavior
 
-1. PAS core snapshot is required and drives portfolio/overview baseline.
-2. PA performance snapshot and DPM latest rebalance status are optional enrichments.
+1. lotus-core core snapshot is required and drives portfolio/overview baseline.
+2. lotus-performance performance snapshot and lotus-manage latest rebalance status are optional enrichments.
 3. Upstream enrichment failures are returned as partial failures instead of hard endpoint failure.
 
 ## Rationale
 
 1. Gives CA/PM users one coherent workbench payload.
 2. Preserves resilience with partial-failure semantics.
-3. Keeps orchestration and integration complexity in BFF, not UI.
+3. Keeps orchestration and integration complexity in lotus-gateway, not UI.

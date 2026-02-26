@@ -61,8 +61,10 @@ def _workbench_service() -> WorkbenchService:
     response_model=WorkbenchOverviewResponse,
     summary="Get Workbench Overview",
     description=(
-        "Aggregates PAS core snapshot, PA performance snapshot, and latest DPM rebalance "
-        "status into a single decision-console overview contract."
+        "Aggregates lotus-core core snapshot, "
+        "lotus-performance performance snapshot, and latest "
+        "lotus-manage rebalance status into a single "
+        "decision-console overview contract."
     ),
 )
 async def get_workbench_overview(portfolio_id: str) -> WorkbenchOverviewResponse:
@@ -101,9 +103,11 @@ async def get_portfolio_360(
     response_model=WorkbenchAnalyticsResponse,
     summary="Get Workbench Analytics",
     description=(
-        "Returns PA-owned analytics for current vs projected portfolio state, including grouped "
-        "allocation deltas, top changes, active return, and concentration risk proxy. "
-        "BFF orchestrates inputs and delegates analytics computation to PA."
+        "Returns lotus-performance-owned analytics for current vs "
+        "projected portfolio state, including grouped allocation "
+        "deltas, top changes, active return, and concentration "
+        "risk proxy. lotus-gateway orchestrates inputs and "
+        "delegates analytics computation to lotus-performance."
     ),
 )
 async def get_workbench_analytics(
@@ -129,7 +133,7 @@ async def get_workbench_analytics(
     "/{portfolio_id}/sandbox/sessions",
     response_model=WorkbenchSandboxStateResponse,
     summary="Create Workbench Sandbox Session",
-    description="Creates a PAS simulation session for iterative advisory lifecycle changes.",
+    description="Creates a lotus-core simulation session for iterative advisory lifecycle changes.",
 )
 async def create_sandbox_session(
     portfolio_id: str,
@@ -168,3 +172,4 @@ async def apply_sandbox_changes(
         changes=[item.model_dump(exclude_none=True) for item in request.changes],
         evaluate_policy=request.evaluate_policy,
     )
+

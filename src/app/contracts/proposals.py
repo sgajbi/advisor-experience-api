@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 class ProposalSimulateRequest(BaseModel):
     body: dict[str, Any] = Field(
-        description="Raw payload passed through to DPM /rebalance/proposals/simulate."
+        description="Raw payload passed through to lotus-manage /rebalance/proposals/simulate."
     )
 
 
@@ -17,13 +17,16 @@ class ProposalSimulateResponse(BaseModel):
 
 class ProposalCreateRequest(BaseModel):
     body: dict[str, Any] = Field(
-        description="Raw payload passed through to DPM /rebalance/proposals."
+        description="Raw payload passed through to lotus-manage /rebalance/proposals."
     )
 
 
 class ProposalVersionCreateRequest(BaseModel):
     body: dict[str, Any] = Field(
-        description="Raw payload passed through to DPM /rebalance/proposals/{proposal_id}/versions."
+        description=(
+            "Raw payload passed through to lotus-manage "
+            "/rebalance/proposals/{proposal_id}/versions."
+        )
     )
 
 

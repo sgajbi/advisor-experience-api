@@ -1,4 +1,4 @@
-# RFC-0002: AEA Coverage Hardening Wave 2
+# RFC-0002: lotus-gateway Coverage Hardening Wave 2
 
 - Status: Implemented
 - Authors: Codex
@@ -6,7 +6,7 @@
 
 ## Context
 
-AEA had strong coverage after wave 1 but still had untested branch paths in middleware and service normalization logic.
+lotus-gateway had strong coverage after wave 1 but still had untested branch paths in middleware and service normalization logic.
 
 ## Problem
 
@@ -18,7 +18,7 @@ AEA had strong coverage after wave 1 but still had untested branch paths in midd
 Add focused unit tests for:
 
 - Valid `traceparent` parsing in correlation middleware.
-- PAS policy exception handling and malformed list item handling in platform capabilities normalization.
+- lotus-core policy exception handling and malformed list item handling in platform capabilities normalization.
 - Module health fallback to `unknown` when a source is neither available nor errored.
 - Workbench holdings extraction when asset-class entries are non-list values.
 
