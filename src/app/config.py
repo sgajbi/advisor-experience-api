@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     risk_analytics_base_url: str = Field(default="http://localhost:8130")
     reporting_aggregation_base_url: str = Field(default="http://localhost:8300")
     management_service_base_url: str = Field(default="http://localhost:8140")
+    risk_split_enabled: bool = Field(default=False)
+    manage_split_enabled: bool = Field(default=False)
     upstream_timeout_seconds: float = Field(default=3.0)
     upstream_max_retries: int = Field(default=2)
     upstream_retry_backoff_seconds: float = Field(default=0.2)
