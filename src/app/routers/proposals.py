@@ -18,11 +18,7 @@ router = APIRouter(prefix="/api/v1/proposals", tags=["proposals"])
 
 
 def _proposal_service() -> ProposalService:
-    base_url = (
-        settings.management_service_base_url
-        if settings.manage_split_enabled
-        else settings.decisioning_service_base_url
-    )
+    base_url = settings.decisioning_service_base_url
     return ProposalService(
         dpm_client=DpmClient(
             base_url=base_url,

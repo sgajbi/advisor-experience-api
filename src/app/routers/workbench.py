@@ -19,6 +19,11 @@ router = APIRouter(prefix="/api/v1/workbench", tags=["workbench"])
 
 
 def _workbench_service() -> WorkbenchService:
+    dpm_base_url = (
+        settings.management_service_base_url
+        if settings.manage_split_enabled
+        else settings.decisioning_service_base_url
+    )
     return WorkbenchService(
         pas_client=PasClient(
             base_url=settings.portfolio_data_platform_base_url,
@@ -33,7 +38,7 @@ def _workbench_service() -> WorkbenchService:
             retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
         ),
         dpm_client=DpmClient(
-            base_url=settings.decisioning_service_base_url,
+            base_url=dpm_base_url,
             timeout_seconds=settings.upstream_timeout_seconds,
             max_retries=settings.upstream_max_retries,
             retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
