@@ -5,9 +5,9 @@ from fastapi import Request
 from fastapi.responses import Response
 
 from app.enterprise_readiness import (
+    authorize_write_request,
     build_enterprise_audit_middleware,
     enterprise_policy_version,
-    authorize_write_request,
     is_feature_enabled,
     load_capability_rules,
     load_feature_flags,
