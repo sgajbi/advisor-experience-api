@@ -21,11 +21,15 @@ class PlatformCapabilitiesService:
         pa_client: PaClient,
         reporting_client: ReportingClient,
         contract_version: str,
+        risk_client: PaClient | None = None,
+        manage_client: DpmClient | None = None,
     ):
         self._dpm_client = dpm_client
         self._pas_client = pas_client
         self._pa_client = pa_client
         self._reporting_client = reporting_client
+        self._risk_client = risk_client
+        self._manage_client = manage_client
         self._contract_version = contract_version
 
     async def get_platform_capabilities(
@@ -34,7 +38,7 @@ class PlatformCapabilitiesService:
         tenant_id: str,
         correlation_id: str,
     ) -> PlatformCapabilitiesResponse:
-        results = await asyncio.gather(
+        tasks: list[Any] = [
             self._pas_client.get_capabilities(
                 consumer_system=consumer_system,
                 tenant_id=tenant_id,
@@ -60,8 +64,28 @@ class PlatformCapabilitiesService:
                 tenant_id=tenant_id,
                 correlation_id=correlation_id,
             ),
-            return_exceptions=True,
-        )
+        ]
+        optional_sources: list[str] = []
+        if self._risk_client is not None:
+            tasks.append(
+                self._risk_client.get_capabilities(
+                    consumer_system=consumer_system,
+                    tenant_id=tenant_id,
+                    correlation_id=correlation_id,
+                )
+            )
+            optional_sources.append("risk")
+        if self._manage_client is not None:
+            tasks.append(
+                self._manage_client.get_capabilities(
+                    consumer_system=consumer_system,
+                    tenant_id=tenant_id,
+                    correlation_id=correlation_id,
+                )
+            )
+            optional_sources.append("manage")
+
+        results = await asyncio.gather(*tasks, return_exceptions=True)
 
         sources: dict[str, dict[str, Any]] = {}
         errors: list[CapabilitySourceError] = []
@@ -113,6 +137,25 @@ class PlatformCapabilitiesService:
                 )
             else:
                 pas_policy_payload = policy_payload
+
+        optional_result_map: dict[str, Any] = {}
+        for index, source in enumerate(optional_sources, start=5):
+            optional_result_map[source] = results[index]
+
+        self._merge_optional_source_into_primary(
+            optional_result_map=optional_result_map,
+            source_name="risk",
+            primary_source_name="pa",
+            sources=sources,
+            errors=errors,
+        )
+        self._merge_optional_source_into_primary(
+            optional_result_map=optional_result_map,
+            source_name="manage",
+            primary_source_name="dpm",
+            sources=sources,
+            errors=errors,
+        )
 
         normalized = self._build_normalized_capabilities(
             sources=sources,
@@ -330,3 +373,68 @@ class PlatformCapabilitiesService:
                 "PAS_POLICY_ENDPOINT_UNAVAILABLE"
             ]
         return diagnostics
+
+    def _merge_optional_source_into_primary(
+        self,
+        *,
+        optional_result_map: dict[str, Any],
+        source_name: str,
+        primary_source_name: str,
+        sources: dict[str, dict[str, Any]],
+        errors: list[CapabilitySourceError],
+    ) -> None:
+        result = optional_result_map.get(source_name)
+        if result is None or isinstance(result, BaseException):
+            return
+        status_code, payload = cast(tuple[int, dict[str, Any]], result)
+        if status_code >= 400:
+            return
+        optional_payload = payload
+        primary_payload = sources.get(primary_source_name)
+        if primary_payload is None:
+            sources[primary_source_name] = optional_payload
+            errors[:] = [e for e in errors if e.service != primary_source_name]
+            return
+
+        primary_features = primary_payload.get("features", [])
+        optional_features = optional_payload.get("features", [])
+        if isinstance(primary_features, list) and isinstance(optional_features, list):
+            seen = {str(item.get("key")) for item in primary_features if isinstance(item, dict)}
+            for feature in optional_features:
+                if not isinstance(feature, dict):
+                    continue
+                feature_key = str(feature.get("key"))
+                if feature_key not in seen:
+                    primary_features.append(feature)
+                    seen.add(feature_key)
+            primary_payload["features"] = primary_features
+
+        primary_workflows = primary_payload.get("workflows", [])
+        optional_workflows = optional_payload.get("workflows", [])
+        if isinstance(primary_workflows, list) and isinstance(optional_workflows, list):
+            seen_workflows = {
+                str(item.get("workflow_key"))
+                for item in primary_workflows
+                if isinstance(item, dict)
+            }
+            for workflow in optional_workflows:
+                if not isinstance(workflow, dict):
+                    continue
+                workflow_key = str(workflow.get("workflow_key"))
+                if workflow_key not in seen_workflows:
+                    primary_workflows.append(workflow)
+                    seen_workflows.add(workflow_key)
+            primary_payload["workflows"] = primary_workflows
+
+        primary_modes = primary_payload.get("supportedInputModes", [])
+        optional_modes = optional_payload.get("supportedInputModes", [])
+        if isinstance(primary_modes, list) and isinstance(optional_modes, list):
+            merged_modes = list(
+                dict.fromkeys(
+                    [
+                        *map(str, primary_modes),
+                        *map(str, optional_modes),
+                    ]
+                )
+            )
+            primary_payload["supportedInputModes"] = merged_modes
