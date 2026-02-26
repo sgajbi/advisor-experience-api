@@ -57,7 +57,8 @@ make ci-local-docker-down
 Live platform-capabilities E2E (BFF + PAS + PA + DPM):
 
 ```bash
-export DPM_REPO_PATH=/c/Users/sande/dev/lotus-advise
+export ADVISE_REPO_PATH=/c/Users/sande/dev/lotus-advise
+export MANAGE_REPO_PATH=/c/Users/sande/dev/lotus-manage
 export PAS_REPO_PATH=/c/Users/sande/dev/lotus-core
 export PA_REPO_PATH=/c/Users/sande/dev/lotus-performance
 make e2e-up
@@ -87,4 +88,11 @@ Standards documentation:
 
 - `docs/standards/migration-contract.md`
 - `docs/standards/data-model-ownership.md`
+
+
+
+Split routing notes:
+- Advisory lifecycle APIs (/api/v1/proposals/*) use DECISIONING_SERVICE_BASE_URL (lotus-advise).
+- DPM/workbench APIs use MANAGEMENT_SERVICE_BASE_URL (lotus-manage) when MANAGE_SPLIT_ENABLED=true.
+
 

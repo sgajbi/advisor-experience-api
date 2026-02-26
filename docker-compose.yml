@@ -8,6 +8,8 @@ services:
       - "8100:8100"
     environment:
       - DECISIONING_SERVICE_BASE_URL=${DECISIONING_SERVICE_BASE_URL:-http://host.docker.internal:8000}
+      - MANAGEMENT_SERVICE_BASE_URL=${MANAGEMENT_SERVICE_BASE_URL:-http://host.docker.internal:8140}
+      - MANAGE_SPLIT_ENABLED=${MANAGE_SPLIT_ENABLED:-true}
       - PORTFOLIO_DATA_PLATFORM_BASE_URL=${PORTFOLIO_DATA_PLATFORM_BASE_URL:-http://host.docker.internal:8201}
       - PORTFOLIO_DATA_INGESTION_BASE_URL=${PORTFOLIO_DATA_INGESTION_BASE_URL:-http://host.docker.internal:8200}
       - PERFORMANCE_ANALYTICS_BASE_URL=${PERFORMANCE_ANALYTICS_BASE_URL:-http://host.docker.internal:8002}
@@ -25,5 +27,3 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-
-
