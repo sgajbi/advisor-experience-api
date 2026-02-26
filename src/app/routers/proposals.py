@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from fastapi import APIRouter, Header, Query
 
 from app.clients.dpm_client import DpmClient
@@ -33,14 +31,13 @@ def _proposal_service() -> ProposalService:
 @router.post("/simulate", response_model=ProposalSimulateResponse)
 async def simulate_proposal(
     request: ProposalSimulateRequest,
-    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
+    idempotency_key: str = Header(alias="Idempotency-Key"),
 ) -> ProposalSimulateResponse:
     service = _proposal_service()
-    resolved_idempotency_key = idempotency_key or f"bff-{uuid4()}"
     correlation_id = correlation_id_var.get()
     return await service.simulate_proposal(
         body=request.body,
-        idempotency_key=resolved_idempotency_key,
+        idempotency_key=idempotency_key,
         correlation_id=correlation_id,
     )
 
@@ -48,14 +45,13 @@ async def simulate_proposal(
 @router.post("", response_model=ProposalEnvelopeResponse)
 async def create_proposal(
     request: ProposalCreateRequest,
-    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
+    idempotency_key: str = Header(alias="Idempotency-Key"),
 ) -> ProposalEnvelopeResponse:
     service = _proposal_service()
-    resolved_idempotency_key = idempotency_key or f"bff-{uuid4()}"
     correlation_id = correlation_id_var.get()
     return await service.create_proposal(
         body=request.body,
-        idempotency_key=resolved_idempotency_key,
+        idempotency_key=idempotency_key,
         correlation_id=correlation_id,
     )
 
@@ -118,15 +114,14 @@ async def get_proposal_version(
 async def create_proposal_version(
     proposal_id: str,
     request: ProposalVersionCreateRequest,
-    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
+    idempotency_key: str = Header(alias="Idempotency-Key"),
 ) -> ProposalEnvelopeResponse:
     service = _proposal_service()
     correlation_id = correlation_id_var.get()
-    resolved_idempotency_key = idempotency_key or f"bff-{uuid4()}"
     return await service.create_proposal_version(
         proposal_id=proposal_id,
         body=request.body,
-        idempotency_key=resolved_idempotency_key,
+        idempotency_key=idempotency_key,
         correlation_id=correlation_id,
     )
 
@@ -135,6 +130,7 @@ async def create_proposal_version(
 async def submit_proposal(
     proposal_id: str,
     request: ProposalSubmitRequest,
+    idempotency_key: str = Header(alias="Idempotency-Key"),
 ) -> ProposalEnvelopeResponse:
     service = _proposal_service()
     correlation_id = correlation_id_var.get()
@@ -145,6 +141,7 @@ async def submit_proposal(
         review_type=request.review_type,
         reason=request.reason,
         related_version_no=request.related_version_no,
+        idempotency_key=idempotency_key,
         correlation_id=correlation_id,
     )
 
@@ -153,6 +150,7 @@ async def submit_proposal(
 async def approve_risk(
     proposal_id: str,
     request: ProposalApprovalActionRequest,
+    idempotency_key: str = Header(alias="Idempotency-Key"),
 ) -> ProposalEnvelopeResponse:
     service = _proposal_service()
     correlation_id = correlation_id_var.get()
@@ -162,6 +160,7 @@ async def approve_risk(
         expected_state=request.expected_state,
         details=request.details,
         related_version_no=request.related_version_no,
+        idempotency_key=idempotency_key,
         correlation_id=correlation_id,
     )
 
@@ -170,6 +169,7 @@ async def approve_risk(
 async def approve_compliance(
     proposal_id: str,
     request: ProposalApprovalActionRequest,
+    idempotency_key: str = Header(alias="Idempotency-Key"),
 ) -> ProposalEnvelopeResponse:
     service = _proposal_service()
     correlation_id = correlation_id_var.get()
@@ -179,6 +179,7 @@ async def approve_compliance(
         expected_state=request.expected_state,
         details=request.details,
         related_version_no=request.related_version_no,
+        idempotency_key=idempotency_key,
         correlation_id=correlation_id,
     )
 
@@ -187,6 +188,7 @@ async def approve_compliance(
 async def record_client_consent(
     proposal_id: str,
     request: ProposalApprovalActionRequest,
+    idempotency_key: str = Header(alias="Idempotency-Key"),
 ) -> ProposalEnvelopeResponse:
     service = _proposal_service()
     correlation_id = correlation_id_var.get()
@@ -196,6 +198,7 @@ async def record_client_consent(
         expected_state=request.expected_state,
         details=request.details,
         related_version_no=request.related_version_no,
+        idempotency_key=idempotency_key,
         correlation_id=correlation_id,
     )
 

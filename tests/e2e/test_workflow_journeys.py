@@ -151,9 +151,12 @@ def test_e2e_proposal_transition_flow(monkeypatch) -> None:
         _ = self, body, idempotency_key, correlation_id
         return 200, {"proposal": {"proposal_id": "pp_1", "current_state": "DRAFT"}}
 
-    async def _transition(self, proposal_id, body, correlation_id):  # noqa: ANN001
+    async def _transition(  # noqa: ANN001
+        self, proposal_id, body, idempotency_key, correlation_id
+    ):
         _ = self, correlation_id
         assert proposal_id == "pp_1"
+        assert idempotency_key == "idem-submit-e2e-1"
         return 200, {
             "proposal_id": "pp_1",
             "current_state": "RISK_REVIEW",
@@ -172,10 +175,12 @@ def test_e2e_proposal_transition_flow(monkeypatch) -> None:
                 "simulate_request": {"options": {"enable_proposal_simulation": True}},
             }
         },
+        headers={"Idempotency-Key": "idem-create-e2e-1"},
     )
     submitted = client.post(
         "/api/v1/proposals/pp_1/submit",
         json={"actor_id": "advisor_1", "expected_state": "DRAFT", "review_type": "RISK"},
+        headers={"Idempotency-Key": "idem-submit-e2e-1"},
     )
 
     assert created.status_code == 200

@@ -107,24 +107,26 @@ class DpmClient:
         self,
         proposal_id: str,
         body: dict[str, Any],
+        idempotency_key: str,
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._post(
             f"/rebalance/proposals/{proposal_id}/transitions",
             body=body,
-            headers=self._headers(correlation_id),
+            headers=self._headers(correlation_id, {"Idempotency-Key": idempotency_key}),
         )
 
     async def record_approval(
         self,
         proposal_id: str,
         body: dict[str, Any],
+        idempotency_key: str,
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._post(
             f"/rebalance/proposals/{proposal_id}/approvals",
             body=body,
-            headers=self._headers(correlation_id),
+            headers=self._headers(correlation_id, {"Idempotency-Key": idempotency_key}),
         )
 
     async def get_workflow_events(

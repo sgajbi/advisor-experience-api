@@ -135,6 +135,7 @@ class ProposalService:
         review_type: str,
         reason: dict[str, Any],
         related_version_no: int | None,
+        idempotency_key: str,
         correlation_id: str,
     ) -> ProposalEnvelopeResponse:
         event_type = (
@@ -154,6 +155,7 @@ class ProposalService:
         upstream_status, upstream_payload = await self._dpm_client.transition_proposal(
             proposal_id=proposal_id,
             body=transition_body,
+            idempotency_key=idempotency_key,
             correlation_id=correlation_id,
         )
         self._raise_for_upstream_error(upstream_status, upstream_payload)
@@ -170,6 +172,7 @@ class ProposalService:
         expected_state: str,
         details: dict[str, Any],
         related_version_no: int | None,
+        idempotency_key: str,
         correlation_id: str,
     ) -> ProposalEnvelopeResponse:
         return await self._record_approval(
@@ -179,6 +182,7 @@ class ProposalService:
             expected_state=expected_state,
             details=details,
             related_version_no=related_version_no,
+            idempotency_key=idempotency_key,
             correlation_id=correlation_id,
         )
 
@@ -189,6 +193,7 @@ class ProposalService:
         expected_state: str,
         details: dict[str, Any],
         related_version_no: int | None,
+        idempotency_key: str,
         correlation_id: str,
     ) -> ProposalEnvelopeResponse:
         return await self._record_approval(
@@ -198,6 +203,7 @@ class ProposalService:
             expected_state=expected_state,
             details=details,
             related_version_no=related_version_no,
+            idempotency_key=idempotency_key,
             correlation_id=correlation_id,
         )
 
@@ -208,6 +214,7 @@ class ProposalService:
         expected_state: str,
         details: dict[str, Any],
         related_version_no: int | None,
+        idempotency_key: str,
         correlation_id: str,
     ) -> ProposalEnvelopeResponse:
         return await self._record_approval(
@@ -217,6 +224,7 @@ class ProposalService:
             expected_state=expected_state,
             details=details,
             related_version_no=related_version_no,
+            idempotency_key=idempotency_key,
             correlation_id=correlation_id,
         )
 
@@ -260,6 +268,7 @@ class ProposalService:
         expected_state: str,
         details: dict[str, Any],
         related_version_no: int | None,
+        idempotency_key: str,
         correlation_id: str,
     ) -> ProposalEnvelopeResponse:
         payload: dict[str, Any] = {
@@ -275,6 +284,7 @@ class ProposalService:
         upstream_status, upstream_payload = await self._dpm_client.record_approval(
             proposal_id=proposal_id,
             body=payload,
+            idempotency_key=idempotency_key,
             correlation_id=correlation_id,
         )
         self._raise_for_upstream_error(upstream_status, upstream_payload)

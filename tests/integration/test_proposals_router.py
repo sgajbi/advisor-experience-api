@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -55,23 +56,10 @@ def test_proposal_simulate_forwards_upstream_error(monkeypatch):
     assert response.status_code == 409
 
 
-def test_proposal_simulate_generates_idempotency_when_missing(monkeypatch):
-    seen = {}
-
-    async def _fake_simulate_proposal(self, body, idempotency_key, correlation_id):  # noqa: ANN001
-        _ = self, body, correlation_id
-        seen["idempotency_key"] = idempotency_key
-        return 200, {"status": "READY"}
-
-    monkeypatch.setattr(
-        "app.clients.dpm_client.DpmClient.simulate_proposal",
-        _fake_simulate_proposal,
-    )
-
+def test_proposal_simulate_requires_idempotency_header():
     client = TestClient(app)
     response = client.post("/api/v1/proposals/simulate", json={"body": {}})
-    assert response.status_code == 200
-    assert str(seen.get("idempotency_key", "")).startswith("bff-")
+    assert response.status_code == 422
 
 
 def test_proposal_create_success(monkeypatch):
@@ -99,6 +87,15 @@ def test_proposal_create_success(monkeypatch):
     assert response.status_code == 200
     payload = response.json()
     assert payload["data"]["proposal"]["proposal_id"] == "pp_1"
+
+
+def test_proposal_create_requires_idempotency_header():
+    client = TestClient(app)
+    response = client.post(
+        "/api/v1/proposals",
+        json={"body": {"created_by": "advisor_1", "simulate_request": {"options": {}}}},
+    )
+    assert response.status_code == 422
 
 
 def test_proposal_list_success(monkeypatch):
@@ -190,13 +187,25 @@ def test_create_proposal_version_success(monkeypatch):
     assert payload["data"]["current_version_no"] == 2
 
 
+def test_create_proposal_version_requires_idempotency_header():
+    client = TestClient(app)
+    response = client.post(
+        "/api/v1/proposals/pp_1/versions",
+        json={"body": {"created_by": "advisor_1", "simulate_request": {"options": {}}}},
+    )
+    assert response.status_code == 422
+
+
 def test_submit_proposal_success(monkeypatch):
     seen = {}
 
-    async def _fake_transition_proposal(self, proposal_id, body, correlation_id):  # noqa: ANN001
+    async def _fake_transition_proposal(  # noqa: ANN001
+        self, proposal_id, body, idempotency_key, correlation_id
+    ):
         _ = self, correlation_id
         seen["proposal_id"] = proposal_id
         seen["body"] = body
+        seen["idempotency_key"] = idempotency_key
         return 200, {"proposal_id": proposal_id, "current_state": "RISK_REVIEW"}
 
     monkeypatch.setattr(
@@ -213,16 +222,20 @@ def test_submit_proposal_success(monkeypatch):
             "review_type": "RISK",
             "reason": {"comment": "submit"},
         },
+        headers={"Idempotency-Key": "idem-submit-1"},
     )
 
     assert response.status_code == 200
     assert seen["proposal_id"] == "pp_1"
     assert seen["body"]["event_type"] == "SUBMITTED_FOR_RISK_REVIEW"
+    assert seen["idempotency_key"] == "idem-submit-1"
 
 
 def test_submit_proposal_forwards_upstream_error(monkeypatch):
-    async def _fake_transition_proposal(self, proposal_id, body, correlation_id):  # noqa: ANN001
-        _ = self, proposal_id, body, correlation_id
+    async def _fake_transition_proposal(  # noqa: ANN001
+        self, proposal_id, body, idempotency_key, correlation_id
+    ):
+        _ = self, proposal_id, body, idempotency_key, correlation_id
         return 409, {"detail": "STATE_CONFLICT"}
 
     monkeypatch.setattr(
@@ -234,17 +247,21 @@ def test_submit_proposal_forwards_upstream_error(monkeypatch):
     response = client.post(
         "/api/v1/proposals/pp_1/submit",
         json={"actor_id": "advisor_1", "expected_state": "DRAFT"},
+        headers={"Idempotency-Key": "idem-submit-2"},
     )
 
     assert response.status_code == 409
 
 
 def test_approve_risk_success(monkeypatch):
-    async def _fake_record_approval(self, proposal_id, body, correlation_id):  # noqa: ANN001
+    async def _fake_record_approval(  # noqa: ANN001
+        self, proposal_id, body, idempotency_key, correlation_id
+    ):
         _ = self, correlation_id
         assert proposal_id == "pp_1"
         assert body["approval_type"] == "RISK"
         assert body["expected_state"] == "RISK_REVIEW"
+        assert idempotency_key == "idem-approve-risk-1"
         return 200, {"proposal_id": proposal_id, "current_state": "AWAITING_CLIENT_CONSENT"}
 
     monkeypatch.setattr(
@@ -256,17 +273,21 @@ def test_approve_risk_success(monkeypatch):
     response = client.post(
         "/api/v1/proposals/pp_1/approve-risk",
         json={"actor_id": "risk_1", "expected_state": "RISK_REVIEW", "details": {"comment": "ok"}},
+        headers={"Idempotency-Key": "idem-approve-risk-1"},
     )
     assert response.status_code == 200
     assert response.json()["data"]["current_state"] == "AWAITING_CLIENT_CONSENT"
 
 
 def test_approve_compliance_success(monkeypatch):
-    async def _fake_record_approval(self, proposal_id, body, correlation_id):  # noqa: ANN001
+    async def _fake_record_approval(  # noqa: ANN001
+        self, proposal_id, body, idempotency_key, correlation_id
+    ):
         _ = self, correlation_id
         assert proposal_id == "pp_1"
         assert body["approval_type"] == "COMPLIANCE"
         assert body["expected_state"] == "COMPLIANCE_REVIEW"
+        assert idempotency_key == "idem-approve-compliance-1"
         return 200, {"proposal_id": proposal_id, "current_state": "AWAITING_CLIENT_CONSENT"}
 
     monkeypatch.setattr(
@@ -278,13 +299,17 @@ def test_approve_compliance_success(monkeypatch):
     response = client.post(
         "/api/v1/proposals/pp_1/approve-compliance",
         json={"actor_id": "compliance_1", "expected_state": "COMPLIANCE_REVIEW"},
+        headers={"Idempotency-Key": "idem-approve-compliance-1"},
     )
     assert response.status_code == 200
 
 
 def test_record_client_consent_success(monkeypatch):
-    async def _fake_record_approval(self, proposal_id, body, correlation_id):  # noqa: ANN001
+    async def _fake_record_approval(  # noqa: ANN001
+        self, proposal_id, body, idempotency_key, correlation_id
+    ):
         _ = self, proposal_id, correlation_id
+        assert idempotency_key == "idem-consent-1"
         assert body["approval_type"] == "CLIENT_CONSENT"
         return 200, {"current_state": "EXECUTION_READY"}
 
@@ -297,9 +322,34 @@ def test_record_client_consent_success(monkeypatch):
     response = client.post(
         "/api/v1/proposals/pp_1/record-client-consent",
         json={"actor_id": "advisor_1", "expected_state": "AWAITING_CLIENT_CONSENT"},
+        headers={"Idempotency-Key": "idem-consent-1"},
     )
     assert response.status_code == 200
     assert response.json()["data"]["current_state"] == "EXECUTION_READY"
+
+
+@pytest.mark.parametrize(
+    "path,payload",
+    [
+        ("/api/v1/proposals/pp_1/submit", {"actor_id": "advisor_1", "expected_state": "DRAFT"}),
+        (
+            "/api/v1/proposals/pp_1/approve-risk",
+            {"actor_id": "risk_1", "expected_state": "RISK_REVIEW"},
+        ),
+        (
+            "/api/v1/proposals/pp_1/approve-compliance",
+            {"actor_id": "compliance_1", "expected_state": "COMPLIANCE_REVIEW"},
+        ),
+        (
+            "/api/v1/proposals/pp_1/record-client-consent",
+            {"actor_id": "advisor_1", "expected_state": "AWAITING_CLIENT_CONSENT"},
+        ),
+    ],
+)
+def test_proposal_write_actions_require_idempotency_header(path, payload):
+    client = TestClient(app)
+    response = client.post(path, json=payload)
+    assert response.status_code == 422
 
 
 def test_workflow_events_and_approvals_success(monkeypatch):

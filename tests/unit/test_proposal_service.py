@@ -8,26 +8,32 @@ class _FakeDpmClient:
     def __init__(self) -> None:
         self.calls: list[tuple[str, dict]] = []
 
-    async def transition_proposal(self, proposal_id: str, body: dict, correlation_id: str):
+    async def transition_proposal(
+        self, proposal_id: str, body: dict, idempotency_key: str, correlation_id: str
+    ):
         self.calls.append(
             (
                 "transition_proposal",
                 {
                     "proposal_id": proposal_id,
                     "body": body,
+                    "idempotency_key": idempotency_key,
                     "correlation_id": correlation_id,
                 },
             )
         )
         return 200, {"current_state": "RISK_REVIEW"}
 
-    async def record_approval(self, proposal_id: str, body: dict, correlation_id: str):
+    async def record_approval(
+        self, proposal_id: str, body: dict, idempotency_key: str, correlation_id: str
+    ):
         self.calls.append(
             (
                 "record_approval",
                 {
                     "proposal_id": proposal_id,
                     "body": body,
+                    "idempotency_key": idempotency_key,
                     "correlation_id": correlation_id,
                 },
             )
@@ -60,8 +66,10 @@ class _FakeDpmClient:
 
 
 class _FakeDpmErrorClient(_FakeDpmClient):
-    async def record_approval(self, proposal_id: str, body: dict, correlation_id: str):
-        _ = proposal_id, body, correlation_id
+    async def record_approval(
+        self, proposal_id: str, body: dict, idempotency_key: str, correlation_id: str
+    ):
+        _ = proposal_id, body, idempotency_key, correlation_id
         return 409, {"detail": "STATE_CONFLICT"}
 
 
@@ -77,12 +85,14 @@ async def test_submit_proposal_maps_risk_transition() -> None:
         review_type="RISK",
         reason={"comment": "submit"},
         related_version_no=1,
+        idempotency_key="idem-submit-1",
         correlation_id="corr_1",
     )
 
     assert result.data["current_state"] == "RISK_REVIEW"
     _, payload = client.calls[0]
     assert payload["body"]["event_type"] == "SUBMITTED_FOR_RISK_REVIEW"
+    assert payload["idempotency_key"] == "idem-submit-1"
 
 
 @pytest.mark.asyncio
@@ -96,12 +106,14 @@ async def test_approve_compliance_maps_approval_payload() -> None:
         expected_state="COMPLIANCE_REVIEW",
         details={"comment": "ok"},
         related_version_no=2,
+        idempotency_key="idem-approval-1",
         correlation_id="corr_2",
     )
 
     _, payload = client.calls[0]
     assert payload["body"]["approval_type"] == "COMPLIANCE"
     assert payload["body"]["approved"] is True
+    assert payload["idempotency_key"] == "idem-approval-1"
 
 
 @pytest.mark.asyncio
@@ -127,6 +139,7 @@ async def test_approval_upstream_error_passthrough() -> None:
             expected_state="RISK_REVIEW",
             details={},
             related_version_no=None,
+            idempotency_key="idem-risk-1",
             correlation_id="corr_4",
         )
     except HTTPException as exc:
