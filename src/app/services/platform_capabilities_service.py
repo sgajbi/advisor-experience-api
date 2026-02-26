@@ -413,7 +413,9 @@ class PlatformCapabilitiesService:
         optional_workflows = optional_payload.get("workflows", [])
         if isinstance(primary_workflows, list) and isinstance(optional_workflows, list):
             seen_workflows = {
-                str(item.get("workflow_key")) for item in primary_workflows if isinstance(item, dict)
+                str(item.get("workflow_key"))
+                for item in primary_workflows
+                if isinstance(item, dict)
             }
             for workflow in optional_workflows:
                 if not isinstance(workflow, dict):
@@ -427,5 +429,12 @@ class PlatformCapabilitiesService:
         primary_modes = primary_payload.get("supportedInputModes", [])
         optional_modes = optional_payload.get("supportedInputModes", [])
         if isinstance(primary_modes, list) and isinstance(optional_modes, list):
-            merged_modes = list(dict.fromkeys([*map(str, primary_modes), *map(str, optional_modes)]))
+            merged_modes = list(
+                dict.fromkeys(
+                    [
+                        *map(str, primary_modes),
+                        *map(str, optional_modes),
+                    ]
+                )
+            )
             primary_payload["supportedInputModes"] = merged_modes
