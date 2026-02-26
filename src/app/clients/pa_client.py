@@ -78,3 +78,20 @@ class PaClient:
             json_body=payload,
             headers=headers,
         )
+
+    async def get_workbench_risk_proxy(
+        self,
+        payload: dict[str, Any],
+        correlation_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        url = f"{self._base_url}/analytics/workbench/risk-proxy"
+        headers = propagation_headers(correlation_id)
+        return await request_with_retry(
+            method="POST",
+            url=url,
+            timeout_seconds=self._timeout,
+            max_retries=self._max_retries,
+            backoff_seconds=self._retry_backoff_seconds,
+            json_body=payload,
+            headers=headers,
+        )

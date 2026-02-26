@@ -40,10 +40,12 @@ class WorkbenchService:
         pas_client: PasClient,
         pa_client: PaClient,
         dpm_client: DpmClient,
+        risk_client: PaClient | None = None,
     ):
         self._pas_client = pas_client
         self._pa_client = pa_client
         self._dpm_client = dpm_client
+        self._risk_client = risk_client
 
     async def get_workbench_overview(
         self,
@@ -334,6 +336,27 @@ class WorkbenchService:
                 if isinstance(item, dict)
             ]
             risk_data = pa_response.get("riskProxy", {})
+            if self._risk_client is not None:
+                risk_status, risk_response = await self._risk_client.get_workbench_risk_proxy(
+                    payload=pa_payload,
+                    correlation_id=correlation_id,
+                )
+                if risk_status < status.HTTP_400_BAD_REQUEST and isinstance(risk_response, dict):
+                    risk_data = risk_response.get("riskProxy", risk_data)
+                else:
+                    warnings = list(portfolio_360.warnings)
+                    warnings.append("RISK_PROXY_FALLBACK_TO_PA")
+                    partial_failures = list(portfolio_360.partial_failures)
+                    partial_failures.append(
+                        WorkbenchPartialFailure(
+                            source_service="risk",
+                            error_code=f"HTTP_{risk_status}",
+                            detail=str(risk_response.get("detail", risk_response)),
+                        )
+                    )
+                    portfolio_360 = portfolio_360.model_copy(
+                        update={"warnings": warnings, "partial_failures": partial_failures}
+                    )
             if not isinstance(risk_data, dict):
                 risk_data = {}
             risk_proxy = WorkbenchRiskProxy(

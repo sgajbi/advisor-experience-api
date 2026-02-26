@@ -80,6 +80,9 @@ class _StubPaClient:
     async def get_workbench_analytics(self, payload: dict, correlation_id: str):
         return self.analytics_status, self.analytics_payload
 
+    async def get_workbench_risk_proxy(self, payload: dict, correlation_id: str):
+        return 200, {"riskProxy": {"hhiCurrent": 1234.0, "hhiProposed": 1500.0, "hhiDelta": 266.0}}
+
 
 class _StubDpmClient:
     def __init__(self):
@@ -100,6 +103,22 @@ def _build_service() -> tuple[WorkbenchService, _StubPasClient, _StubPaClient, _
     pa = _StubPaClient()
     dpm = _StubDpmClient()
     return WorkbenchService(pas_client=pas, pa_client=pa, dpm_client=dpm), pas, pa, dpm
+
+
+def _build_service_with_risk_client() -> tuple[
+    WorkbenchService, _StubPasClient, _StubPaClient, _StubDpmClient, _StubPaClient
+]:
+    pas = _StubPasClient()
+    pa = _StubPaClient()
+    dpm = _StubDpmClient()
+    risk = _StubPaClient()
+    return (
+        WorkbenchService(pas_client=pas, pa_client=pa, dpm_client=dpm, risk_client=risk),
+        pas,
+        pa,
+        dpm,
+        risk,
+    )
 
 
 def test_raise_for_pas_error_includes_upstream_detail():
@@ -544,3 +563,25 @@ def test_parse_dpm_snapshot_without_created_at_keeps_last_run_null():
     result = service._parse_dpm_snapshot((200, {"items": [{"status": "READY"}]}), [], [])
     assert result is not None
     assert result.last_run_at_utc is None
+
+
+@pytest.mark.asyncio
+async def test_workbench_analytics_prefers_split_risk_proxy_when_available():
+    service, _, pa, _, _ = _build_service_with_risk_client()
+    pa.analytics_payload = {
+        "allocationBuckets": [],
+        "topChanges": [],
+        "riskProxy": {"hhiCurrent": 100.0, "hhiProposed": 100.0, "hhiDelta": 0.0},
+        "portfolioReturnPct": 1.0,
+        "benchmarkReturnPct": 0.8,
+        "activeReturnPct": 0.2,
+    }
+    response = await service.get_workbench_analytics(
+        portfolio_id="P1",
+        correlation_id="corr-1",
+        period="YTD",
+        group_by="ASSET_CLASS",
+        benchmark_code="MODEL_60_40",
+        session_id=None,
+    )
+    assert response.risk_proxy.hhi_current == 1234.0

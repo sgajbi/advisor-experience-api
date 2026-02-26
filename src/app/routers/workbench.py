@@ -38,6 +38,16 @@ def _workbench_service() -> WorkbenchService:
             max_retries=settings.upstream_max_retries,
             retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
         ),
+        risk_client=(
+            PaClient(
+                base_url=settings.risk_analytics_base_url,
+                timeout_seconds=settings.upstream_timeout_seconds,
+                max_retries=settings.upstream_max_retries,
+                retry_backoff_seconds=settings.upstream_retry_backoff_seconds,
+            )
+            if settings.risk_split_enabled
+            else None
+        ),
     )
 
 
