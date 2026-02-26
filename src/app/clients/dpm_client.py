@@ -24,7 +24,7 @@ class DpmClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._post(
-            "/rebalance/proposals/simulate",
+            "/api/v1/rebalance/proposals/simulate",
             body=body,
             headers=self._headers(correlation_id, {"Idempotency-Key": idempotency_key}),
         )
@@ -36,7 +36,7 @@ class DpmClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._post(
-            "/rebalance/proposals",
+            "/api/v1/rebalance/proposals",
             body=body,
             headers=self._headers(correlation_id, {"Idempotency-Key": idempotency_key}),
         )
@@ -48,7 +48,7 @@ class DpmClient:
     ) -> tuple[int, dict[str, Any]]:
         cleaned_params = {key: value for key, value in params.items() if value is not None}
         return await self._get(
-            "/rebalance/proposals",
+            "/api/v1/rebalance/proposals",
             params=cleaned_params,
             headers=self._headers(correlation_id),
         )
@@ -60,7 +60,7 @@ class DpmClient:
     ) -> tuple[int, dict[str, Any]]:
         cleaned_params = {key: value for key, value in params.items() if value is not None}
         return await self._get(
-            "/rebalance/runs",
+            "/api/v1/rebalance/runs",
             params=cleaned_params,
             headers=self._headers(correlation_id),
         )
@@ -72,7 +72,7 @@ class DpmClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._get(
-            f"/rebalance/proposals/{proposal_id}",
+            f"/api/v1/rebalance/proposals/{proposal_id}",
             params={"include_evidence": str(include_evidence).lower()},
             headers=self._headers(correlation_id),
         )
@@ -85,7 +85,7 @@ class DpmClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._get(
-            f"/rebalance/proposals/{proposal_id}/versions/{version_no}",
+            f"/api/v1/rebalance/proposals/{proposal_id}/versions/{version_no}",
             params={"include_evidence": str(include_evidence).lower()},
             headers=self._headers(correlation_id),
         )
@@ -98,7 +98,7 @@ class DpmClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._post(
-            f"/rebalance/proposals/{proposal_id}/versions",
+            f"/api/v1/rebalance/proposals/{proposal_id}/versions",
             body=body,
             headers=self._headers(correlation_id, {"Idempotency-Key": idempotency_key}),
         )
@@ -111,7 +111,7 @@ class DpmClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._post(
-            f"/rebalance/proposals/{proposal_id}/transitions",
+            f"/api/v1/rebalance/proposals/{proposal_id}/transitions",
             body=body,
             headers=self._headers(correlation_id, {"Idempotency-Key": idempotency_key}),
         )
@@ -124,7 +124,7 @@ class DpmClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._post(
-            f"/rebalance/proposals/{proposal_id}/approvals",
+            f"/api/v1/rebalance/proposals/{proposal_id}/approvals",
             body=body,
             headers=self._headers(correlation_id, {"Idempotency-Key": idempotency_key}),
         )
@@ -135,7 +135,7 @@ class DpmClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._get(
-            f"/rebalance/proposals/{proposal_id}/workflow-events",
+            f"/api/v1/rebalance/proposals/{proposal_id}/workflow-events",
             params={},
             headers=self._headers(correlation_id),
         )
@@ -146,7 +146,7 @@ class DpmClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._get(
-            f"/rebalance/proposals/{proposal_id}/approvals",
+            f"/api/v1/rebalance/proposals/{proposal_id}/approvals",
             params={},
             headers=self._headers(correlation_id),
         )
@@ -158,7 +158,7 @@ class DpmClient:
         correlation_id: str,
     ) -> tuple[int, dict[str, Any]]:
         return await self._get(
-            "/integration/capabilities",
+            "/api/v1/platform/capabilities",
             params={"consumerSystem": consumer_system, "tenantId": tenant_id},
             headers=self._headers(correlation_id),
         )
@@ -206,3 +206,4 @@ class DpmClient:
             params=params,
             headers=headers,
         )
+
