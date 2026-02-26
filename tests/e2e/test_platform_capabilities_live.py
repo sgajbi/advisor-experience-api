@@ -25,10 +25,10 @@ def _assert_payload(payload: dict) -> None:
         raise AssertionError(f"Expected sources {expected}, got {set(sources.keys())}")
 
     passthrough = {
-        "pas": "portfolio-analytics-system",
+        "pas": "lotus-core",
         "pa": "performance-analytics",
-        "dpm": "dpm-rebalance-engine",
-        "ras": "reporting-aggregation-service",
+        "dpm": "lotus-advise",
+        "ras": "lotus-report",
     }
     for key, source_name in passthrough.items():
         actual = sources[key].get("sourceService")
@@ -90,3 +90,4 @@ def test_platform_health_ready_live() -> None:
 
 if __name__ == "__main__":
     test_platform_capabilities_live_upstreams()
+

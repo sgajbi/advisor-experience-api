@@ -2,7 +2,7 @@
 
 - Status: IMPLEMENTED
 - Date: 2026-02-23
-- Owner: advisor-experience-api
+- Owner: lotus-gateway
 
 ## Context
 
@@ -44,3 +44,4 @@ Trade-offs:
 
 - Add PAS-native lookup endpoint(s) for canonical currency catalogs to replace derivation.
 - Add a live multi-service E2E for intake->lookup visibility once PAS persistence/event timing is stabilized in CI.
+

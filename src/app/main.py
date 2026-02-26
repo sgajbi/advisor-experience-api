@@ -28,7 +28,7 @@ app = FastAPI(title="Advisor Experience API", version="0.1.0", lifespan=_app_lif
 setup_logging()
 validate_enterprise_runtime_config()
 app.middleware("http")(correlation_middleware)
-app.middleware("http")(build_enterprise_audit_middleware("advisor-experience-api"))
+app.middleware("http")(build_enterprise_audit_middleware("lotus-gateway"))
 Instrumentator().instrument(app).expose(app)
 app.include_router(proposals_router)
 app.include_router(platform_router)
@@ -70,3 +70,4 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
         media_type="application/problem+json",
         content=problem.model_dump(),
     )
+

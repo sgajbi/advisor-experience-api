@@ -2,7 +2,7 @@
 
 - Status: IMPLEMENTED
 - Date: 2026-02-23
-- Owner: advisor-experience-api
+- Owner: lotus-gateway
 
 ## Context
 
@@ -36,3 +36,4 @@ Trade-offs:
 ## Follow-ups
 
 - Add PAS lookup contract smoke checks to BFF live E2E suite.
+

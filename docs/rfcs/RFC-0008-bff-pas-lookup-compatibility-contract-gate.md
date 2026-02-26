@@ -2,7 +2,7 @@
 
 - Status: IMPLEMENTED
 - Date: 2026-02-23
-- Owner: advisor-experience-api
+- Owner: lotus-gateway
 
 ## Context
 
@@ -32,3 +32,4 @@ Positive:
 
 Trade-offs:
 - Stricter compatibility checks may surface integration issues earlier, requiring coordinated PAS/BFF updates.
+

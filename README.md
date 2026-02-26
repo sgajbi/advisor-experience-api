@@ -1,4 +1,4 @@
-# advisor-experience-api
+# lotus-gateway
 
 FastAPI BFF for Advisor Workbench, scoped to DPM-first proposal workflows.
 
@@ -7,7 +7,7 @@ FastAPI BFF for Advisor Workbench, scoped to DPM-first proposal workflows.
 - Contribution process: `CONTRIBUTING.md`
 - Docs-with-code standard: `docs/documentation/implementation-documentation-standard.md`
 - PR checklist template: `.github/pull_request_template.md`
-- Platform-wide architecture governance source: `https://github.com/sgajbi/pbwm-platform-docs`
+- Platform-wide architecture governance source: `https://github.com/sgajbi/lotus-platform`
 
 ## Quickstart
 
@@ -36,7 +36,7 @@ API docs: `http://localhost:8100/docs`
 - `GET /api/v1/proposals/{proposal_id}/approvals` (approval records)
 - `GET /api/v1/platform/capabilities` (aggregated PAS+PA+DPM capability contract for UI)
 - `GET /api/v1/workbench/{portfolio_id}/overview` (aggregated PAS+PA+DPM decision-console overview)
-- `GET /api/v1/reports/{portfolio_id}/snapshot` (report-ready aggregation rows from reporting-aggregation-service)
+- `GET /api/v1/reports/{portfolio_id}/snapshot` (report-ready aggregation rows from lotus-report)
 - `POST /api/v1/intake/portfolio-bundle` (PAS ingestion bundle pass-through)
 - `POST /api/v1/intake/uploads/preview` (PAS upload preview pass-through)
 - `POST /api/v1/intake/uploads/commit` (PAS upload commit pass-through)
@@ -57,9 +57,9 @@ make ci-local-docker-down
 Live platform-capabilities E2E (BFF + PAS + PA + DPM):
 
 ```bash
-export DPM_REPO_PATH=/c/Users/sande/dev/dpm-rebalance-engine
-export PAS_REPO_PATH=/c/Users/sande/dev/portfolio-analytics-system
-export PA_REPO_PATH=/c/Users/sande/dev/performanceAnalytics
+export DPM_REPO_PATH=/c/Users/sande/dev/lotus-advise
+export PAS_REPO_PATH=/c/Users/sande/dev/lotus-core
+export PA_REPO_PATH=/c/Users/sande/dev/lotus-performance
 make e2e-up
 make test-e2e-live
 make e2e-down
@@ -87,3 +87,4 @@ Standards documentation:
 
 - `docs/standards/migration-contract.md`
 - `docs/standards/data-model-ownership.md`
+

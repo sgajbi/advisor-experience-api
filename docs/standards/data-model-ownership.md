@@ -1,6 +1,6 @@
 # Data Model Ownership
 
-- Service: `advisor-experience-api`
+- Service: `lotus-gateway`
 - Ownership status: no persisted domain entities.
 - Responsibility: UI/BFF orchestration and response shaping.
 
@@ -13,5 +13,6 @@
 
 ## Vocabulary
 
-- Use canonical terms from `pbwm-platform-docs/Domain Vocabulary Glossary.md`.
+- Use canonical terms from `lotus-platform/Domain Vocabulary Glossary.md`.
 - Do not introduce parallel aliases for portfolio, position, transaction, valuation, performance, risk.
+

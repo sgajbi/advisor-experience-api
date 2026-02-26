@@ -6,7 +6,7 @@ from app.main import app
 def test_platform_capabilities_router_success(monkeypatch):
     async def _pas(*args, **kwargs):
         return 200, {
-            "sourceService": "portfolio-analytics-system",
+            "sourceService": "lotus-core",
             "contractVersion": "v1",
             "policyVersion": "pas-default-v1",
             "features": [
@@ -29,7 +29,7 @@ def test_platform_capabilities_router_success(monkeypatch):
 
     async def _dpm(*args, **kwargs):
         return 200, {
-            "sourceService": "dpm-rebalance-engine",
+            "sourceService": "lotus-advise",
             "contractVersion": "v1",
             "policyVersion": "dpm-default-v1",
             "features": [
@@ -42,7 +42,7 @@ def test_platform_capabilities_router_success(monkeypatch):
 
     async def _ras(*args, **kwargs):
         return 200, {
-            "sourceService": "reporting-aggregation-service",
+            "sourceService": "lotus-report",
             "contractVersion": "v1",
             "policyVersion": "ras-default-v1",
             "features": [
@@ -94,7 +94,7 @@ def test_platform_capabilities_router_success(monkeypatch):
 def test_platform_capabilities_router_partial_failure(monkeypatch):
     async def _pas(*args, **kwargs):
         return 200, {
-            "sourceService": "portfolio-analytics-system",
+            "sourceService": "lotus-core",
             "contractVersion": "v1",
             "policyVersion": "pas-default-v1",
             "features": [{"key": "pas.integration.core_snapshot", "enabled": True}],
@@ -135,3 +135,4 @@ def test_platform_capabilities_router_partial_failure(monkeypatch):
     assert body["normalized"]["policyVersionsBySource"]["pa"] == "unknown"
     assert body["normalized"]["policyVersionsBySource"]["ras"] == "unknown"
     assert body["normalized"]["pasPolicyDiagnostics"]["available"] is False
+

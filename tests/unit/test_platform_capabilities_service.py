@@ -112,7 +112,7 @@ async def test_platform_capabilities_all_sources_success():
         reporting_client=_StubClient(
             200,
             {
-                "sourceService": "reporting-aggregation-service",
+                "sourceService": "lotus-report",
                 "policyVersion": "ras-tenant-a-v1",
                 "supportedInputModes": ["pas_ref"],
                 "features": [
@@ -243,7 +243,7 @@ async def test_platform_capabilities_normalization_handles_malformed_feature_sha
         reporting_client=_StubClient(
             200,
             {
-                "sourceService": "reporting-aggregation-service",
+                "sourceService": "lotus-report",
                 "policyVersion": "ras-v1",
                 "features": [{"key": "ras.reporting.portfolio_summary", "enabled": True}],
                 "workflows": [{"workflow_key": "portfolio_reporting", "enabled": False}],
@@ -290,7 +290,7 @@ async def test_platform_capabilities_records_pas_policy_exception():
         pa_client=_StubClient(200, {"sourceService": "pa", "features": [], "workflows": []}),
         reporting_client=_StubClient(
             200,
-            {"sourceService": "reporting-aggregation-service", "features": [], "workflows": []},
+            {"sourceService": "lotus-report", "features": [], "workflows": []},
         ),
         contract_version="v1",
     )
@@ -341,3 +341,4 @@ def test_platform_capabilities_module_health_marks_unknown_sources():
     assert health["pa"] == "unknown"
     assert health["dpm"] == "unknown"
     assert health["ras"] == "unknown"
+

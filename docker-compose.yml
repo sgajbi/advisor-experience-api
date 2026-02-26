@@ -1,9 +1,9 @@
 services:
-  advisor-experience-api:
+  lotus-gateway:
     build:
       context: .
       dockerfile: Dockerfile
-    image: advisor-experience-api:latest
+    image: lotus-gateway:latest
     ports:
       - "8100:8100"
     environment:
@@ -25,3 +25,5 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+

@@ -438,7 +438,7 @@ async def test_reporting_client_handles_non_dict_payload():
 @pytest.mark.asyncio
 async def test_reporting_client_summary_and_review_routes():
     client = ReportingClient(base_url="http://ras", timeout_seconds=2.0)
-    _FakeAsyncClient.queue_json(200, {"sourceService": "reporting-aggregation-service"})
+    _FakeAsyncClient.queue_json(200, {"sourceService": "lotus-report"})
     _FakeAsyncClient.queue_json(200, {"scope": {"portfolio_id": "P1"}})
     _FakeAsyncClient.queue_json(200, {"portfolio_id": "P1", "overview": {}})
 
@@ -459,7 +459,7 @@ async def test_reporting_client_summary_and_review_routes():
     )
 
     assert capabilities_status == 200
-    assert capabilities_payload["sourceService"] == "reporting-aggregation-service"
+    assert capabilities_payload["sourceService"] == "lotus-report"
     assert summary_status == 200
     assert summary_payload["scope"]["portfolio_id"] == "P1"
     assert review_status == 200
@@ -489,3 +489,4 @@ async def test_reporting_client_summary_review_non_json_payloads():
     assert summary_payload["detail"] == "summary failure"
     assert review_status == 200
     assert review_payload["detail"] == ["review-item"]
+

@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 
 logger = logging.getLogger("enterprise_readiness")
 
-_SERVICE_NAME = "advisor-experience-api"
+_SERVICE_NAME = "lotus-gateway"
 _WRITE_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 _REQUIRED_HEADERS = {"x-actor-id", "x-tenant-id", "x-role", "x-correlation-id"}
 _DEFAULT_REDACTION_FIELDS = {
@@ -214,3 +214,4 @@ def build_enterprise_audit_middleware(service_name: str = _SERVICE_NAME):
         return response
 
     return middleware
+

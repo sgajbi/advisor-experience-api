@@ -2,20 +2,20 @@
 
 - Status: IMPLEMENTED
 - Date: 2026-02-23
-- Owner: advisor-experience-api
+- Owner: lotus-gateway
 
 ## Context
 
 `GET /api/v1/platform/capabilities` is an aggregation API that depends on three upstream services:
-- DPM: `dpm-rebalance-engine`
-- PAS: `portfolio-analytics-system`
-- PA: `performanceAnalytics`
+- DPM: `lotus-advise`
+- PAS: `lotus-core`
+- PA: `lotus-performance`
 
 Unit and local integration tests validated orchestration logic, but they did not validate runtime wiring to live upstream containers.
 
 ## Decision
 
-Introduce a containerized live E2E validation path in `advisor-experience-api`:
+Introduce a containerized live E2E validation path in `lotus-gateway`:
 - Add `docker-compose.e2e.yml` to start DPM + PAS query stack + PA + BFF on one Docker network.
 - Add `tests/e2e/test_platform_capabilities_live.py` to assert BFF returns non-partial aggregation with PAS/PA/DPM sources.
 - Add Make targets:
@@ -44,3 +44,4 @@ Trade-offs:
 
 - Add a nightly, broader E2E suite for proposal lifecycle paths once PAS and PA expose additional integrated APIs needed by UI workflows.
 - Consider publishing versioned upstream Docker images to reduce CI build time.
+

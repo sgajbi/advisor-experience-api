@@ -18,7 +18,7 @@ class JsonFormatter(logging.Formatter):
         payload = {
             "timestamp": datetime.now(UTC).isoformat(),
             "level": record.levelname,
-            "service": os.getenv("SERVICE_NAME", "advisor-experience-api"),
+            "service": os.getenv("SERVICE_NAME", "lotus-gateway"),
             "environment": os.getenv("ENVIRONMENT", "local"),
             "logger": record.name,
             "message": record.getMessage(),
@@ -109,3 +109,4 @@ async def correlation_middleware(request: Request, call_next):
     response.headers["X-Trace-Id"] = trace_id
     response.headers["traceparent"] = f"00-{trace_id}-0000000000000001-01"
     return response
+
