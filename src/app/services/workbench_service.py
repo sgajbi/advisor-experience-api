@@ -57,7 +57,7 @@ class WorkbenchService:
             portfolio_id=portfolio_id,
             as_of_date=as_of_date,
             include_sections=["OVERVIEW", "HOLDINGS"],
-            consumer_system="BFF",
+            consumer_system="lotus-gateway",
             correlation_id=correlation_id,
         )
         self._raise_for_pas_error(pas_status, pas_payload)
@@ -72,7 +72,7 @@ class WorkbenchService:
             portfolio_id=portfolio_id,
             as_of_date=as_of_date,
             periods=["YTD"],
-            consumer_system="BFF",
+            consumer_system="lotus-gateway",
             correlation_id=correlation_id,
         )
         dpm_task = self._dpm_client.list_runs(
@@ -124,7 +124,7 @@ class WorkbenchService:
             portfolio_id=portfolio_id,
             as_of_date=overview.as_of_date,
             include_sections=["HOLDINGS"],
-            consumer_system="BFF",
+            consumer_system="lotus-gateway",
             correlation_id=correlation_id,
         )
         self._raise_for_pas_error(passthrough_status, passthrough_payload)
@@ -171,7 +171,7 @@ class WorkbenchService:
         if status_code >= status.HTTP_400_BAD_REQUEST:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"PAS simulation session create failed: {payload}",
+                detail=f"lotus-core simulation session create failed: {payload}",
             )
 
         session_payload = payload.get("session", {})
@@ -210,7 +210,7 @@ class WorkbenchService:
         if status_code >= status.HTTP_400_BAD_REQUEST:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"PAS simulation change apply failed: {payload}",
+                detail=f"lotus-core simulation change apply failed: {payload}",
             )
 
         session_version = int(payload.get("version", 1))
@@ -304,7 +304,7 @@ class WorkbenchService:
         if pa_status >= status.HTTP_400_BAD_REQUEST:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"PA workbench analytics unavailable: {pa_response}",
+                detail=f"lotus-performance workbench analytics unavailable: {pa_response}",
             )
 
         try:
@@ -370,7 +370,7 @@ class WorkbenchService:
         except (TypeError, ValueError) as exc:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"Invalid PA workbench analytics payload: {exc}",
+                detail=f"Invalid lotus-performance workbench analytics payload: {exc}",
             ) from exc
 
         return WorkbenchAnalyticsResponse(
@@ -407,7 +407,7 @@ class WorkbenchService:
         detail = str(payload.get("detail", payload))
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"PAS core snapshot unavailable: {detail}",
+            detail=f"lotus-core core snapshot unavailable: {detail}",
         )
 
     async def _load_projected_state(
@@ -422,7 +422,7 @@ class WorkbenchService:
         if positions_status >= status.HTTP_400_BAD_REQUEST:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"PAS projected positions unavailable: {positions_payload}",
+                detail=f"lotus-core projected positions unavailable: {positions_payload}",
             )
 
         summary_status, summary_payload = await self._pas_client.get_projected_summary(
@@ -432,7 +432,7 @@ class WorkbenchService:
         if summary_status >= status.HTTP_400_BAD_REQUEST:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"PAS projected summary unavailable: {summary_payload}",
+                detail=f"lotus-core projected summary unavailable: {summary_payload}",
             )
 
         rows_payload = positions_payload.get("positions", [])
@@ -597,7 +597,7 @@ class WorkbenchService:
             warnings.append("DPM_POLICY_SIMULATION_UNAVAILABLE")
             partial_failures.append(
                 WorkbenchPartialFailure(
-                    source_service="dpm",
+                    source_service="lotus-manage",
                     error_code=f"HTTP_{dpm_status}",
                     detail=str(dpm_payload.get("detail", dpm_payload)),
                 )
@@ -634,7 +634,7 @@ class WorkbenchService:
         if not isinstance(portfolio_payload, dict) or not isinstance(snapshot_payload, dict):
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail="Invalid PAS core snapshot payload structure.",
+                detail="Invalid lotus-core core snapshot payload structure.",
             )
 
         overview_payload = snapshot_payload.get("overview", {})
@@ -689,7 +689,7 @@ class WorkbenchService:
         if isinstance(result, Exception):
             partial_failures.append(
                 WorkbenchPartialFailure(
-                    source_service="pa",
+                    source_service="lotus-performance",
                     error_code="UPSTREAM_EXCEPTION",
                     detail=str(result),
                 )
@@ -700,7 +700,7 @@ class WorkbenchService:
         if not isinstance(result, tuple) or len(result) != 2:
             partial_failures.append(
                 WorkbenchPartialFailure(
-                    source_service="pa",
+                    source_service="lotus-performance",
                     error_code="INVALID_UPSTREAM_RESPONSE",
                     detail=f"unexpected result type: {type(result)}",
                 )
@@ -712,7 +712,7 @@ class WorkbenchService:
         if not isinstance(pa_payload, dict):
             partial_failures.append(
                 WorkbenchPartialFailure(
-                    source_service="pa",
+                    source_service="lotus-performance",
                     error_code="INVALID_UPSTREAM_PAYLOAD",
                     detail=f"unexpected payload type: {type(pa_payload)}",
                 )
@@ -723,7 +723,7 @@ class WorkbenchService:
         if pa_status >= status.HTTP_400_BAD_REQUEST:
             partial_failures.append(
                 WorkbenchPartialFailure(
-                    source_service="pa",
+                    source_service="lotus-performance",
                     error_code=f"HTTP_{pa_status}",
                     detail=str(pa_payload.get("detail", pa_payload)),
                 )
@@ -767,7 +767,7 @@ class WorkbenchService:
         if isinstance(result, Exception):
             partial_failures.append(
                 WorkbenchPartialFailure(
-                    source_service="dpm",
+                    source_service="lotus-manage",
                     error_code="UPSTREAM_EXCEPTION",
                     detail=str(result),
                 )
@@ -778,7 +778,7 @@ class WorkbenchService:
         if not isinstance(result, tuple) or len(result) != 2:
             partial_failures.append(
                 WorkbenchPartialFailure(
-                    source_service="dpm",
+                    source_service="lotus-manage",
                     error_code="INVALID_UPSTREAM_RESPONSE",
                     detail=f"unexpected result type: {type(result)}",
                 )
@@ -790,7 +790,7 @@ class WorkbenchService:
         if not isinstance(dpm_payload, dict):
             partial_failures.append(
                 WorkbenchPartialFailure(
-                    source_service="dpm",
+                    source_service="lotus-manage",
                     error_code="INVALID_UPSTREAM_PAYLOAD",
                     detail=f"unexpected payload type: {type(dpm_payload)}",
                 )
@@ -801,7 +801,7 @@ class WorkbenchService:
         if dpm_status >= status.HTTP_400_BAD_REQUEST:
             partial_failures.append(
                 WorkbenchPartialFailure(
-                    source_service="dpm",
+                    source_service="lotus-manage",
                     error_code=f"HTTP_{dpm_status}",
                     detail=str(dpm_payload.get("detail", dpm_payload)),
                 )
@@ -833,3 +833,4 @@ class WorkbenchService:
             ),
             last_run_at_utc=last_run_at_utc,
         )
+

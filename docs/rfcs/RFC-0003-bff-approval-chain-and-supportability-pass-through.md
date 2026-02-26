@@ -1,4 +1,4 @@
-# RFC-0003: BFF Approval Chain v1 and Supportability Pass-Through
+# RFC-0003: lotus-gateway Approval Chain v1 and Supportability Pass-Through
 
 - Status: IMPLEMENTED
 - Date: 2026-02-22
@@ -10,7 +10,7 @@ Expose explicit approval-chain orchestration endpoints for UI workflow progressi
 
 ## Decision
 
-Add BFF endpoints:
+Add lotus-gateway endpoints:
 
 - `POST /api/v1/proposals/{proposal_id}/approve-risk`
 - `POST /api/v1/proposals/{proposal_id}/approve-compliance`
@@ -18,7 +18,7 @@ Add BFF endpoints:
 - `GET /api/v1/proposals/{proposal_id}/workflow-events`
 - `GET /api/v1/proposals/{proposal_id}/approvals`
 
-All routes forward to DPM lifecycle/supportability endpoints with correlation id propagation and strict upstream error passthrough.
+All routes forward to lotus-manage lifecycle/supportability endpoints with correlation id propagation and strict upstream error passthrough.
 
 ## Acceptance Criteria
 

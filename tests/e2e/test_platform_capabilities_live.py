@@ -10,7 +10,7 @@ HEALTH_READY_URL = "http://127.0.0.1:8100/health/ready"
 
 
 def _fetch() -> dict:
-    query = urllib.parse.urlencode({"consumerSystem": "BFF", "tenantId": "default"})
+    query = urllib.parse.urlencode({"consumerSystem": "lotus-gateway", "tenantId": "default"})
     with urllib.request.urlopen(f"{BFF_URL}?{query}", timeout=8) as response:
         return json.loads(response.read().decode("utf-8"))
 

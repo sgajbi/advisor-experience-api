@@ -116,7 +116,7 @@ class IntakeService:
         except ValidationError as exc:
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
-                detail=f"Invalid PAS lookup contract payload: {exc}",
+                detail=f"Invalid lotus-core lookup contract payload: {exc}",
             ) from exc
 
     def _raise_for_upstream_error(
@@ -129,3 +129,4 @@ class IntakeService:
             if not isinstance(detail, str):
                 detail = str(detail)
             raise HTTPException(status_code=upstream_status, detail=detail)
+

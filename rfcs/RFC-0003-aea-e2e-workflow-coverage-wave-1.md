@@ -1,8 +1,8 @@
-# RFC-0003 - AEA E2E Workflow Coverage Wave 1
+# RFC-0003 - lotus-gateway E2E Workflow Coverage Wave 1
 
 ## Problem Statement
 
-AEA currently has a single live-upstream E2E test. That is not enough to represent key BFF workflows in the E2E test bucket.
+lotus-gateway currently has a single live-upstream E2E test. That is not enough to represent key lotus-gateway workflows in the E2E test bucket.
 
 ## Root Cause
 
@@ -13,9 +13,9 @@ E2E coverage was initially limited to one platform capability live check.
 Add workflow-oriented E2E tests that validate:
 
 - platform capability aggregation and health endpoints
-- proposal lifecycle orchestration through DPM-facing endpoints
-- workbench simulation/sandbox orchestration across PAS + PA + DPM adapters
-- reporting snapshot/summary/review orchestration through RAS adapter
+- proposal lifecycle orchestration through lotus-manage-facing endpoints
+- workbench simulation/sandbox orchestration across lotus-core + lotus-performance + lotus-manage adapters
+- reporting snapshot/summary/review orchestration through lotus-report adapter
 
 ## Architectural Impact
 

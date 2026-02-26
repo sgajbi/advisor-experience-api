@@ -63,12 +63,14 @@ def _platform_capabilities_service() -> PlatformCapabilitiesService:
     response_model=PlatformCapabilitiesResponse,
     summary="Get Aggregated Platform Capabilities",
     description=(
-        "Aggregates PAS, PA, DPM, and RAS integration capabilities into one BFF contract "
-        "for UI feature control and workflow negotiation."
+        "Aggregates lotus-core, lotus-performance, lotus-manage, and "
+        "lotus-report integration capabilities into one "
+        "lotus-gateway contract for UI feature control and "
+        "workflow negotiation."
     ),
 )
 async def get_platform_capabilities(
-    consumer_system: str = Query("BFF", alias="consumerSystem"),
+    consumer_system: str = Query("lotus-gateway", alias="consumerSystem"),
     tenant_id: str = Query("default", alias="tenantId"),
     x_correlation_id: str | None = Header(default=None, alias="X-Correlation-Id"),
 ) -> PlatformCapabilitiesResponse:
@@ -79,3 +81,4 @@ async def get_platform_capabilities(
         tenant_id=tenant_id,
         correlation_id=correlation_id,
     )
+

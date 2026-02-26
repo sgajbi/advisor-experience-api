@@ -92,7 +92,7 @@ async def test_platform_capabilities_all_sources_success():
                 "policyProvenance": {
                     "policyVersion": "pas-policy-v7",
                     "policySource": "tenant",
-                    "matchedRuleId": "tenant.default.consumers.BFF",
+                    "matchedRuleId": "tenant.default.consumers.lotus-gateway",
                     "strictMode": True,
                 },
                 "allowedSections": ["OVERVIEW", "HOLDINGS"],
@@ -126,7 +126,7 @@ async def test_platform_capabilities_all_sources_success():
     )
 
     response = await service.get_platform_capabilities(
-        consumer_system="BFF",
+        consumer_system="lotus-gateway",
         tenant_id="default",
         correlation_id="corr-1",
     )
@@ -152,7 +152,7 @@ async def test_platform_capabilities_all_sources_success():
     assert response.data.normalized.pas_policy_diagnostics["policyProvenance"] == {
         "policyVersion": "pas-policy-v7",
         "policySource": "tenant",
-        "matchedRuleId": "tenant.default.consumers.BFF",
+        "matchedRuleId": "tenant.default.consumers.lotus-gateway",
         "strictMode": True,
     }
 
@@ -178,7 +178,7 @@ async def test_platform_capabilities_partial_failure_on_error():
     )
 
     response = await service.get_platform_capabilities(
-        consumer_system="BFF",
+        consumer_system="lotus-gateway",
         tenant_id="default",
         correlation_id="corr-2",
     )
@@ -253,7 +253,7 @@ async def test_platform_capabilities_normalization_handles_malformed_feature_sha
     )
 
     response = await service.get_platform_capabilities(
-        consumer_system="BFF",
+        consumer_system="lotus-gateway",
         tenant_id="default",
         correlation_id="corr-3",
     )
@@ -296,7 +296,7 @@ async def test_platform_capabilities_records_pas_policy_exception():
     )
 
     response = await service.get_platform_capabilities(
-        consumer_system="BFF",
+        consumer_system="lotus-gateway",
         tenant_id="default",
         correlation_id="corr-policy-ex",
     )

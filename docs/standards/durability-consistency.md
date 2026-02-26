@@ -1,21 +1,21 @@
-# Durability and Consistency Standard (AEA/BFF)
+# Durability and Consistency Standard (lotus-gateway/lotus-gateway)
 
 - Standard reference: `lotus-platform/Durability and Consistency Standard.md`
-- Scope: BFF orchestration and write-through proposal/advisory workflows.
+- Scope: lotus-gateway orchestration and write-through proposal/advisory workflows.
 - Change control: RFC required for rule changes; ADR required for temporary deviation.
 
 ## Workflow Consistency Classification
 
 - Strong consistency:
   - proposal create/version/submit/approval/consent orchestration
-  - write-through DPM workflow invocations
+  - write-through lotus-manage workflow invocations
 - Eventual consistency:
-  - read-side dashboards and analytics composition from PAS/PA/RAS
+  - read-side dashboards and analytics composition from lotus-core/lotus-performance/lotus-report
 
 ## Idempotency and Retry Semantics
 
 - Critical proposal write APIs accept/propagate `Idempotency-Key`.
-- AEA propagates idempotency to downstream services and preserves replay-safe behavior.
+- lotus-gateway propagates idempotency to downstream services and preserves replay-safe behavior.
 - Evidence:
   - `src/app/routers/proposals.py`
   - `src/app/services/proposal_service.py`
@@ -23,8 +23,8 @@
 
 ## Atomicity Boundaries
 
-- Business write transitions are delegated to authoritative domain services (DPM/PAS).
-- AEA orchestration must fail fast on downstream write failure and never mask partial commits.
+- Business write transitions are delegated to authoritative domain services (lotus-manage/lotus-core).
+- lotus-gateway orchestration must fail fast on downstream write failure and never mask partial commits.
 - Evidence:
   - `src/app/clients/http_resilience.py`
   - `src/app/services/proposal_service.py`
@@ -32,7 +32,7 @@
 ## As-Of and Reproducibility Semantics
 
 - As-of fields from downstream services are preserved without mutation.
-- BFF contract metadata includes deterministic identifiers for traceability.
+- lotus-gateway contract metadata includes deterministic identifiers for traceability.
 - Evidence:
   - `src/app/contracts/workbench.py`
   - `src/app/routers/reporting.py`
@@ -62,5 +62,6 @@
 ## Deviations
 
 - Any deviation from strong-consistency/write idempotency requirements requires ADR with expiry review date.
+
 
 

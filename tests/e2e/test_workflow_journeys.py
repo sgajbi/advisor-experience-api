@@ -49,7 +49,7 @@ def test_e2e_platform_capability_aggregation_and_health(monkeypatch) -> None:
             "policyProvenance": {
                 "policyVersion": "pas-default-v1",
                 "policySource": "tenant",
-                "matchedRuleId": "tenant.default.consumers.BFF",
+                "matchedRuleId": "tenant.default.consumers.lotus-gateway",
                 "strictMode": False,
             },
             "allowedSections": ["OVERVIEW", "HOLDINGS"],
@@ -63,7 +63,8 @@ def test_e2e_platform_capability_aggregation_and_health(monkeypatch) -> None:
     monkeypatch.setattr("app.clients.reporting_client.ReportingClient.get_capabilities", _ras)
 
     client = TestClient(app)
-    capabilities = client.get("/api/v1/platform/capabilities?consumerSystem=BFF&tenantId=default")
+    capabilities = client.get("/api/v1/platform/capabilities"
+        "?consumerSystem=lotus-gateway&tenantId=default")
     health = client.get("/health")
 
     assert capabilities.status_code == 200
@@ -251,7 +252,7 @@ def test_e2e_platform_capabilities_partial_failure_when_one_upstream_fails(
         }
 
     async def _pa(*args, **kwargs):
-        return 503, {"detail": "PA unavailable"}
+        return 503, {"detail": "lotus-performance unavailable"}
 
     async def _dpm(*args, **kwargs):
         return 200, {
@@ -278,7 +279,7 @@ def test_e2e_platform_capabilities_partial_failure_when_one_upstream_fails(
             "policyProvenance": {
                 "policyVersion": "pas-default-v1",
                 "policySource": "tenant",
-                "matchedRuleId": "tenant.default.consumers.BFF",
+                "matchedRuleId": "tenant.default.consumers.lotus-gateway",
                 "strictMode": False,
             },
             "allowedSections": ["OVERVIEW"],
@@ -292,7 +293,8 @@ def test_e2e_platform_capabilities_partial_failure_when_one_upstream_fails(
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_effective_policy", _pas_policy)
 
     client = TestClient(app)
-    response = client.get("/api/v1/platform/capabilities?consumerSystem=BFF&tenantId=default")
+    response = client.get("/api/v1/platform/capabilities"
+        "?consumerSystem=lotus-gateway&tenantId=default")
 
     assert response.status_code == 200
     body = response.json()["data"]
@@ -304,7 +306,7 @@ def test_e2e_platform_capabilities_partial_failure_when_one_upstream_fails(
 def test_e2e_reporting_snapshot_maps_upstream_failure_to_gateway_error(monkeypatch) -> None:
     async def _snapshot_failure(self, portfolio_id, as_of_date, correlation_id):  # noqa: ANN001
         _ = self, portfolio_id, as_of_date, correlation_id
-        return 503, {"detail": "RAS unavailable"}
+        return 503, {"detail": "lotus-report unavailable"}
 
     monkeypatch.setattr(
         "app.clients.reporting_client.ReportingClient.get_portfolio_snapshot",
@@ -361,7 +363,7 @@ def test_e2e_sandbox_policy_feedback_unavailable_when_dpm_simulation_fails(monke
         return 200, {"items": []}
 
     async def _dpm_simulate_failure(*args, **kwargs):
-        return 503, {"detail": "DPM policy service unavailable"}
+        return 503, {"detail": "lotus-manage policy service unavailable"}
 
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_core_snapshot", _pas_core)
     monkeypatch.setattr("app.clients.pas_client.PasClient.create_simulation_session", _pas_create)

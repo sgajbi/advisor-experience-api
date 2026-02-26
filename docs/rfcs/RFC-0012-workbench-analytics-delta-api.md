@@ -10,7 +10,7 @@ Workbench UI needs backend-driven analytics for current vs proposed portfolio st
 
 ## Root Cause
 
-- No dedicated BFF analytics endpoint for simulation-session deltas.
+- No dedicated lotus-gateway analytics endpoint for simulation-session deltas.
 - No standardized response for grouped allocation changes, top movers, active return, and concentration proxy.
 
 ## Proposed Solution
@@ -24,13 +24,13 @@ Add `GET /api/v1/workbench/{portfolio_id}/analytics` with:
 
 ## Architectural Impact
 
-- Keeps analytics shaping in BFF layer.
+- Keeps analytics shaping in lotus-gateway layer.
 - Enables UI consistency and reduces client-side analytics duplication.
 
 ## Risks and Trade-offs
 
 - Quantity-based proxy analytics are not full valuation/risk analytics.
-- Requires future PA integration for richer attribution/risk dimensions.
+- Requires future lotus-performance integration for richer attribution/risk dimensions.
 
 ## High-Level Implementation Approach
 

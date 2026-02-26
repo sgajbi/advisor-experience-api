@@ -1,4 +1,4 @@
-# RFC-0007: BFF Lookup Delegation to PAS Canonical Lookup APIs
+# RFC-0007: lotus-gateway Lookup Delegation to lotus-core Canonical Lookup APIs
 
 - Status: IMPLEMENTED
 - Date: 2026-02-23
@@ -6,34 +6,34 @@
 
 ## Context
 
-Initial BFF intake implementation translated PAS reference APIs (`/portfolios`, `/instruments`) into lookup contracts and derived currency lists inside BFF. PAS now provides canonical lookup endpoints.
+Initial lotus-gateway intake implementation translated lotus-core reference APIs (`/portfolios`, `/instruments`) into lookup contracts and derived currency lists inside lotus-gateway. lotus-core now provides canonical lookup endpoints.
 
 ## Decision
 
-Refactor BFF lookup paths to call PAS lookup APIs directly:
+Refactor lotus-gateway lookup paths to call lotus-core lookup APIs directly:
 
-- `GET /api/v1/lookups/portfolios` -> PAS `GET /lookups/portfolios`
-- `GET /api/v1/lookups/instruments` -> PAS `GET /lookups/instruments`
-- `GET /api/v1/lookups/currencies` -> PAS `GET /lookups/currencies`
+- `GET /api/v1/lookups/portfolios` -> lotus-core `GET /lookups/portfolios`
+- `GET /api/v1/lookups/instruments` -> lotus-core `GET /lookups/instruments`
+- `GET /api/v1/lookups/currencies` -> lotus-core `GET /lookups/currencies`
 
-BFF now preserves the PAS `items` list shape and only wraps with BFF envelope metadata (`correlation_id`, `contract_version`).
+lotus-gateway now preserves the lotus-core `items` list shape and only wraps with lotus-gateway envelope metadata (`correlation_id`, `contract_version`).
 
 ## Rationale
 
-- Reduces mapping/derivation logic in BFF.
-- Keeps lookup vocabulary ownership in PAS.
-- Improves consistency between PAS and BFF selector catalogs.
+- Reduces mapping/derivation logic in lotus-gateway.
+- Keeps lookup vocabulary ownership in lotus-core.
+- Improves consistency between lotus-core and lotus-gateway selector catalogs.
 
 ## Consequences
 
 Positive:
-- Lower BFF complexity and lower risk of lookup drift.
-- Clearer backend boundary (PAS owns reference catalog semantics).
+- Lower lotus-gateway complexity and lower risk of lookup drift.
+- Clearer backend boundary (lotus-core owns reference catalog semantics).
 
 Trade-offs:
-- BFF depends on PAS lookup endpoint availability and contract stability.
+- lotus-gateway depends on lotus-core lookup endpoint availability and contract stability.
 
 ## Follow-ups
 
-- Add PAS lookup contract smoke checks to BFF live E2E suite.
+- Add lotus-core lookup contract smoke checks to lotus-gateway live E2E suite.
 

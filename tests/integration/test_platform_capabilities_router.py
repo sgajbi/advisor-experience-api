@@ -58,7 +58,7 @@ def test_platform_capabilities_router_success(monkeypatch):
             "policyProvenance": {
                 "policyVersion": "pas-default-v1",
                 "policySource": "tenant",
-                "matchedRuleId": "tenant.default.consumers.BFF",
+                "matchedRuleId": "tenant.default.consumers.lotus-gateway",
                 "strictMode": False,
             },
             "allowedSections": ["OVERVIEW", "HOLDINGS"],
@@ -72,7 +72,8 @@ def test_platform_capabilities_router_success(monkeypatch):
     monkeypatch.setattr("app.clients.reporting_client.ReportingClient.get_capabilities", _ras)
 
     client = TestClient(app)
-    response = client.get("/api/v1/platform/capabilities?consumerSystem=BFF&tenantId=default")
+    response = client.get("/api/v1/platform/capabilities"
+        "?consumerSystem=lotus-gateway&tenantId=default")
 
     assert response.status_code == 200
     body = response.json()["data"]
@@ -121,7 +122,8 @@ def test_platform_capabilities_router_partial_failure(monkeypatch):
     monkeypatch.setattr("app.clients.reporting_client.ReportingClient.get_capabilities", _ras)
 
     client = TestClient(app)
-    response = client.get("/api/v1/platform/capabilities?consumerSystem=BFF&tenantId=default")
+    response = client.get("/api/v1/platform/capabilities"
+        "?consumerSystem=lotus-gateway&tenantId=default")
 
     assert response.status_code == 200
     body = response.json()["data"]

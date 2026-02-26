@@ -1,22 +1,22 @@
-# RFC-0001: DPM-First BFF Proposal Simulation Slice
+# RFC-0001: lotus-manage-First lotus-gateway Proposal Simulation Slice
 
 - Status: IMPLEMENTED
 - Date: 2026-02-22
 
 ## Goal
 
-Scope BFF to DPM first and deliver proposal simulation as the first production UX path.
+Scope lotus-gateway to lotus-manage first and deliver proposal simulation as the first production UX path.
 
 ## Decision
 
-- BFF exposes `POST /api/v1/proposals/simulate`.
-- BFF forwards payload to DPM `POST /rebalance/proposals/simulate`.
-- BFF enforces correlation id propagation and idempotency handling.
+- lotus-gateway exposes `POST /api/v1/proposals/simulate`.
+- lotus-gateway forwards payload to lotus-manage `POST /rebalance/proposals/simulate`.
+- lotus-gateway enforces correlation id propagation and idempotency handling.
 
 ## Out of Scope
 
 - Portfolio core and performance integrations in this phase.
-- Non-DPM workflows.
+- Non-lotus-manage workflows.
 
 ## Acceptance Criteria
 
