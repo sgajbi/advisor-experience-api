@@ -460,7 +460,7 @@ async def test_evaluate_policy_feedback_handles_dpm_failure():
     )
     assert feedback.status == "UNAVAILABLE"
     assert warnings == ["DPM_POLICY_SIMULATION_UNAVAILABLE"]
-    assert partial_failures[0].source_service == "dpm"
+    assert partial_failures[0].source_service == "lotus-manage"
 
 
 @pytest.mark.asyncio
