@@ -5,7 +5,10 @@ from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.contracts.errors import ProblemDetails
-from app.enterprise_readiness import build_enterprise_audit_middleware, validate_enterprise_runtime_config
+from app.enterprise_readiness import (
+    build_enterprise_audit_middleware,
+    validate_enterprise_runtime_config,
+)
 from app.middleware.correlation import correlation_id_var, correlation_middleware, setup_logging
 from app.routers.intake import router as intake_router
 from app.routers.platform import router as platform_router

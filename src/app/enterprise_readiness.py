@@ -99,8 +99,12 @@ def _required_capability(method: str, path: str) -> str | None:
     return None
 
 
-def authorize_write_request(method: str, path: str, headers: dict[str, str]) -> tuple[bool, str | None]:
-    if method.upper() not in _WRITE_METHODS or not _env_enabled("ENTERPRISE_ENFORCE_AUTHZ", "false"):
+def authorize_write_request(
+    method: str, path: str, headers: dict[str, str]
+) -> tuple[bool, str | None]:
+    if method.upper() not in _WRITE_METHODS or not _env_enabled(
+        "ENTERPRISE_ENFORCE_AUTHZ", "false"
+    ):
         return True, None
 
     normalized = {str(k).lower(): str(v) for k, v in headers.items()}
@@ -108,16 +112,16 @@ def authorize_write_request(method: str, path: str, headers: dict[str, str]) -> 
     if missing:
         return False, f"missing_headers:{','.join(missing)}"
 
-    has_service_identity = bool(normalized.get("x-service-identity")) or bool(normalized.get("authorization"))
+    has_service_identity = bool(normalized.get("x-service-identity")) or bool(
+        normalized.get("authorization")
+    )
     if not has_service_identity:
         return False, "missing_service_identity"
 
     required_capability = _required_capability(method, path)
     if required_capability:
         capabilities = {
-            part.strip()
-            for part in normalized.get("x-capabilities", "").split(",")
-            if part.strip()
+            part.strip() for part in normalized.get("x-capabilities", "").split(",") if part.strip()
         }
         if required_capability not in capabilities:
             return False, f"missing_capability:{required_capability}"
@@ -178,7 +182,9 @@ def build_enterprise_audit_middleware(service_name: str = _SERVICE_NAME):
         if request.method in _WRITE_METHODS and content_length > max_write_payload_bytes:
             return JSONResponse(status_code=413, content={"detail": "payload_too_large"})
 
-        authorized, reason = authorize_write_request(request.method, request.url.path, dict(request.headers))
+        authorized, reason = authorize_write_request(
+            request.method, request.url.path, dict(request.headers)
+        )
         if not authorized:
             emit_audit_event(
                 service=service_name,
@@ -189,7 +195,9 @@ def build_enterprise_audit_middleware(service_name: str = _SERVICE_NAME):
                 correlation_id=request.headers.get("X-Correlation-Id"),
                 metadata={"reason": reason},
             )
-            return JSONResponse(status_code=403, content={"detail": "authorization_policy_denied", "reason": reason})
+            return JSONResponse(
+                status_code=403, content={"detail": "authorization_policy_denied", "reason": reason}
+            )
 
         response = await call_next(request)
         response.headers["X-Enterprise-Policy-Version"] = enterprise_policy_version()
