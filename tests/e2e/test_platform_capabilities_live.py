@@ -6,6 +6,7 @@ import urllib.parse
 import urllib.request
 
 BFF_URL = "http://127.0.0.1:8100/api/v1/platform/capabilities"
+HEALTH_READY_URL = "http://127.0.0.1:8100/health/ready"
 
 
 def _fetch() -> dict:
@@ -58,6 +59,33 @@ def test_platform_capabilities_live_upstreams() -> None:
             time.sleep(2)
 
     raise AssertionError(f"E2E validation failed: {last_error}")
+
+
+def test_platform_health_ready_live() -> None:
+    deadline = time.time() + 60
+    last_error: Exception | None = None
+
+    while time.time() < deadline:
+        try:
+            with urllib.request.urlopen(HEALTH_READY_URL, timeout=8) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+            if payload.get("status") == "ready":
+                return
+            raise AssertionError(f"Unexpected health payload: {payload}")
+        except (
+            AssertionError,
+            urllib.error.URLError,
+            TimeoutError,
+            ValueError,
+            ConnectionResetError,
+            ConnectionRefusedError,
+            socket.timeout,
+            socket.error,
+        ) as exc:
+            last_error = exc
+            time.sleep(2)
+
+    raise AssertionError(f"Health readiness validation failed: {last_error}")
 
 
 if __name__ == "__main__":
