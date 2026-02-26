@@ -10,7 +10,7 @@ Proposed
 
 ## Problem Statement
 
-`advisor-experience-api` had low meaningful coverage (~90%) and important backend orchestration branches were not sufficiently validated, especially in workbench orchestration, reporting error propagation, and upstream client fallback handling.
+`lotus-gateway` had low meaningful coverage (~90%) and important backend orchestration branches were not sufficiently validated, especially in workbench orchestration, reporting error propagation, and upstream client fallback handling.
 
 ## Decision
 
@@ -35,3 +35,4 @@ Deliver an incremental hardening wave that raises meaningful coverage and expand
 ## Follow-up
 
 Wave 3 can focus on final branch-coverage gaps and deprecation warning cleanup.
+
