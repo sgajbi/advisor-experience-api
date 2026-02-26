@@ -105,9 +105,9 @@ def _build_service() -> tuple[WorkbenchService, _StubPasClient, _StubPaClient, _
     return WorkbenchService(pas_client=pas, pa_client=pa, dpm_client=dpm), pas, pa, dpm
 
 
-def _build_service_with_risk_client() -> (
-    tuple[WorkbenchService, _StubPasClient, _StubPaClient, _StubDpmClient, _StubPaClient]
-):
+def _build_service_with_risk_client() -> tuple[
+    WorkbenchService, _StubPasClient, _StubPaClient, _StubDpmClient, _StubPaClient
+]:
     pas = _StubPasClient()
     pa = _StubPaClient()
     dpm = _StubDpmClient()
