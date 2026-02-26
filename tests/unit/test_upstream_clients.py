@@ -489,3 +489,4 @@ async def test_reporting_client_summary_review_non_json_payloads():
     assert summary_payload["detail"] == "summary failure"
     assert review_status == 200
     assert review_payload["detail"] == ["review-item"]
+

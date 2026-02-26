@@ -70,3 +70,4 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
         media_type="application/problem+json",
         content=problem.model_dump(),
     )
+

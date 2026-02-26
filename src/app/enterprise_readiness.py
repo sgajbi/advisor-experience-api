@@ -214,3 +214,4 @@ def build_enterprise_audit_middleware(service_name: str = _SERVICE_NAME):
         return response
 
     return middleware
+

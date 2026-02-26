@@ -78,3 +78,4 @@ def test_platform_capabilities_contract_shape(monkeypatch):
         source = payload["sources"][service_name]
         assert source["contractVersion"] == "v1"
         assert "sourceService" in source
+
