@@ -2,7 +2,7 @@
 
 Governance boundary:
 - Service-specific BFF implementation RFCs belong in this repository.
-- Cross-cutting platform and multi-service architecture RFCs belong in `https://github.com/sgajbi/pbwm-platform-docs`.
+- Cross-cutting platform and multi-service architecture RFCs belong in `https://github.com/sgajbi/lotus-platform`.
 
 | RFC | Title | Status | File |
 | --- | --- | --- | --- |
@@ -19,3 +19,4 @@ Governance boundary:
 | RFC-0011 | Workbench Portfolio 360 and Live Sandbox Contract | IMPLEMENTED | `docs/rfcs/RFC-0011-workbench-portfolio-360-and-live-sandbox-contract.md` |
 | RFC-0012 | Workbench Analytics Delta API | IMPLEMENTED | `docs/rfcs/RFC-0012-workbench-analytics-delta-api.md` |
 | RFC-0013 | Workbench Position Valuation Fields | IMPLEMENTED | `docs/rfcs/RFC-0013-workbench-position-valuation-fields.md` |
+

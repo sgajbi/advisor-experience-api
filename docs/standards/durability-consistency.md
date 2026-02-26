@@ -1,6 +1,6 @@
 # Durability and Consistency Standard (AEA/BFF)
 
-- Standard reference: `pbwm-platform-docs/Durability and Consistency Standard.md`
+- Standard reference: `lotus-platform/Durability and Consistency Standard.md`
 - Scope: BFF orchestration and write-through proposal/advisory workflows.
 - Change control: RFC required for rule changes; ADR required for temporary deviation.
 
@@ -62,4 +62,5 @@
 ## Deviations
 
 - Any deviation from strong-consistency/write idempotency requirements requires ADR with expiry review date.
+
 

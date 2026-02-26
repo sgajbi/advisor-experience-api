@@ -7,7 +7,7 @@ def test_platform_capabilities_contract_shape(monkeypatch):
     async def _pas(*args, **kwargs):
         return 200, {
             "contractVersion": "v1",
-            "sourceService": "portfolio-analytics-system",
+            "sourceService": "lotus-core",
             "policyVersion": "pas-default-v1",
             "features": [],
             "workflows": [],
@@ -25,7 +25,7 @@ def test_platform_capabilities_contract_shape(monkeypatch):
     async def _dpm(*args, **kwargs):
         return 200, {
             "contractVersion": "v1",
-            "sourceService": "dpm-rebalance-engine",
+            "sourceService": "lotus-advise",
             "policyVersion": "dpm-default-v1",
             "features": [],
             "workflows": [],
@@ -34,7 +34,7 @@ def test_platform_capabilities_contract_shape(monkeypatch):
     async def _ras(*args, **kwargs):
         return 200, {
             "contractVersion": "v1",
-            "sourceService": "reporting-aggregation-service",
+            "sourceService": "lotus-report",
             "policyVersion": "ras-default-v1",
             "features": [],
             "workflows": [],

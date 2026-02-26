@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: advisor-experience-api:ci-local
+    image: lotus-gateway:ci-local
     working_dir: /app
     volumes:
       - ./:/app
@@ -17,3 +17,4 @@ services:
       - DECISIONING_SERVICE_BASE_URL=http://host.docker.internal:8000
       - UPSTREAM_TIMEOUT_SECONDS=30
       - CONTRACT_VERSION=v1
+

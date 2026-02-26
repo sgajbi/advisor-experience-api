@@ -2,7 +2,7 @@
 
 Service: AEA (BFF)
 
-This repository adopts the platform-wide standard defined in pbwm-platform-docs/Scalability and Availability Standard.md.
+This repository adopts the platform-wide standard defined in lotus-platform/Scalability and Availability Standard.md.
 
 ## Implemented Baseline
 
@@ -13,7 +13,7 @@ This repository adopts the platform-wide standard defined in pbwm-platform-docs/
 
 ## Required Evidence
 
-- Compliance matrix entry in pbwm-platform-docs/output/scalability-availability-compliance.md.
+- Compliance matrix entry in lotus-platform/output/scalability-availability-compliance.md.
 - Service-specific tests covering resilience and concurrency-critical paths.
 
 ## Availability Baseline
@@ -40,10 +40,11 @@ This repository adopts the platform-wide standard defined in pbwm-platform-docs/
 
 - AEA exports service HTTP metrics via `/metrics` and follows platform label conventions (`service`, `env`, `endpoint`, `status_code`).
 - Platform-shared infrastructure metrics for CPU/memory, database, and queue signals are sourced through:
-  - `pbwm-platform-docs/platform-stack/prometheus/prometheus.yml`
-  - `pbwm-platform-docs/platform-stack/docker-compose.yml`
-  - `pbwm-platform-docs/Platform Observability Standards.md`
+  - `lotus-platform/platform-stack/prometheus/prometheus.yml`
+  - `lotus-platform/platform-stack/docker-compose.yml`
+  - `lotus-platform/Platform Observability Standards.md`
 
 ## Deviation Rule
 
 Any deviation from this standard requires ADR/RFC with remediation timeline.
+

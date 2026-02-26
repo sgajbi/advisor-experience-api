@@ -20,7 +20,7 @@ router = APIRouter(prefix="/api/v1/reports", tags=["Reporting"])
     response_model=ReportingSnapshotResponse,
     summary="Get reporting snapshot",
     description=(
-        "Fetches report-ready aggregated snapshot rows from reporting-aggregation-service "
+        "Fetches report-ready aggregated snapshot rows from lotus-report "
         "for one portfolio and as-of date."
     ),
 )
@@ -66,7 +66,7 @@ async def get_reporting_snapshot(
     return ReportingSnapshotResponse(
         correlationId=correlation_id,
         contractVersion=settings.contract_version,
-        sourceService="reporting-aggregation-service",
+        sourceService="lotus-report",
         portfolioId=portfolio_id,
         asOfDate=as_of_date,
         generatedAt=generated_at,
@@ -79,7 +79,7 @@ async def get_reporting_snapshot(
     response_model=ReportingSummaryResponse,
     summary="Get reporting summary",
     description=(
-        "Fetches report-ready portfolio summary payload from reporting-aggregation-service "
+        "Fetches report-ready portfolio summary payload from lotus-report "
         "for one portfolio and as-of date."
     ),
 )
@@ -114,7 +114,7 @@ async def get_reporting_summary(
     return ReportingSummaryResponse(
         correlationId=correlation_id,
         contractVersion=settings.contract_version,
-        sourceService="reporting-aggregation-service",
+        sourceService="lotus-report",
         portfolioId=portfolio_id,
         asOfDate=as_of_date,
         data=payload,
@@ -126,7 +126,7 @@ async def get_reporting_summary(
     response_model=ReportingReviewResponse,
     summary="Get reporting review",
     description=(
-        "Fetches report-ready portfolio review payload from reporting-aggregation-service "
+        "Fetches report-ready portfolio review payload from lotus-report "
         "for one portfolio and as-of date."
     ),
 )
@@ -161,7 +161,7 @@ async def get_reporting_review(
     return ReportingReviewResponse(
         correlationId=correlation_id,
         contractVersion=settings.contract_version,
-        sourceService="reporting-aggregation-service",
+        sourceService="lotus-report",
         portfolioId=portfolio_id,
         asOfDate=as_of_date,
         data=payload,
