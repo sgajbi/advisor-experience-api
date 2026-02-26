@@ -298,7 +298,7 @@ async def test_pas_ingestion_client_non_dict_and_text_payload_handling():
                 "idempotency_key": "idem-1",
                 "correlation_id": "corr-5",
             },
-            "http://dpm/rebalance/proposals/simulate",
+            "http://dpm/api/v1/rebalance/proposals/simulate",
         ),
         (
             "create_proposal",
@@ -307,22 +307,22 @@ async def test_pas_ingestion_client_non_dict_and_text_payload_handling():
                 "idempotency_key": "idem-2",
                 "correlation_id": "corr-5",
             },
-            "http://dpm/rebalance/proposals",
+            "http://dpm/api/v1/rebalance/proposals",
         ),
         (
             "list_proposals",
             {"params": {"portfolio_id": "P1", "status": None}, "correlation_id": "corr-5"},
-            "http://dpm/rebalance/proposals",
+            "http://dpm/api/v1/rebalance/proposals",
         ),
         (
             "list_runs",
             {"params": {"portfolio_id": "P1", "status": None}, "correlation_id": "corr-5"},
-            "http://dpm/rebalance/runs",
+            "http://dpm/api/v1/rebalance/runs",
         ),
         (
             "get_proposal",
             {"proposal_id": "PR-1", "include_evidence": True, "correlation_id": "corr-5"},
-            "http://dpm/rebalance/proposals/PR-1",
+            "http://dpm/api/v1/rebalance/proposals/PR-1",
         ),
         (
             "get_proposal_version",
@@ -332,7 +332,7 @@ async def test_pas_ingestion_client_non_dict_and_text_payload_handling():
                 "include_evidence": False,
                 "correlation_id": "corr-5",
             },
-            "http://dpm/rebalance/proposals/PR-1/versions/2",
+            "http://dpm/api/v1/rebalance/proposals/PR-1/versions/2",
         ),
         (
             "create_proposal_version",
@@ -342,7 +342,7 @@ async def test_pas_ingestion_client_non_dict_and_text_payload_handling():
                 "idempotency_key": "idem-3",
                 "correlation_id": "corr-5",
             },
-            "http://dpm/rebalance/proposals/PR-1/versions",
+            "http://dpm/api/v1/rebalance/proposals/PR-1/versions",
         ),
         (
             "transition_proposal",
@@ -352,7 +352,7 @@ async def test_pas_ingestion_client_non_dict_and_text_payload_handling():
                 "idempotency_key": "idem-transition-1",
                 "correlation_id": "corr-5",
             },
-            "http://dpm/rebalance/proposals/PR-1/transitions",
+            "http://dpm/api/v1/rebalance/proposals/PR-1/transitions",
         ),
         (
             "record_approval",
@@ -362,22 +362,22 @@ async def test_pas_ingestion_client_non_dict_and_text_payload_handling():
                 "idempotency_key": "idem-approval-1",
                 "correlation_id": "corr-5",
             },
-            "http://dpm/rebalance/proposals/PR-1/approvals",
+            "http://dpm/api/v1/rebalance/proposals/PR-1/approvals",
         ),
         (
             "get_workflow_events",
             {"proposal_id": "PR-1", "correlation_id": "corr-5"},
-            "http://dpm/rebalance/proposals/PR-1/workflow-events",
+            "http://dpm/api/v1/rebalance/proposals/PR-1/workflow-events",
         ),
         (
             "get_approvals",
             {"proposal_id": "PR-1", "correlation_id": "corr-5"},
-            "http://dpm/rebalance/proposals/PR-1/approvals",
+            "http://dpm/api/v1/rebalance/proposals/PR-1/approvals",
         ),
         (
             "get_capabilities",
             {"consumer_system": "BFF", "tenant_id": "default", "correlation_id": "corr-5"},
-            "http://dpm/integration/capabilities",
+            "http://dpm/api/v1/platform/capabilities",
         ),
     ],
 )
