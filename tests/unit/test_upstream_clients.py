@@ -346,12 +346,22 @@ async def test_pas_ingestion_client_non_dict_and_text_payload_handling():
         ),
         (
             "transition_proposal",
-            {"proposal_id": "PR-1", "body": {"event": "submit"}, "correlation_id": "corr-5"},
+            {
+                "proposal_id": "PR-1",
+                "body": {"event": "submit"},
+                "idempotency_key": "idem-transition-1",
+                "correlation_id": "corr-5",
+            },
             "http://dpm/rebalance/proposals/PR-1/transitions",
         ),
         (
             "record_approval",
-            {"proposal_id": "PR-1", "body": {"decision": "approve"}, "correlation_id": "corr-5"},
+            {
+                "proposal_id": "PR-1",
+                "body": {"decision": "approve"},
+                "idempotency_key": "idem-approval-1",
+                "correlation_id": "corr-5",
+            },
             "http://dpm/rebalance/proposals/PR-1/approvals",
         ),
         (
@@ -380,6 +390,15 @@ async def test_dpm_client_all_routes(method_name, kwargs, expected_url):
     assert status_code == 200
     assert payload["ok"] is True
     assert _FakeAsyncClient.calls[0]["url"] == expected_url
+    methods_with_idempotency = {
+        "simulate_proposal",
+        "create_proposal",
+        "create_proposal_version",
+        "transition_proposal",
+        "record_approval",
+    }
+    if method_name in methods_with_idempotency:
+        assert _FakeAsyncClient.calls[0]["headers"]["Idempotency-Key"] == kwargs["idempotency_key"]
 
 
 @pytest.mark.asyncio
