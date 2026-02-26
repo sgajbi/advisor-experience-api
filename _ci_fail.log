@@ -1,0 +1,403 @@
+Lint, Typecheck, Unit	Set up job	﻿2026-02-26T08:33:30.3575047Z Current runner version: '2.331.0'
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3601712Z ##[group]Runner Image Provisioner
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3602640Z Hosted Compute Agent
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3603174Z Version: 20260213.493
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3603872Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3604609Z Build Date: 2026-02-13T00:28:41Z
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3605252Z Worker ID: {3e8bfb20-cc52-4d9a-8d3c-07a61812df33}
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3606038Z Azure Region: northcentralus
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3606641Z ##[endgroup]
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3608287Z ##[group]Operating System
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3608873Z Ubuntu
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3609476Z 24.04.3
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3609898Z LTS
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3610352Z ##[endgroup]
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3610915Z ##[group]Runner Image
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3611479Z Image: ubuntu-24.04
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3611980Z Version: 20260224.36.1
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3613035Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260224.36/images/ubuntu/Ubuntu2404-Readme.md
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3614649Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260224.36
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3615671Z ##[endgroup]
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3616649Z ##[group]GITHUB_TOKEN Permissions
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3619314Z Contents: read
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3619892Z Metadata: read
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3620399Z ##[endgroup]
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3622545Z Secret source: Actions
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3623313Z Prepare workflow directory
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.3971256Z Prepare all required actions
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.4009258Z Getting action download info
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.7554351Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:30.8872627Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+Lint, Typecheck, Unit	Set up job	2026-02-26T08:33:31.0807220Z Complete job name: Lint, Typecheck, Unit
+Lint, Typecheck, Unit	Run actions/checkout@v4	﻿2026-02-26T08:33:31.1590258Z ##[group]Run actions/checkout@v4
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1591171Z with:
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1591655Z   repository: sgajbi/lotus-gateway
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1592419Z   token: ***
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1592836Z   ssh-strict: true
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1593246Z   ssh-user: git
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1593678Z   persist-credentials: true
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1594151Z   clean: true
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1594583Z   sparse-checkout-cone-mode: true
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1595092Z   fetch-depth: 1
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1595509Z   fetch-tags: false
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1595946Z   show-progress: true
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1596403Z   lfs: false
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1596819Z   submodules: false
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1597263Z   set-safe-directory: true
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.1598184Z ##[endgroup]
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2712902Z Syncing repository: sgajbi/lotus-gateway
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2714782Z ##[group]Getting Git version info
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2715604Z Working directory is '/home/runner/work/lotus-gateway/lotus-gateway'
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2716826Z [command]/usr/bin/git version
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2777792Z git version 2.53.0
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2804890Z ##[endgroup]
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2821959Z Temporarily overriding HOME='/home/runner/work/_temp/230a885a-b7d2-4b01-b42e-08a80d09eac1' before making global git config changes
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2824661Z Adding repository directory to the temporary git global config as a safe directory
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2828597Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/lotus-gateway/lotus-gateway
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2870665Z Deleting the contents of '/home/runner/work/lotus-gateway/lotus-gateway'
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2875396Z ##[group]Initializing the repository
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2880563Z [command]/usr/bin/git init /home/runner/work/lotus-gateway/lotus-gateway
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2993915Z hint: Using 'master' as the name for the initial branch. This default branch name
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2995825Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2997816Z hint: to use in all of your new repositories, which will suppress this warning,
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.2999517Z hint: call:
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3000001Z hint:
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3000731Z hint: 	git config --global init.defaultBranch <name>
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3001355Z hint:
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3001921Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3002859Z hint: 'development'. The just-created branch can be renamed via this command:
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3003589Z hint:
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3004266Z hint: 	git branch -m <name>
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3005081Z hint:
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3005803Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3006905Z Initialized empty Git repository in /home/runner/work/lotus-gateway/lotus-gateway/.git/
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3010464Z [command]/usr/bin/git remote add origin https://github.com/sgajbi/lotus-gateway
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3046815Z ##[endgroup]
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3048007Z ##[group]Disabling automatic garbage collection
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3050964Z [command]/usr/bin/git config --local gc.auto 0
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3081463Z ##[endgroup]
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3082229Z ##[group]Setting up auth
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3088545Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3121534Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3475167Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3507027Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3759697Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.3808347Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.4080824Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.4120985Z ##[endgroup]
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.4122487Z ##[group]Fetching the repository
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.4132084Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +56663ba23e6f9d732e8fd7f51fda9fabbb21a062:refs/remotes/pull/62/merge
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6742209Z From https://github.com/sgajbi/lotus-gateway
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6743509Z  * [new ref]         56663ba23e6f9d732e8fd7f51fda9fabbb21a062 -> pull/62/merge
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6777237Z ##[endgroup]
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6779006Z ##[group]Determining the checkout info
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6780643Z ##[endgroup]
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6786806Z [command]/usr/bin/git sparse-checkout disable
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6831470Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6859447Z ##[group]Checking out the ref
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6864102Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/62/merge
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6951245Z Note: switching to 'refs/remotes/pull/62/merge'.
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6952095Z 
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6952763Z You are in 'detached HEAD' state. You can look around, make experimental
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6954351Z changes and commit them, and you can discard any commits you make in this
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6955517Z state without impacting any branches by switching back to a branch.
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6956042Z 
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6956406Z If you want to create a new branch to retain commits you create, you may
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6957235Z do so (now or later) by using -c with the switch command. Example:
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6958036Z 
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6958265Z   git switch -c <new-branch-name>
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6958650Z 
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6958982Z Or undo this operation with:
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6959953Z 
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6960307Z   git switch -
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6960576Z 
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6960981Z Turn off this advice by setting config variable advice.detachedHead to false
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6961558Z 
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6962219Z HEAD is now at 56663ba Merge 6020ba0c88ccd7ed9eead82e152e452a7cdd70a3 into 17e8f8813a4b72b92b7a866e71201a02214139cb
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.6964151Z ##[endgroup]
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.7000508Z [command]/usr/bin/git log -1 --format=%H
+Lint, Typecheck, Unit	Run actions/checkout@v4	2026-02-26T08:33:31.7026110Z 56663ba23e6f9d732e8fd7f51fda9fabbb21a062
+Lint, Typecheck, Unit	Run actions/setup-python@v5	﻿2026-02-26T08:33:31.7286473Z ##[group]Run actions/setup-python@v5
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.7287102Z with:
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.7287651Z   python-version: 3.11
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.7288120Z   check-latest: false
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.7288730Z   token: ***
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.7289147Z   update-environment: true
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.7289620Z   allow-prereleases: false
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.7290069Z   freethreaded: false
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.7290484Z ##[endgroup]
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.9111330Z ##[group]Installed versions
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.9202725Z Successfully set up CPython (3.11.14)
+Lint, Typecheck, Unit	Run actions/setup-python@v5	2026-02-26T08:33:31.9204980Z ##[endgroup]
+Lint, Typecheck, Unit	Install	﻿2026-02-26T08:33:31.9358174Z ##[group]Run python -m pip install --upgrade pip
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9359970Z [36;1mpython -m pip install --upgrade pip[0m
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9361403Z [36;1mpip install -e ".[dev]"[0m
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9423498Z shell: /usr/bin/bash -e {0}
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9424691Z env:
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9425861Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9428178Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9430181Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9431958Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9433738Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9435488Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:31.9436953Z ##[endgroup]
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:32.6878281Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages (26.0.1)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:33.2651286Z Obtaining file:///home/runner/work/lotus-gateway/lotus-gateway
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:33.2674677Z   Installing build dependencies: started
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.0135381Z   Installing build dependencies: finished with status 'done'
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.0142783Z   Checking if build backend supports build_editable: started
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.3028715Z   Checking if build backend supports build_editable: finished with status 'done'
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.3038393Z   Getting requirements to build editable: started
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.6068421Z   Getting requirements to build editable: finished with status 'done'
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.6078384Z   Preparing editable metadata (pyproject.toml): started
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.7869200Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.8969473Z Collecting fastapi>=0.129.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.9515306Z   Downloading fastapi-0.133.1-py3-none-any.whl.metadata (30 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.9838747Z Collecting uvicorn>=0.35.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:34.9916954Z   Downloading uvicorn-0.41.0-py3-none-any.whl.metadata (6.7 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.1041180Z Collecting pydantic>=2.11.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.1081972Z   Downloading pydantic-2.12.5-py3-none-any.whl.metadata (90 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.1363048Z Collecting pydantic-settings>=2.10.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.1403844Z   Downloading pydantic_settings-2.13.1-py3-none-any.whl.metadata (3.4 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.1581876Z Collecting httpx>=0.28.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.1618489Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.1755797Z Collecting python-multipart>=0.0.9 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.1792391Z   Downloading python_multipart-0.0.22-py3-none-any.whl.metadata (1.8 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.1936681Z Collecting prometheus-fastapi-instrumentator>=7.1.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.1971823Z   Downloading prometheus_fastapi_instrumentator-7.1.0-py3-none-any.whl.metadata (13 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.2233643Z Collecting pytest>=8.4.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.2275962Z   Downloading pytest-9.0.2-py3-none-any.whl.metadata (7.6 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.2448474Z Collecting pytest-asyncio>=0.26.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.2482911Z   Downloading pytest_asyncio-1.3.0-py3-none-any.whl.metadata (4.1 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.2636096Z Collecting pytest-cov>=6.2.1 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.2672073Z   Downloading pytest_cov-7.0.0-py3-none-any.whl.metadata (31 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.5966175Z Collecting ruff>=0.15.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.6006248Z   Downloading ruff-0.15.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (26 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.7015694Z Collecting mypy>=1.13.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.7054157Z   Downloading mypy-1.19.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.2 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.7229585Z Collecting pip-audit>=2.9.0 (from lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.7264497Z   Downloading pip_audit-2.10.0-py3-none-any.whl.metadata (28 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.7519332Z Collecting starlette>=0.40.0 (from fastapi>=0.129.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.7561583Z   Downloading starlette-0.52.1-py3-none-any.whl.metadata (6.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.7755459Z Collecting typing-extensions>=4.8.0 (from fastapi>=0.129.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.7793418Z   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.7895347Z Collecting typing-inspection>=0.4.2 (from fastapi>=0.129.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.7936326Z   Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.8033073Z Collecting annotated-doc>=0.0.2 (from fastapi>=0.129.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.8068202Z   Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.8290538Z Collecting anyio (from httpx>=0.28.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.8325915Z   Downloading anyio-4.12.1-py3-none-any.whl.metadata (4.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.8512625Z Collecting certifi (from httpx>=0.28.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.8550710Z   Downloading certifi-2026.2.25-py3-none-any.whl.metadata (2.5 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.8709047Z Collecting httpcore==1.* (from httpx>=0.28.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.8747813Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.8895245Z Collecting idna (from httpx>=0.28.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.8933035Z   Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.9049658Z Collecting h11>=0.16 (from httpcore==1.*->httpx>=0.28.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.9086236Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.9221429Z Collecting mypy_extensions>=1.0.0 (from mypy>=1.13.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.9260144Z   Downloading mypy_extensions-1.1.0-py3-none-any.whl.metadata (1.1 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.9389763Z Collecting pathspec>=0.9.0 (from mypy>=1.13.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:35.9423577Z   Downloading pathspec-1.0.4-py3-none-any.whl.metadata (13 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.0358427Z Collecting librt>=0.6.2 (from mypy>=1.13.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.0406172Z   Downloading librt-0.8.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (1.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.0560298Z Collecting CacheControl>=0.13.0 (from CacheControl[filecache]>=0.13.0->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.0599332Z   Downloading cachecontrol-0.14.4-py3-none-any.whl.metadata (3.1 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.0891340Z Collecting cyclonedx-python-lib<12,>=5 (from pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.0928089Z   Downloading cyclonedx_python_lib-11.6.0-py3-none-any.whl.metadata (6.8 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.1086765Z Collecting packaging>=23.0.0 (from pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.1121995Z   Downloading packaging-26.0-py3-none-any.whl.metadata (3.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.1256842Z Collecting pip-api>=0.0.28 (from pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.1290833Z   Downloading pip_api-0.0.34-py3-none-any.whl.metadata (6.6 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.1401523Z Collecting pip-requirements-parser>=32.0.0 (from pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.1434411Z   Downloading pip_requirements_parser-32.0.1-py3-none-any.whl.metadata (9.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.1649768Z Collecting requests>=2.31.0 (from pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.1684442Z   Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.1982483Z Collecting rich>=12.4 (from pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.2016707Z   Downloading rich-14.3.3-py3-none-any.whl.metadata (18 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.2200462Z Collecting tomli>=2.2.1 (from pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.2234584Z   Downloading tomli-2.4.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (10 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.2337842Z Collecting tomli-w>=1.2.0 (from pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.2372817Z   Downloading tomli_w-1.2.0-py3-none-any.whl.metadata (5.7 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.2526656Z Collecting platformdirs>=4.2.0 (from pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.2560816Z   Downloading platformdirs-4.9.2-py3-none-any.whl.metadata (4.7 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.2738145Z Collecting license-expression<31,>=30 (from cyclonedx-python-lib<12,>=5->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.2773660Z   Downloading license_expression-30.4.4-py3-none-any.whl.metadata (11 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.3348864Z Collecting packageurl-python<2,>=0.11 (from cyclonedx-python-lib<12,>=5->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.3387677Z   Downloading packageurl_python-0.17.6-py3-none-any.whl.metadata (5.1 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.3556389Z Collecting py-serializable<3.0.0,>=2.1.0 (from cyclonedx-python-lib<12,>=5->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.3590409Z   Downloading py_serializable-2.1.0-py3-none-any.whl.metadata (4.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.3729604Z Collecting sortedcontainers<3.0.0,>=2.4.0 (from cyclonedx-python-lib<12,>=5->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.3769900Z   Downloading sortedcontainers-2.4.0-py2.py3-none-any.whl.metadata (10 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.3918177Z Collecting boolean.py>=4.0 (from license-expression<31,>=30->cyclonedx-python-lib<12,>=5->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.3952402Z   Downloading boolean_py-5.0-py3-none-any.whl.metadata (2.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.4078805Z Collecting defusedxml<0.8.0,>=0.7.1 (from py-serializable<3.0.0,>=2.1.0->cyclonedx-python-lib<12,>=5->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.4113964Z   Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.4763394Z Collecting msgpack<2.0.0,>=0.5.2 (from CacheControl>=0.13.0->CacheControl[filecache]>=0.13.0->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.4807093Z   Downloading msgpack-1.1.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.5011618Z Collecting filelock>=3.8.0 (from CacheControl[filecache]>=0.13.0->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.5045250Z   Downloading filelock-3.24.3-py3-none-any.whl.metadata (2.0 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.5094566Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages (from pip-api>=0.0.28->pip-audit>=2.9.0->lotus-gateway==0.1.0) (26.0.1)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.5302973Z Collecting pyparsing (from pip-requirements-parser>=32.0.0->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.5338024Z   Downloading pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.5500328Z Collecting prometheus-client<1.0.0,>=0.8.0 (from prometheus-fastapi-instrumentator>=7.1.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.5534395Z   Downloading prometheus_client-0.24.1-py3-none-any.whl.metadata (2.1 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.5748552Z Collecting annotated-types>=0.6.0 (from pydantic>=2.11.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:36.5782438Z   Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.2169599Z Collecting pydantic-core==2.41.5 (from pydantic>=2.11.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.2206075Z   Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.2375815Z Collecting python-dotenv>=0.21.0 (from pydantic-settings>=2.10.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.2409218Z   Downloading python_dotenv-1.2.1-py3-none-any.whl.metadata (25 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.2535264Z Collecting iniconfig>=1.0.1 (from pytest>=8.4.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.2568094Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.2691105Z Collecting pluggy<2,>=1.5 (from pytest>=8.4.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.2723660Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.2896238Z Collecting pygments>=2.7.2 (from pytest>=8.4.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.2930235Z   Downloading pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.6944975Z Collecting coverage>=7.10.6 (from coverage[toml]>=7.10.6->pytest-cov>=6.2.1->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.6982460Z   Downloading coverage-7.13.4-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (8.5 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.7766699Z Collecting charset_normalizer<4,>=2 (from requests>=2.31.0->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.7815744Z   Downloading charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (37 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8062441Z Collecting urllib3<3,>=1.21.1 (from requests>=2.31.0->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8098409Z   Downloading urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8318267Z Collecting markdown-it-py>=2.2.0 (from rich>=12.4->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8352805Z   Downloading markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8512279Z Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=12.4->pip-audit>=2.9.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8545870Z   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8736268Z Collecting click>=7.0 (from uvicorn>=0.35.0->lotus-gateway==0.1.0)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8778356Z   Downloading click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8885696Z Downloading fastapi-0.133.1-py3-none-any.whl (109 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8944580Z Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.8998227Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.9056018Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.9113612Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.9168350Z Downloading mypy-1.19.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (13.4 MB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.9762264Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.4/13.4 MB 240.2 MB/s  0:00:00
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.9816822Z Downloading librt-0.8.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (218 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.9885449Z Downloading mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.9939369Z Downloading pathspec-1.0.4-py3-none-any.whl (55 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:37.9994363Z Downloading pip_audit-2.10.0-py3-none-any.whl (61 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0050534Z Downloading cyclonedx_python_lib-11.6.0-py3-none-any.whl (511 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0136225Z Downloading license_expression-30.4.4-py3-none-any.whl (120 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0207776Z Downloading packageurl_python-0.17.6-py3-none-any.whl (36 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0264682Z Downloading py_serializable-2.1.0-py3-none-any.whl (23 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0318396Z Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0372901Z Downloading sortedcontainers-2.4.0-py2.py3-none-any.whl (29 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0427738Z Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0495232Z Downloading boolean_py-5.0-py3-none-any.whl (26 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0549327Z Downloading cachecontrol-0.14.4-py3-none-any.whl (22 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0608274Z Downloading msgpack-1.1.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (426 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0679460Z Downloading filelock-3.24.3-py3-none-any.whl (24 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0732702Z Downloading packaging-26.0-py3-none-any.whl (74 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0789324Z Downloading pip_api-0.0.34-py3-none-any.whl (120 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0847575Z Downloading pip_requirements_parser-32.0.1-py3-none-any.whl (35 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0900618Z Downloading platformdirs-4.9.2-py3-none-any.whl (21 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.0954525Z Downloading prometheus_fastapi_instrumentator-7.1.0-py3-none-any.whl (19 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1035866Z Downloading prometheus_client-0.24.1-py3-none-any.whl (64 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1097109Z Downloading starlette-0.52.1-py3-none-any.whl (74 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1153959Z Downloading anyio-4.12.1-py3-none-any.whl (113 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1216033Z Downloading idna-3.11-py3-none-any.whl (71 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1279091Z Downloading pydantic-2.12.5-py3-none-any.whl (463 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1384920Z Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1518411Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 181.8 MB/s  0:00:00
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1555117Z Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1634731Z Downloading pydantic_settings-2.13.1-py3-none-any.whl (58 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1693093Z Downloading pytest-9.0.2-py3-none-any.whl (374 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1760181Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1813379Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1867233Z Downloading pygments-2.19.2-py3-none-any.whl (1.2 MB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1960477Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 154.1 MB/s  0:00:00
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.1996019Z Downloading pytest_asyncio-1.3.0-py3-none-any.whl (15 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2049880Z Downloading pytest_cov-7.0.0-py3-none-any.whl (22 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2103413Z Downloading coverage-7.13.4-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (252 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2165964Z Downloading python_dotenv-1.2.1-py3-none-any.whl (21 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2223308Z Downloading python_multipart-0.0.22-py3-none-any.whl (24 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2279439Z Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2336609Z Downloading charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (151 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2398300Z Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2465451Z Downloading certifi-2026.2.25-py3-none-any.whl (153 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2525905Z Downloading rich-14.3.3-py3-none-any.whl (310 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2591926Z Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2646278Z Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.2724395Z Downloading ruff-0.15.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.1 MB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.3238281Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 226.3 MB/s  0:00:00
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.3275143Z Downloading tomli-2.4.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (243 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.3346104Z Downloading tomli_w-1.2.0-py3-none-any.whl (6.7 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.3399724Z Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.3453590Z Downloading uvicorn-0.41.0-py3-none-any.whl (68 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.3510690Z Downloading click-8.3.1-py3-none-any.whl (108 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.3566980Z Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.4245952Z Building wheels for collected packages: lotus-gateway
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.4255204Z   Building editable for lotus-gateway (pyproject.toml): started
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.6208753Z   Building editable for lotus-gateway (pyproject.toml): finished with status 'done'
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.6215752Z   Created wheel for lotus-gateway: filename=lotus_gateway-0.1.0-0.editable-py3-none-any.whl size=1468 sha256=ff67f4e447cb2b7bbbcdf5dff4ffb72ca16a820f30809f9f6aac7191c8f7de55
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.6218578Z   Stored in directory: /tmp/pip-ephem-wheel-cache-ivqpdsf0/wheels/b7/1f/9d/f25feff5e603d88e9e5b84fa6be0fecfe870817e9af2fe1bd1
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.6232144Z Successfully built lotus-gateway
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:38.7879426Z Installing collected packages: sortedcontainers, boolean.py, urllib3, typing-extensions, tomli-w, tomli, ruff, python-multipart, python-dotenv, pyparsing, pygments, prometheus-client, pluggy, platformdirs, pip-api, pathspec, packaging, packageurl-python, mypy_extensions, msgpack, mdurl, license-expression, librt, iniconfig, idna, h11, filelock, defusedxml, coverage, click, charset_normalizer, certifi, annotated-types, annotated-doc, uvicorn, typing-inspection, requests, pytest, pydantic-core, py-serializable, pip-requirements-parser, mypy, markdown-it-py, httpcore, anyio, starlette, rich, pytest-cov, pytest-asyncio, pydantic, httpx, cyclonedx-python-lib, CacheControl, pydantic-settings, prometheus-fastapi-instrumentator, fastapi, pip-audit, lotus-gateway
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:43.2542171Z 
+Lint, Typecheck, Unit	Install	2026-02-26T08:33:43.2574381Z Successfully installed CacheControl-0.14.4 annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.12.1 boolean.py-5.0 certifi-2026.2.25 charset_normalizer-3.4.4 click-8.3.1 coverage-7.13.4 cyclonedx-python-lib-11.6.0 defusedxml-0.7.1 fastapi-0.133.1 filelock-3.24.3 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.11 iniconfig-2.3.0 librt-0.8.1 license-expression-30.4.4 lotus-gateway-0.1.0 markdown-it-py-4.0.0 mdurl-0.1.2 msgpack-1.1.2 mypy-1.19.1 mypy_extensions-1.1.0 packageurl-python-0.17.6 packaging-26.0 pathspec-1.0.4 pip-api-0.0.34 pip-audit-2.10.0 pip-requirements-parser-32.0.1 platformdirs-4.9.2 pluggy-1.6.0 prometheus-client-0.24.1 prometheus-fastapi-instrumentator-7.1.0 py-serializable-2.1.0 pydantic-2.12.5 pydantic-core-2.41.5 pydantic-settings-2.13.1 pygments-2.19.2 pyparsing-3.3.2 pytest-9.0.2 pytest-asyncio-1.3.0 pytest-cov-7.0.0 python-dotenv-1.2.1 python-multipart-0.0.22 requests-2.32.5 rich-14.3.3 ruff-0.15.2 sortedcontainers-2.4.0 starlette-0.52.1 tomli-2.4.0 tomli-w-1.2.0 typing-extensions-4.15.0 typing-inspection-0.4.2 urllib3-2.6.3 uvicorn-0.41.0
+Lint, Typecheck, Unit	Verify Dependencies	﻿2026-02-26T08:33:43.7979468Z ##[group]Run python -m pip check
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:43.7979786Z [36;1mpython -m pip check[0m
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:43.8033270Z shell: /usr/bin/bash -e {0}
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:43.8033518Z env:
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:43.8033771Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:43.8034193Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:43.8034621Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:43.8034996Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:43.8035374Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:43.8035739Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:43.8036044Z ##[endgroup]
+Lint, Typecheck, Unit	Verify Dependencies	2026-02-26T08:33:44.0534418Z No broken requirements found.
+Lint, Typecheck, Unit	Security Audit	﻿2026-02-26T08:33:44.0876797Z ##[group]Run make security-audit
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.0877117Z [36;1mmake security-audit[0m
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.0930751Z shell: /usr/bin/bash -e {0}
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.0930996Z env:
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.0931242Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.0931686Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.0932140Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.0932519Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.0932913Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.0933301Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.0933643Z ##[endgroup]
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:44.1390884Z python -m pip_audit -r requirements-audit.txt
+Lint, Typecheck, Unit	Security Audit	2026-02-26T08:33:55.1022547Z No known vulnerabilities found
+Lint, Typecheck, Unit	Lint	﻿2026-02-26T08:33:55.1554160Z ##[group]Run make lint
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1554436Z [36;1mmake lint[0m
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1603523Z shell: /usr/bin/bash -e {0}
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1603759Z env:
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1604003Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1604423Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1604833Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1605192Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1605550Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1605906Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1606209Z ##[endgroup]
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1690932Z ruff check .
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1838805Z All checks passed!
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.1849133Z ruff format --check .
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2013730Z Would reformat: src/app/routers/intake.py
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2014496Z Would reformat: src/app/routers/platform.py
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2015131Z Would reformat: src/app/routers/workbench.py
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2015656Z Would reformat: src/app/services/intake_service.py
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2016227Z Would reformat: src/app/services/workbench_service.py
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2016905Z Would reformat: tests/contract/test_platform_capabilities_contract.py
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2017819Z Would reformat: tests/e2e/test_workflow_journeys.py
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2018470Z Would reformat: tests/integration/test_platform_capabilities_router.py
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2019161Z 8 files would be reformatted, 50 files already formatted
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2027684Z make: *** [Makefile:8: lint] Error 1
+Lint, Typecheck, Unit	Lint	2026-02-26T08:33:55.2044228Z ##[error]Process completed with exit code 2.
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	﻿2026-02-26T08:33:55.2161213Z Post job cleanup.
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3145711Z [command]/usr/bin/git version
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3186643Z git version 2.53.0
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3242165Z Temporarily overriding HOME='/home/runner/work/_temp/1339c35f-6f11-40f3-ac75-1534c43158e5' before making global git config changes
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3243581Z Adding repository directory to the temporary git global config as a safe directory
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3249324Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/lotus-gateway/lotus-gateway
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3290768Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3327896Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3599305Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3628164Z http.https://github.com/.extraheader
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3646203Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3688435Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.3988576Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Lint, Typecheck, Unit	Post Run actions/checkout@v4	2026-02-26T08:33:55.4030394Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Lint, Typecheck, Unit	Complete job	﻿2026-02-26T08:33:55.4456672Z Cleaning up orphan processes

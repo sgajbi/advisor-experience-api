@@ -96,7 +96,7 @@ async def test_pa_client_calls_and_payload_handling():
     )
 
     status_one, payload_one = await client.get_capabilities(
-        consumer_system="BFF",
+        consumer_system="lotus-gateway",
         tenant_id="default",
         correlation_id="corr-1",
     )
@@ -104,7 +104,7 @@ async def test_pa_client_calls_and_payload_handling():
         portfolio_id="P1",
         as_of_date="2026-02-24",
         periods=["YTD"],
-        consumer_system="BFF",
+        consumer_system="lotus-gateway",
         correlation_id="corr-1",
     )
     status_three, payload_three = await client.get_workbench_analytics(
@@ -130,7 +130,7 @@ async def test_pa_client_non_json_and_non_dict_payload_handling():
     _FakeAsyncClient.queue_json(200, ["analytics"])
 
     status_one, payload_one = await client.get_capabilities(
-        consumer_system="BFF",
+        consumer_system="lotus-gateway",
         tenant_id="default",
         correlation_id="corr-1",
     )
@@ -197,12 +197,12 @@ async def test_pas_client_core_endpoints():
 
     assert (
         await client.get_capabilities(
-            consumer_system="BFF", tenant_id="default", correlation_id="corr-3"
+            consumer_system="lotus-gateway", tenant_id="default", correlation_id="corr-3"
         )
     )[0] == 200
     assert (
         await client.get_effective_policy(
-            consumer_system="BFF", tenant_id="default", correlation_id="corr-3"
+            consumer_system="lotus-gateway", tenant_id="default", correlation_id="corr-3"
         )
     )[0] == 200
     assert (await client.list_portfolios(correlation_id="corr-3"))[0] == 200
@@ -211,7 +211,7 @@ async def test_pas_client_core_endpoints():
             portfolio_id="P1",
             as_of_date="2026-02-24",
             include_sections=["OVERVIEW"],
-            consumer_system="BFF",
+            consumer_system="lotus-gateway",
             correlation_id="corr-3",
         )
     )[0] == 200
@@ -376,7 +376,11 @@ async def test_pas_ingestion_client_non_dict_and_text_payload_handling():
         ),
         (
             "get_capabilities",
-            {"consumer_system": "BFF", "tenant_id": "default", "correlation_id": "corr-5"},
+            {
+                "consumer_system": "lotus-gateway",
+                "tenant_id": "default",
+                "correlation_id": "corr-5",
+            },
             "http://dpm/api/v1/platform/capabilities",
         ),
     ],
@@ -408,7 +412,7 @@ async def test_dpm_client_non_json_and_non_dict_payload_handling():
     _FakeAsyncClient.queue_json(200, ["not-dict"])
 
     status_one, payload_one = await client.get_capabilities(
-        consumer_system="BFF",
+        consumer_system="lotus-gateway",
         tenant_id="default",
         correlation_id="corr-5",
     )
@@ -443,7 +447,7 @@ async def test_reporting_client_summary_and_review_routes():
     _FakeAsyncClient.queue_json(200, {"portfolio_id": "P1", "overview": {}})
 
     capabilities_status, capabilities_payload = await client.get_capabilities(
-        consumer_system="BFF",
+        consumer_system="lotus-gateway",
         tenant_id="default",
         correlation_id="corr-7",
     )

@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 class IntakeBundleRequest(BaseModel):
     body: dict[str, Any] = Field(
         default_factory=dict,
-        description="Raw payload passed through to PAS ingestion /ingest/portfolio-bundle.",
+        description="Raw payload passed through to lotus-core ingestion /ingest/portfolio-bundle.",
     )
 
 

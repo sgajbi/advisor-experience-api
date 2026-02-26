@@ -417,7 +417,7 @@ async def test_get_workbench_analytics_raises_on_invalid_payload_shape():
             session_id=None,
         )
     assert exc.value.status_code == 502
-    assert "Invalid PA workbench analytics payload" in str(exc.value.detail)
+    assert "Invalid lotus-performance workbench analytics payload" in str(exc.value.detail)
 
 
 @pytest.mark.asyncio
@@ -460,7 +460,7 @@ async def test_evaluate_policy_feedback_handles_dpm_failure():
     )
     assert feedback.status == "UNAVAILABLE"
     assert warnings == ["DPM_POLICY_SIMULATION_UNAVAILABLE"]
-    assert partial_failures[0].source_service == "dpm"
+    assert partial_failures[0].source_service == "lotus-manage"
 
 
 @pytest.mark.asyncio

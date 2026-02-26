@@ -1,7 +1,7 @@
 # RFC-0016 Live E2E CI Python Bootstrap Reliability
 
 ## Problem Statement
-AEA `E2E Platform Capabilities (Live Upstreams)` CI job fails before test execution with `No module named pytest`.
+lotus-gateway `E2E Platform Capabilities (Live Upstreams)` CI job fails before test execution with `No module named pytest`.
 
 ## Root Cause
 The live E2E job does not set up Python or install project test dependencies before running `make test-e2e-live`.

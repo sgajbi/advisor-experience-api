@@ -87,7 +87,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build image
-        run: docker build -t advisor-experience-api:ci-test .
+        run: docker build -t lotus-gateway:ci-test .
 
   ci-local-docker:
     name: CI Local Docker Parity
@@ -106,10 +106,10 @@ jobs:
     needs: [coverage]
     runs-on: ubuntu-latest
     env:
-      DPM_REPO_PATH: ../dpm-rebalance-engine
-      PAS_REPO_PATH: ../portfolio-analytics-system
-      PA_REPO_PATH: ../performanceAnalytics
-      RAS_REPO_PATH: ../reporting-aggregation-service
+      DPM_REPO_PATH: ../lotus-manage
+      PAS_REPO_PATH: ../lotus-core
+      PA_REPO_PATH: ../lotus-performance
+      RAS_REPO_PATH: ../lotus-report
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -122,15 +122,15 @@ jobs:
 
       - name: Clone upstream repos
         run: |
-          git clone https://github.com/sgajbi/dpm-rebalance-engine.git ../dpm-rebalance-engine
-          git clone https://github.com/sgajbi/portfolio-analytics-system.git ../portfolio-analytics-system
-          git clone https://github.com/sgajbi/performanceAnalytics.git ../performanceAnalytics
-          git clone https://github.com/sgajbi/reporting-aggregation-service.git ../reporting-aggregation-service
+          git clone https://github.com/sgajbi/lotus-manage.git ../lotus-manage
+          git clone https://github.com/sgajbi/lotus-core.git ../lotus-core
+          git clone https://github.com/sgajbi/lotus-performance.git ../lotus-performance
+          git clone https://github.com/sgajbi/lotus-report.git ../lotus-report
 
       - name: Start live E2E stack
         run: make e2e-up
 
-      - name: Validate BFF aggregation against live upstreams
+      - name: Validate lotus-gateway aggregation against live upstreams
         run: make test-e2e-live
 
       - name: Stack logs on failure

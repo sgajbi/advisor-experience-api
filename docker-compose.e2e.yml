@@ -86,7 +86,7 @@ services:
           "CMD",
           "python",
           "-c",
-          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/integration/capabilities?consumerSystem=BFF&tenantId=default', timeout=5)"
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/integration/capabilities?consumerSystem=lotus-gateway&tenantId=default', timeout=5)"
         ]
       interval: 20s
       timeout: 5s
@@ -136,7 +136,7 @@ services:
           "CMD",
           "python",
           "-c",
-          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/integration/capabilities?consumerSystem=BFF&tenantId=default', timeout=5)"
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/integration/capabilities?consumerSystem=lotus-gateway&tenantId=default', timeout=5)"
         ]
       interval: 20s
       timeout: 5s
@@ -190,7 +190,7 @@ services:
           "CMD",
           "python",
           "-c",
-          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/integration/capabilities?consumerSystem=BFF&tenantId=default', timeout=5)"
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/integration/capabilities?consumerSystem=lotus-gateway&tenantId=default', timeout=5)"
         ]
       interval: 20s
       timeout: 5s
@@ -219,7 +219,7 @@ services:
           "CMD",
           "python",
           "-c",
-          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8300/integration/capabilities?consumerSystem=BFF&tenantId=default', timeout=5)"
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8300/integration/capabilities?consumerSystem=lotus-gateway&tenantId=default', timeout=5)"
         ]
       interval: 20s
       timeout: 5s

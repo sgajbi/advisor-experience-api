@@ -2,12 +2,12 @@
 
 ## Goal
 
-Run a deterministic BFF demo for proposal creation plus approval-chain actions.
+Run a deterministic lotus-gateway demo for proposal creation plus approval-chain actions.
 
 ## Prerequisites
 
-- DPM running at `http://127.0.0.1:8000`
-- BFF running at `http://127.0.0.1:8100`
+- lotus-manage running at `http://127.0.0.1:8000`
+- lotus-gateway running at `http://127.0.0.1:8100`
 
 ## Run
 
@@ -17,7 +17,7 @@ bash docs/demo/scripts/demo-approval-chain.sh
 
 The script will:
 
-1. Create proposal draft via BFF.
+1. Create proposal draft via lotus-gateway.
 2. Submit for risk review.
 3. Approve risk.
 4. Record client consent.

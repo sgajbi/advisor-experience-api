@@ -1,6 +1,6 @@
 # Migration Contract Standard
 
-- Service: `lotus-gateway` (BFF)
+- Service: `lotus-gateway` (lotus-gateway)
 - Persistence mode: **no persistent schema**.
 - Migration policy: **versioned migration contract is mandatory** even in no-schema mode.
 

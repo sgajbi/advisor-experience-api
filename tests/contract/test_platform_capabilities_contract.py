@@ -59,12 +59,14 @@ def test_platform_capabilities_contract_shape(monkeypatch):
     monkeypatch.setattr("app.clients.reporting_client.ReportingClient.get_capabilities", _ras)
 
     client = TestClient(app)
-    response = client.get("/api/v1/platform/capabilities?consumerSystem=BFF&tenantId=default")
+    response = client.get(
+        "/api/v1/platform/capabilities?consumerSystem=lotus-gateway&tenantId=default"
+    )
 
     assert response.status_code == 200
     payload = response.json()["data"]
     assert payload["contractVersion"] == "v1"
-    assert payload["consumerSystem"] == "BFF"
+    assert payload["consumerSystem"] == "lotus-gateway"
     assert payload["tenantId"] == "default"
     assert payload["partialFailure"] is False
     assert "normalized" in payload

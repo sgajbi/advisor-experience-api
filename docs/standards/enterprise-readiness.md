@@ -1,7 +1,7 @@
-# Enterprise Readiness Baseline (AEA/BFF)
+# Enterprise Readiness Baseline (lotus-gateway/lotus-gateway)
 
 - Standard reference: `lotus-platform/Enterprise Readiness Standard.md`
-- Scope: BFF orchestration, API gateway behavior, downstream API integration controls.
+- Scope: lotus-gateway orchestration, API gateway behavior, downstream API integration controls.
 - Change control: RFC required for platform rule changes; ADR required for temporary deviations.
 
 ## Security and IAM Baseline
@@ -67,4 +67,5 @@ Evidence:
 ## Deviations
 
 - Any deviation from the enterprise readiness baseline requires ADR with expiry/review date.
+
 
