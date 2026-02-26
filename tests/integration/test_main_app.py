@@ -46,3 +46,14 @@ def test_health_ready_returns_503_when_draining():
 
     assert response.status_code == 503
     assert response.json() == {"status": "draining"}
+
+
+def test_lifespan_marks_draining_on_shutdown():
+    app.state.is_draining = True
+    with TestClient(app) as client:
+        response = client.get("/health/ready")
+        assert response.status_code == 200
+        assert response.json() == {"status": "ready"}
+        assert app.state.is_draining is False
+
+    assert app.state.is_draining is True
