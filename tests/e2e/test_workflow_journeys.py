@@ -63,8 +63,9 @@ def test_e2e_platform_capability_aggregation_and_health(monkeypatch) -> None:
     monkeypatch.setattr("app.clients.reporting_client.ReportingClient.get_capabilities", _ras)
 
     client = TestClient(app)
-    capabilities = client.get("/api/v1/platform/capabilities"
-        "?consumerSystem=lotus-gateway&tenantId=default")
+    capabilities = client.get(
+        "/api/v1/platform/capabilities?consumerSystem=lotus-gateway&tenantId=default"
+    )
     health = client.get("/health")
 
     assert capabilities.status_code == 200
@@ -293,8 +294,9 @@ def test_e2e_platform_capabilities_partial_failure_when_one_upstream_fails(
     monkeypatch.setattr("app.clients.pas_client.PasClient.get_effective_policy", _pas_policy)
 
     client = TestClient(app)
-    response = client.get("/api/v1/platform/capabilities"
-        "?consumerSystem=lotus-gateway&tenantId=default")
+    response = client.get(
+        "/api/v1/platform/capabilities?consumerSystem=lotus-gateway&tenantId=default"
+    )
 
     assert response.status_code == 200
     body = response.json()["data"]

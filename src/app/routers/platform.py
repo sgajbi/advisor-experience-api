@@ -81,4 +81,3 @@ async def get_platform_capabilities(
         tenant_id=tenant_id,
         correlation_id=correlation_id,
     )
-

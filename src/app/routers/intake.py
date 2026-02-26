@@ -112,12 +112,10 @@ async def get_instrument_lookups(limit: int = Query(default=200, ge=1, le=1000))
     response_model=LookupResponse,
     summary="Currency Lookup Catalog",
     description=(
-        "Returns lotus-core-backed currency codes from portfolio and "
-        "instrument reference data."
+        "Returns lotus-core-backed currency codes from portfolio and instrument reference data."
     ),
 )
 async def get_currency_lookups() -> LookupResponse:
     service = _intake_service()
     correlation_id = correlation_id_var.get()
     return await service.get_currency_lookups(correlation_id=correlation_id)
-

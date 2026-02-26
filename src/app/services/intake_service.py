@@ -129,4 +129,3 @@ class IntakeService:
             if not isinstance(detail, str):
                 detail = str(detail)
             raise HTTPException(status_code=upstream_status, detail=detail)
-
